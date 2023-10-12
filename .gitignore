@@ -1,4 +1,8 @@
 langchain/
+guidance/
+Auto-GPT/
+Agents/
+utils/
 
 
 .vs/
