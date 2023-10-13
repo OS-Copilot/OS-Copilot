@@ -34,6 +34,7 @@ class OpenAIAgent(BaseAgent):
         self.llm = OpenAI(config_path)
         self.environment = None
         self.actions = None
+        self.max_iter = 10
         self.system_prompt = """You are a personal assistant that aims to automate the workflow for human.\nYou are capable of understanding human intent and decompose it into several subgoals that can be addressed via language generation or acomplished using external tools.\nSome of the external tools you can use and their functionalities are as follows:
         """
         self.action_names = self.action_lib.keys()
@@ -71,6 +72,11 @@ class OpenAIAgent(BaseAgent):
             _begin = message.find(begin_str)
             _end = message.find(end_str)
         return result
+
+    def chat(self, goal: str):
+        self._history = []
+
+
 
 if __name__ == '__main__':
     actions = {
