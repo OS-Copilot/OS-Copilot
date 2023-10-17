@@ -5,6 +5,7 @@ Agents/
 utils/
 
 
+working_dir/*.log
 .vs/
 .vscode/
 .idea/

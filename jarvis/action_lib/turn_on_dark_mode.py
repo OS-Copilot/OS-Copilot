@@ -6,11 +6,12 @@ class turn_on_dark_mode(BaseAction):
         super().__init__()
         self._description = "Using turn_on_dark_mode() will change your system into the dark mode."
 
+    @property
     def _command(self):
         return 'shortcuts run "Dark Mode"'
 
-    def _success(self):
-        return "Successfully turned the system into the Dark Mode"
+    # def _success(self):
+    #     return "Successfully turned the system into the Dark Mode"
 
     # def __call__(self, *args, **kwargs):
     #
@@ -25,4 +26,3 @@ class turn_on_dark_mode(BaseAction):
     #         return e
         # except subprocess.TimeoutExpired:
         #     raise TimeoutError(f"Command '{command}' timed out after {self.timeout} seconds.")
-

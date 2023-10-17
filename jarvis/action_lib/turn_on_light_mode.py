@@ -6,11 +6,12 @@ class turn_on_light_mode(BaseAction):
         super().__init__()
         self._description = "Using turn_on_light_mode() will change your system into the light mode."
 
+    @property
     def _command(self):
         return 'shortcuts run "Light Mode"'
 
-    def _success(self):
-        return "Successfully turned the system into the Light Mode"
+    # def _success(self):
+    #     return "Successfully turned the system into the Light Mode"
 
     # def __call__(self, *args, **kwargs):
     #
