@@ -30,13 +30,13 @@ class BaseAgent:
                 class_name = file[:-3].split('/')[-1]  # 去除.py后缀，获取类名
                 module = importlib.import_module(class_name)
                 tmp_obj = getattr(module, class_name)()
-                self.action_lib.update({class_name: getattr(module, class_name)})
+                self.action_lib.update({class_name: tmp_obj._command})
                 self.action_lib_description.update({class_name: tmp_obj.description})
 
 
 if __name__ == '__main__':
     a = BaseAgent()
-    a.get_action_class_name_and_description()
+    a.init_action_lib()
     for k,v in a.action_lib.items():
         print(k)
         print(v)

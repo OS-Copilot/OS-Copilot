@@ -1,6 +1,9 @@
 import json
 from jarvis.core.llms import OpenAI
 from jarvis.agent.base_agent import BaseAgent
+from jarvis.enviroment.base_env import BaseEnviroment
+from jarvis.core.schema import EnvState
+
 
 a = "{action_input} the input to the action, could be any valid input for python programs or shell commands, such numbers, strings, or path to a file, etc."
 BASE_PROMPT = """
@@ -25,14 +28,15 @@ Remember you must surround you action between <action> and </action>.
 Now you are ready to take questions and requests from users.
 """
 
+
 class OpenAIAgent(BaseAgent):
     """
     BaseAgent is the base class of all agents.
     """
-    def __init__(self, config_path=None):
+    def __init__(self, config_path=None, environment: BaseEnviroment = None):
         super().__init__()
         self.llm = OpenAI(config_path)
-        self.environment = None
+        self.env = environment
         self.actions = None
         self.max_iter = 10
         self.system_prompt = """You are a personal assistant that aims to automate the workflow for human.\nYou are capable of understanding human intent and decompose it into several subgoals that can be addressed via language generation or acomplished using external tools.\nSome of the external tools you can use and their functionalities are as follows:
@@ -76,6 +80,10 @@ class OpenAIAgent(BaseAgent):
     def chat(self, goal: str):
         self._history = []
 
+    def step(self, single_action) -> EnvState:
+        _command = self.action_lib[single_action]
+        self.environment.step(_command)
+        return self.environment.observe()
 
 
 if __name__ == '__main__':
@@ -86,7 +94,9 @@ if __name__ == '__main__':
         "show_upcoming_meetings()": "Using show_upcoming_meetings() will open Calendar and show the their upcoming meetings for the user.",
         "organize_app_layout()": "Using organize_app_layout() will help user reorganize their Desktop layout for better working condition and focus more easily."
     }
-    agent = OpenAIAgent(config_path="../../examples/config.json")
+    environment = BaseEnviroment()
+    agent = OpenAIAgent(config_path="../../examples/config.json", environment=environment)
+
     # print(agent.action_lib)
     # print(agent.action_lib_description)
     # executation_action = agent.action_lib["turn_on_dark_mode"]()
@@ -103,7 +113,7 @@ Actions:
     action = agent.extract_action(response, begin_str='<action>', end_str='</action>')
     import time
     for a in action:
-        executation_action = agent.action_lib[a]()
-        r = executation_action.run()
-        print(r.thought)
+        print(a)
+        command = agent.action_lib[a]
+        print(agent.env.step(command))
         time.sleep(2)

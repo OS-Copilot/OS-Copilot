@@ -28,3 +28,9 @@ class ActionReturn:
     thought: Optional[str] = None
     valid: Optional[ActionValidCode] = ActionValidCode.OPEN
 
+@dataclass
+class EnvState:
+    command: List[str] = field(default_factory=list)
+    result: Optional[str] = None
+    pwd: Optional[str] = None
+    ls: Optional[str] = None
