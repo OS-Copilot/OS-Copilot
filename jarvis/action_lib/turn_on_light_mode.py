@@ -8,7 +8,10 @@ class turn_on_light_mode(BaseAction):
 
     @property
     def _command(self):
-        return 'shortcuts run "Light Mode"'
+        return self._python(
+            self._import("atom", "operations"),
+            "adjust_theme('Adwaita')"
+        )
 
     # def _success(self):
     #     return "Successfully turned the system into the Light Mode"
