@@ -27,9 +27,9 @@ class BaseEnviroment:
         self.timeout = timeout
         self.execute_log_path = execute_log_path
         self.state_log_path = state_log_path
-        self.log_execute = logging_command + self.execute_log_path
-        self.log_state = logging_command + self.state_log_path
-        self.working_dir = os.path.abspath(os.path.join(os.getcwd(), "..", "..", "working_dir"))
+        self.working_dir = os.path.abspath(os.path.join(__file__, "..", "..", "..", "working_dir"))
+        self.log_execute = logging_command + os.path.join(self.working_dir, self.execute_log_path)
+        self.log_state = logging_command + os.path.join(self.working_dir, self.state_log_path)
         self.server_name = "test"
         self.env_state = None
         # print(self.working_dir)

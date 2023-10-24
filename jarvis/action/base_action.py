@@ -32,6 +32,12 @@ class BaseAction:
         # self.server_name = "test"
         # print(self.working_dir)
 
+    def _python(self, *lines):
+        return f'python -Bc "{"; ".join(lines)}"'
+
+    def _import(self, *packages):
+        return f'from jarvis.{".".join(packages)} import *'
+
     @property
     def _command(self):
         raise NotImplementedError

@@ -22,7 +22,7 @@ class BaseAgent:
 
     def init_action_lib(self, path=None, attribute_name='_description'):
         if not path:
-            path = os.path.abspath(os.path.join(os.getcwd(), "..", "action_lib"))
+            path = os.path.abspath(os.path.join(__file__, "..", "..", "action_lib"))
         sys.path.append(path)
         files = glob.glob(path + "/*.py")
         for file in files:
