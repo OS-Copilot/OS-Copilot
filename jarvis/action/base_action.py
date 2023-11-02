@@ -2,6 +2,7 @@ import subprocess
 import time
 import os
 from typing import Optional
+import textwrap
 from jarvis.core.schema import ActionReturn, ActionStatusCode
 
 

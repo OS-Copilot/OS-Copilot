@@ -1,19 +1,41 @@
 from jarvis.action.base_action import BaseAction
 
 
-class turn_on_light_mode(BaseAction):
+_COMMAND = """
+from jarvis.action_lib.execute_sql import execute_sql
+action = execute_sql()
+action.run(db_path='../tasks/travel/database/travel.db', query='PRAGMA table_info(railway)')
+"""
+
+class execute_sql(BaseAction):
     def __init__(self) -> None:
         super().__init__()
         self._description = "Using turn_on_light_mode() will change your system into the light mode."
 
     @property
     def _command(self):
-        return 'shortcuts run "Light Mode"'
-        # return self._python(
-        #     self._import("atom", "operations"),
-        #     "adjust_theme('Adwaita')"
-        # )
+        return self._python(_COMMAND)
 
+
+    def run(self, db_path: str, query: str):
+        import sqlite3
+
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        results = {
+            "query": query,
+            "result": None,
+            "error": None
+        }
+        try:
+            cursor.execute(query)
+            results['result'] = cursor.fetchall()
+        except Exception as e:
+            results['error'] = str(e)
+        conn.commit()
+        conn.close()
+
+        return results
     # def _success(self):
     #     return "Successfully turned the system into the Light Mode"
 

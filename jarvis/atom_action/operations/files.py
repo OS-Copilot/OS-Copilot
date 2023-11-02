@@ -17,7 +17,7 @@ def download_file(url: str, file_name: str) -> None:
 
 def copy(src_path: str, dst_path: str) -> None:
     assert os.path.exists(src_path)
-    return cp(src_path, dst_path)
+    return cp(src_path, dst_path)  # cp a b
 
 def move(src_path: str, dst_path: str) -> None:
     assert os.path.exists(src_path)

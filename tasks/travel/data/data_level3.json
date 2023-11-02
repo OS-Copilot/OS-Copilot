@@ -1,0 +1,2446 @@
+[
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Beijing, he needs to visit Shihua Cave for 300 minutes, The Temple of Heaven for 150 minutes, The Summer Palace for 120 minutes, The Great Wall for 210 minutes, Beijing Stone Carvings Art Museum for 120 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2200.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "The Summer Palace",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 120
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Beijing Railway Hotel in Beijing. In Nanjing, he needs to visit Lake Xuanwu for 120 minutes, Ming Palace for 180 minutes, Taiping Heavenly-Kingdom Palace for 120 minutes, Bailuzhou Park for 120 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 1600.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Beijing",
+                "origin_place": "Beijing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Lake Xuanwu",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Taiping Heavenly-Kingdom Palace",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Bailuzhou Park",
+                        "minutes": 120
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Guangzhou Railway Hotel in Guangzhou. In Nanjing, he needs to visit Taiping Heavenly-Kingdom Palace for 300 minutes, Lake Xuanwu for 210 minutes, Qinhuai River for 210 minutes, Ming Palace for 240 minutes, Bailuzhou Park for 150 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2600.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Guangzhou",
+                "origin_place": "Guangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Taiping Heavenly-Kingdom Palace",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Lake Xuanwu",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Qinhuai River",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Bailuzhou Park",
+                        "minutes": 150
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Shanghai Railway Hotel in Shanghai. In Wuhan, he needs to visit East Lake for 300 minutes, Baotong Temple for 240 minutes, Yellow Crane Tower for 270 minutes, Han Show for 120 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 1500.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Shanghai",
+                "origin_place": "Shanghai Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "East Lake",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Baotong Temple",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Yellow Crane Tower",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Han Show",
+                        "minutes": 120
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Hangzhou Railway Hotel in Hangzhou. In Nanjing, he needs to visit Tomb of Ming Emperor Zhu Yuanzhang for 180 minutes, Bailuzhou Park for 180 minutes, Lake Xuanwu for 240 minutes, Ming Palace for 210 minutes, Qinhuai River for 300 minutes. And the order can be decided by you.\n2. 3 days (2023-07-08 00:00 ~ 2023-07-11 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-08 00:00",
+                "end_time": "2023-07-11 00:00",
+                "origin_city": "Hangzhou",
+                "origin_place": "Hangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Tomb of Ming Emperor Zhu Yuanzhang",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Bailuzhou Park",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Lake Xuanwu",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Qinhuai River",
+                        "minutes": 300
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Nanjing Railway Hotel in Nanjing. In Chengdu, he needs to visit Chengdu Panda Base for 180 minutes, The Chengdu Wuhou Shrine for 240 minutes, Leshan Giant Buddha for 270 minutes, Chengdu Tea Houses for 300 minutes. And the order can be decided by you.\n2. 3 days (2023-07-07 00:00 ~ 2023-07-10 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-07 00:00",
+                "end_time": "2023-07-10 00:00",
+                "origin_city": "Nanjing",
+                "origin_place": "Nanjing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Chengdu Panda Base",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "The Chengdu Wuhou Shrine",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Leshan Giant Buddha",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Chengdu Tea Houses",
+                        "minutes": 300
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Beijing Railway Hotel in Beijing. In Chengdu, he needs to visit Leshan Giant Buddha for 180 minutes, Chengdu Tea Houses for 210 minutes, The Chengdu Wuhou Shrine for 270 minutes, Chengdu Panda Base for 120 minutes. And the order can be decided by you.\n2. 3 days (2023-07-06 00:00 ~ 2023-07-09 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-06 00:00",
+                "end_time": "2023-07-09 00:00",
+                "origin_city": "Beijing",
+                "origin_place": "Beijing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Leshan Giant Buddha",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Chengdu Tea Houses",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "The Chengdu Wuhou Shrine",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Chengdu Panda Base",
+                        "minutes": 120
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Hangzhou Railway Hotel in Hangzhou. In Nanjing, he needs to visit Taiping Heavenly-Kingdom Palace for 240 minutes, Tomb of Ming Emperor Zhu Yuanzhang for 300 minutes, Bailuzhou Park for 240 minutes, Qinhuai River for 150 minutes, Ming Palace for 210 minutes. And the order can be decided by you.\n2. 3 days (2023-07-07 00:00 ~ 2023-07-10 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-07 00:00",
+                "end_time": "2023-07-10 00:00",
+                "origin_city": "Hangzhou",
+                "origin_place": "Hangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Taiping Heavenly-Kingdom Palace",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Tomb of Ming Emperor Zhu Yuanzhang",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Bailuzhou Park",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Qinhuai River",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 210
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Guangzhou Railway Hotel in Guangzhou. In Guangzhou, he needs to visit Yuexiu Park for 300 minutes, Chimelong Tourist Resort for 150 minutes, Huacheng Square for 240 minutes.In Wuhan, he needs to visit Hubu Alley for 300 minutes, Tan Hua Lin for 240 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 1500.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Guangzhou",
+                "origin_place": "Guangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Yuexiu Park",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Chimelong Tourist Resort",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Huacheng Square",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Hubu Alley",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Tan Hua Lin",
+                        "minutes": 240
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Wuhan, he needs to visit Baotong Temple for 210 minutes, Tan Hua Lin for 300 minutes.In Hangzhou, he needs to visit Quaint Water Towns for 180 minutes, China National Tea Museum for 210 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 1100.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Baotong Temple",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Tan Hua Lin",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Quaint Water Towns",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "China National Tea Museum",
+                        "minutes": 210
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Nanjing Railway Hotel in Nanjing. In Nanjing, he needs to visit Taiping Heavenly-Kingdom Palace for 300 minutes, Bailuzhou Park for 240 minutes.In Hangzhou, he needs to visit Quaint Water Towns for 300 minutes, West Lake for 300 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 900.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Nanjing",
+                "origin_place": "Nanjing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Taiping Heavenly-Kingdom Palace",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Bailuzhou Park",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Quaint Water Towns",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "West Lake",
+                        "minutes": 300
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Wuhan, he needs to visit Yellow Crane Tower for 180 minutes, East Lake for 120 minutes.In Beijing, he needs to visit Beijing Stone Carvings Art Museum for 300 minutes, Beijing Olympic Park for 240 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 1400.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Yellow Crane Tower",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "East Lake",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 240
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Guangzhou Railway Hotel in Guangzhou. In Guangzhou, he needs to visit Yuexiu Park for 210 minutes, Huacheng Square for 270 minutes.In Nanjing, he needs to visit Ming Palace for 180 minutes, Tomb of Ming Emperor Zhu Yuanzhang for 210 minutes. And the order can be decided by you.\n2. 3 days (2023-07-09 00:00 ~ 2023-07-12 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-09 00:00",
+                "end_time": "2023-07-12 00:00",
+                "origin_city": "Guangzhou",
+                "origin_place": "Guangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Yuexiu Park",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Huacheng Square",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Tomb of Ming Emperor Zhu Yuanzhang",
+                        "minutes": 210
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Guangzhou Railway Hotel in Guangzhou. In Guangzhou, he needs to visit Baiyun Mountain for 120 minutes, Canton Tower for 180 minutes.In Chengdu, he needs to visit Chengdu Panda Base for 270 minutes, Du Fu Thatched Cottage for 240 minutes. And the order can be decided by you.\n2. 3 days (2023-07-05 00:00 ~ 2023-07-08 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-05 00:00",
+                "end_time": "2023-07-08 00:00",
+                "origin_city": "Guangzhou",
+                "origin_place": "Guangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Baiyun Mountain",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Canton Tower",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Chengdu Panda Base",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Du Fu Thatched Cottage",
+                        "minutes": 240
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Chengdu Railway Hotel in Chengdu. In Chengdu, he needs to visit Chengdu Panda Base for 270 minutes, Chengdu Tea Houses for 240 minutes.In Nanjing, he needs to visit Taiping Heavenly-Kingdom Palace for 270 minutes, Lake Xuanwu for 210 minutes. And the order can be decided by you.\n2. 3 days (2023-07-10 00:00 ~ 2023-07-13 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-10 00:00",
+                "end_time": "2023-07-13 00:00",
+                "origin_city": "Chengdu",
+                "origin_place": "Chengdu Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Chengdu Panda Base",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Chengdu Tea Houses",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Taiping Heavenly-Kingdom Palace",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Lake Xuanwu",
+                        "minutes": 210
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Shanghai Railway Hotel in Shanghai. In Shanghai, he needs to visit Xintiandi for 270 minutes, Shanghai Disney for 270 minutes.In Nanjing, he needs to visit Bailuzhou Park for 210 minutes, Ming Palace for 120 minutes. And the order can be decided by you.\n2. 3 days (2023-07-06 00:00 ~ 2023-07-09 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-06 00:00",
+                "end_time": "2023-07-09 00:00",
+                "origin_city": "Shanghai",
+                "origin_place": "Shanghai Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Xintiandi",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Shanghai Disney",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Bailuzhou Park",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 120
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Hangzhou Railway Hotel in Hangzhou. In Beijing, he needs to visit Beijing Olympic Park for 180 minutes, Tiananmen Square for 150 minutes, The Temple of Heaven for 120 minutes, Shihua Cave for 240 minutes, The Summer Palace for 300 minutes, The Great Wall for 120 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2500.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Hangzhou",
+                "origin_place": "Hangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "The Summer Palace",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 120
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Hangzhou Railway Hotel in Hangzhou. In Shanghai, he needs to visit Xintiandi for 240 minutes, Shanghai Disney for 150 minutes, Longhua Temple for 210 minutes, Shanghai History Museum for 120 minutes, Century Park for 270 minutes, Qibao Ancient Town for 210 minutes, Shanghai Sightseeing Tunnel for 180 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 1600.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Hangzhou",
+                "origin_place": "Hangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Xintiandi",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Shanghai Disney",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Longhua Temple",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Shanghai History Museum",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Century Park",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Qibao Ancient Town",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Shanghai Sightseeing Tunnel",
+                        "minutes": 180
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Guangzhou Railway Hotel in Guangzhou. In Beijing, he needs to visit Tiananmen Square for 150 minutes, Beijing Olympic Park for 180 minutes, Shihua Cave for 270 minutes, Beijing Stone Carvings Art Museum for 120 minutes, The Temple of Heaven for 300 minutes, The Summer Palace for 210 minutes, The Great Wall for 240 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 3700.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Guangzhou",
+                "origin_place": "Guangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "The Summer Palace",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 240
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Beijing, he needs to visit The Forbidden City for 150 minutes, Shihua Cave for 180 minutes, Beijing Olympic Park for 300 minutes, The Great Wall for 180 minutes, Beijing Stone Carvings Art Museum for 240 minutes, Tiananmen Square for 240 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2300.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "The Forbidden City",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 240
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Shanghai Railway Hotel in Shanghai. In Beijing, he needs to visit Beijing Stone Carvings Art Museum for 180 minutes, Beijing Olympic Park for 120 minutes, Shihua Cave for 210 minutes, The Summer Palace for 120 minutes, The Temple of Heaven for 210 minutes, Tiananmen Square for 300 minutes, The Forbidden City for 300 minutes. And the order can be decided by you.\n2. 4 days (2023-07-04 00:00 ~ 2023-07-08 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-04 00:00",
+                "end_time": "2023-07-08 00:00",
+                "origin_city": "Shanghai",
+                "origin_place": "Shanghai Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "The Summer Palace",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "The Forbidden City",
+                        "minutes": 300
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Guangzhou Railway Hotel in Guangzhou. In Beijing, he needs to visit The Temple of Heaven for 180 minutes, The Forbidden City for 180 minutes, Beijing Stone Carvings Art Museum for 180 minutes, The Great Wall for 240 minutes, Beijing Olympic Park for 240 minutes, Tiananmen Square for 120 minutes, Shihua Cave for 210 minutes. And the order can be decided by you.\n2. 4 days (2023-07-03 00:00 ~ 2023-07-07 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-03 00:00",
+                "end_time": "2023-07-07 00:00",
+                "origin_city": "Guangzhou",
+                "origin_place": "Guangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "The Forbidden City",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 210
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Hangzhou Railway Hotel in Hangzhou. In Wuhan, he needs to visit Baotong Temple for 300 minutes, Yellow Crane Tower for 300 minutes, Tan Hua Lin for 120 minutes, East Lake for 150 minutes, Han Show for 150 minutes, Hubu Alley for 300 minutes. And the order can be decided by you.\n2. 4 days (2023-07-08 00:00 ~ 2023-07-12 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-08 00:00",
+                "end_time": "2023-07-12 00:00",
+                "origin_city": "Hangzhou",
+                "origin_place": "Hangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Baotong Temple",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Yellow Crane Tower",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Tan Hua Lin",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "East Lake",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Han Show",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Hubu Alley",
+                        "minutes": 300
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Beijing, he needs to visit Shihua Cave for 300 minutes, Beijing Olympic Park for 120 minutes, The Great Wall for 210 minutes, The Temple of Heaven for 210 minutes, Beijing Stone Carvings Art Museum for 300 minutes, Tiananmen Square for 240 minutes. And the order can be decided by you.\n2. 4 days (2023-07-06 00:00 ~ 2023-07-10 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-06 00:00",
+                "end_time": "2023-07-10 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 240
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Guangzhou Railway Hotel in Guangzhou. In Guangzhou, he needs to visit Chimelong Tourist Resort for 180 minutes, Huacheng Square for 270 minutes, Canton Tower for 240 minutes, Baiyun Mountain for 180 minutes, Yuexiu Park for 210 minutes.In Beijing, he needs to visit The Forbidden City for 210 minutes, The Temple of Heaven for 180 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2100.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Guangzhou",
+                "origin_place": "Guangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Chimelong Tourist Resort",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Huacheng Square",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Canton Tower",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Baiyun Mountain",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Yuexiu Park",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "The Forbidden City",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 180
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Hangzhou Railway Hotel in Hangzhou. In Hangzhou, he needs to visit China National Tea Museum for 180 minutes, West Lake for 150 minutes, Quaint Water Towns for 240 minutes.In Shanghai, he needs to visit Century Park for 150 minutes, Shanghai Sightseeing Tunnel for 180 minutes, Shanghai History Museum for 150 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 1300.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Hangzhou",
+                "origin_place": "Hangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "China National Tea Museum",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "West Lake",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Quaint Water Towns",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Century Park",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Shanghai Sightseeing Tunnel",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Shanghai History Museum",
+                        "minutes": 150
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Guangzhou Railway Hotel in Guangzhou. In Beijing, he needs to visit Shihua Cave for 150 minutes, The Forbidden City for 210 minutes.In Nanjing, he needs to visit Bailuzhou Park for 180 minutes, Ming Palace for 120 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2900.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Guangzhou",
+                "origin_place": "Guangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "The Forbidden City",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Bailuzhou Park",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 120
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Beijing Railway Hotel in Beijing. In Guangzhou, he needs to visit Chimelong Tourist Resort for 210 minutes, Yuexiu Park for 120 minutes.In Shanghai, he needs to visit Shanghai Disney for 180 minutes, Xintiandi for 240 minutes, Longhua Temple for 300 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2700.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Beijing",
+                "origin_place": "Beijing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Chimelong Tourist Resort",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Yuexiu Park",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Shanghai Disney",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Xintiandi",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Longhua Temple",
+                        "minutes": 300
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Wuhan, he needs to visit Han Show for 120 minutes, Yellow Crane Tower for 240 minutes, Baotong Temple for 270 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 1300 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Han Show",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Yellow Crane Tower",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Baotong Temple",
+                        "minutes": 270
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Wuhan, he needs to visit Baotong Temple for 240 minutes, Hubu Alley for 270 minutes.In Beijing, he needs to visit Beijing Stone Carvings Art Museum for 120 minutes, Beijing Olympic Park for 300 minutes, The Temple of Heaven for 180 minutes, The Great Wall for 300 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 1900.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Baotong Temple",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Hubu Alley",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 300
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Guangzhou, he needs to visit Baiyun Mountain for 300 minutes, Huacheng Square for 120 minutes.In Beijing, he needs to visit The Summer Palace for 270 minutes, Tiananmen Square for 210 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2600.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Baiyun Mountain",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Huacheng Square",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "The Summer Palace",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 210
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Nanjing Railway Hotel in Nanjing. In Beijing, he needs to visit The Temple of Heaven for 120 minutes, Shihua Cave for 300 minutes, Tiananmen Square for 270 minutes.In Shanghai, he needs to visit Huangpu River Cruise for 210 minutes, Shanghai Disney for 240 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2100.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Nanjing",
+                "origin_place": "Nanjing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Huangpu River Cruise",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Shanghai Disney",
+                        "minutes": 240
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Guangzhou Railway Hotel in Guangzhou. In Guangzhou, he needs to visit Canton Tower for 150 minutes, Baiyun Mountain for 210 minutes.In Hangzhou, he needs to visit China National Tea Museum for 120 minutes, Quaint Water Towns for 150 minutes, Lingyin Temple for 240 minutes, West Lake for 180 minutes. And the order can be decided by you.\n2. 4 days (2023-07-10 00:00 ~ 2023-07-14 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-10 00:00",
+                "end_time": "2023-07-14 00:00",
+                "origin_city": "Guangzhou",
+                "origin_place": "Guangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Canton Tower",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Baiyun Mountain",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "China National Tea Museum",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Quaint Water Towns",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Lingyin Temple",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "West Lake",
+                        "minutes": 180
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Shanghai Railway Hotel in Shanghai. In Shanghai, he needs to visit Shanghai Sightseeing Tunnel for 270 minutes, Shanghai Disney for 150 minutes, Century Park for 120 minutes.In Chengdu, he needs to visit Chengdu Panda Base for 120 minutes, The Chengdu Wuhou Shrine for 300 minutes, Leshan Giant Buddha for 240 minutes, Du Fu Thatched Cottage for 270 minutes. And the order can be decided by you.\n2. 4 days (2023-07-07 00:00 ~ 2023-07-11 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-07 00:00",
+                "end_time": "2023-07-11 00:00",
+                "origin_city": "Shanghai",
+                "origin_place": "Shanghai Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Shanghai Sightseeing Tunnel",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Shanghai Disney",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Century Park",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Chengdu Panda Base",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "The Chengdu Wuhou Shrine",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Leshan Giant Buddha",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Du Fu Thatched Cottage",
+                        "minutes": 270
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Chengdu Railway Hotel in Chengdu. In Guangzhou, he needs to visit Canton Tower for 150 minutes, Yuexiu Park for 270 minutes.In Wuhan, he needs to visit Tan Hua Lin for 270 minutes, Baotong Temple for 270 minutes. And the order can be decided by you.\n2. 4 days (2023-07-11 00:00 ~ 2023-07-15 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-11 00:00",
+                "end_time": "2023-07-15 00:00",
+                "origin_city": "Chengdu",
+                "origin_place": "Chengdu Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Canton Tower",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Yuexiu Park",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Tan Hua Lin",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Baotong Temple",
+                        "minutes": 270
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Hangzhou, he needs to visit Hefang Street for 210 minutes, China National Tea Museum for 150 minutes.In Shanghai, he needs to visit Shanghai History Museum for 240 minutes, Century Park for 270 minutes. And the order can be decided by you.\n2. 4 days (2023-07-02 00:00 ~ 2023-07-06 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-02 00:00",
+                "end_time": "2023-07-06 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Hefang Street",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "China National Tea Museum",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Shanghai History Museum",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Century Park",
+                        "minutes": 270
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Nanjing Railway Hotel in Nanjing. In Nanjing, he needs to visit Tomb of Ming Emperor Zhu Yuanzhang for 300 minutes, Ming Palace for 180 minutes, Lake Xuanwu for 270 minutes, Bailuzhou Park for 120 minutes, Qinhuai River for 180 minutes.In Hangzhou, he needs to visit West Lake for 270 minutes, Hefang Street for 120 minutes. And the order can be decided by you.\n2. 4 days (2023-07-04 00:00 ~ 2023-07-08 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-04 00:00",
+                "end_time": "2023-07-08 00:00",
+                "origin_city": "Nanjing",
+                "origin_place": "Nanjing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Tomb of Ming Emperor Zhu Yuanzhang",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Lake Xuanwu",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Bailuzhou Park",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Qinhuai River",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "West Lake",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Hefang Street",
+                        "minutes": 120
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Wuhan, he needs to visit Han Show for 150 minutes, East Lake for 240 minutes, Tan Hua Lin for 210 minutes.In Chengdu, he needs to visit Chengdu Panda Base for 150 minutes, Du Fu Thatched Cottage for 120 minutes, Leshan Giant Buddha for 210 minutes. And the order can be decided by you.\n2. 4 days (2023-07-11 00:00 ~ 2023-07-15 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-11 00:00",
+                "end_time": "2023-07-15 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Han Show",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "East Lake",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Tan Hua Lin",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Chengdu Panda Base",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Du Fu Thatched Cottage",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Leshan Giant Buddha",
+                        "minutes": 210
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Beijing Railway Hotel in Beijing. In Nanjing, he needs to visit Ming Palace for 120 minutes, Tomb of Ming Emperor Zhu Yuanzhang for 150 minutes.In Shanghai, he needs to visit Qibao Ancient Town for 240 minutes, Shanghai Sightseeing Tunnel for 210 minutes, Huangpu River Cruise for 240 minutes. And the order can be decided by you.\n2. 4 days (2023-07-02 00:00 ~ 2023-07-06 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-02 00:00",
+                "end_time": "2023-07-06 00:00",
+                "origin_city": "Beijing",
+                "origin_place": "Beijing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Tomb of Ming Emperor Zhu Yuanzhang",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Qibao Ancient Town",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Shanghai Sightseeing Tunnel",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Huangpu River Cruise",
+                        "minutes": 240
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Shanghai, he needs to visit Shanghai Disney for 180 minutes, Shanghai History Museum for 240 minutes. And the order can be decided by you.\n2. 4 days (2023-07-06 00:00 ~ 2023-07-10 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-06 00:00",
+                "end_time": "2023-07-10 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Shanghai Disney",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Shanghai History Museum",
+                        "minutes": 240
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Beijing, he needs to visit Tiananmen Square for 180 minutes, Beijing Olympic Park for 240 minutes, The Forbidden City for 150 minutes, The Temple of Heaven for 270 minutes, Beijing Stone Carvings Art Museum for 210 minutes, The Summer Palace for 180 minutes, Shihua Cave for 150 minutes, The Great Wall for 150 minutes. And the order can be decided by you.\n2. 5 days (2023-07-05 00:00 ~ 2023-07-10 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-05 00:00",
+                "end_time": "2023-07-10 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "The Forbidden City",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "The Summer Palace",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 150
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Beijing Railway Hotel in Beijing. In Beijing, he needs to visit Beijing Olympic Park for 150 minutes, The Great Wall for 180 minutes, The Summer Palace for 210 minutes, Shihua Cave for 240 minutes, Beijing Stone Carvings Art Museum for 180 minutes, Tiananmen Square for 210 minutes.In Wuhan, he needs to visit Yellow Crane Tower for 270 minutes, Baotong Temple for 150 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2200.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Beijing",
+                "origin_place": "Beijing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "The Summer Palace",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Yellow Crane Tower",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Baotong Temple",
+                        "minutes": 150
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Nanjing Railway Hotel in Nanjing. In Nanjing, he needs to visit Tomb of Ming Emperor Zhu Yuanzhang for 270 minutes, Bailuzhou Park for 180 minutes, Qinhuai River for 210 minutes, Ming Palace for 180 minutes, Lake Xuanwu for 300 minutes.In Beijing, he needs to visit The Summer Palace for 300 minutes, The Great Wall for 150 minutes, The Forbidden City for 180 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2200.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Nanjing",
+                "origin_place": "Nanjing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Tomb of Ming Emperor Zhu Yuanzhang",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Bailuzhou Park",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Qinhuai River",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Lake Xuanwu",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "The Summer Palace",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "The Forbidden City",
+                        "minutes": 180
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Beijing, he needs to visit The Summer Palace for 300 minutes, Beijing Stone Carvings Art Museum for 180 minutes, Shihua Cave for 180 minutes, The Great Wall for 300 minutes, The Forbidden City for 120 minutes.In Nanjing, he needs to visit Taiping Heavenly-Kingdom Palace for 210 minutes, Qinhuai River for 300 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2700.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "The Summer Palace",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "The Forbidden City",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Taiping Heavenly-Kingdom Palace",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Qinhuai River",
+                        "minutes": 300
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Guangzhou Railway Hotel in Guangzhou. In Hangzhou, he needs to visit Lingyin Temple for 150 minutes, China National Tea Museum for 210 minutes, Quaint Water Towns for 180 minutes, Hefang Street for 120 minutes.In Nanjing, he needs to visit Taiping Heavenly-Kingdom Palace for 270 minutes, Bailuzhou Park for 150 minutes, Tomb of Ming Emperor Zhu Yuanzhang for 210 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2500.0 CNY.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Guangzhou",
+                "origin_place": "Guangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Lingyin Temple",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "China National Tea Museum",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Quaint Water Towns",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Hefang Street",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Taiping Heavenly-Kingdom Palace",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Bailuzhou Park",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Tomb of Ming Emperor Zhu Yuanzhang",
+                        "minutes": 210
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Beijing Railway Hotel in Beijing. In Beijing, he needs to visit Beijing Stone Carvings Art Museum for 210 minutes, Tiananmen Square for 270 minutes, The Great Wall for 300 minutes, The Temple of Heaven for 120 minutes, The Summer Palace for 210 minutes, Beijing Olympic Park for 210 minutes, Shihua Cave for 300 minutes.In Hangzhou, he needs to visit Lingyin Temple for 270 minutes, West Lake for 120 minutes, Hefang Street for 120 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2700.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Beijing",
+                "origin_place": "Beijing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "The Summer Palace",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Lingyin Temple",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "West Lake",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Hefang Street",
+                        "minutes": 120
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Nanjing Railway Hotel in Nanjing. In Nanjing, he needs to visit Bailuzhou Park for 270 minutes, Tomb of Ming Emperor Zhu Yuanzhang for 240 minutes, Ming Palace for 240 minutes, Lake Xuanwu for 300 minutes, Qinhuai River for 270 minutes.In Beijing, he needs to visit The Forbidden City for 150 minutes, Shihua Cave for 210 minutes, The Temple of Heaven for 180 minutes, Tiananmen Square for 300 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2400.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Nanjing",
+                "origin_place": "Nanjing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Bailuzhou Park",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Tomb of Ming Emperor Zhu Yuanzhang",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Lake Xuanwu",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Qinhuai River",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "The Forbidden City",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 300
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Hangzhou Railway Hotel in Hangzhou. In Chengdu, he needs to visit Chengdu Tea Houses for 270 minutes, Du Fu Thatched Cottage for 210 minutes, The Chengdu Wuhou Shrine for 150 minutes, Chengdu Panda Base for 240 minutes.In Wuhan, he needs to visit Han Show for 270 minutes, Tan Hua Lin for 120 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 2600.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Hangzhou",
+                "origin_place": "Hangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Chengdu Tea Houses",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Du Fu Thatched Cottage",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "The Chengdu Wuhou Shrine",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Chengdu Panda Base",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Han Show",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Tan Hua Lin",
+                        "minutes": 120
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Guangzhou Railway Hotel in Guangzhou. In Chengdu, he needs to visit The Chengdu Wuhou Shrine for 210 minutes, Chengdu Tea Houses for 270 minutes, Leshan Giant Buddha for 150 minutes, Chengdu Panda Base for 180 minutes.In Shanghai, he needs to visit Qibao Ancient Town for 270 minutes, Longhua Temple for 270 minutes, Shanghai History Museum for 240 minutes. And the order can be decided by you.\n2. He is free to travel from 2023.7.1 to 2023.7.20. The budget is 4100.0 CNY.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the time limit), spend as little money as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-01 00:00",
+                "end_time": "2023-07-20 00:00",
+                "origin_city": "Guangzhou",
+                "origin_place": "Guangzhou Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "The Chengdu Wuhou Shrine",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Chengdu Tea Houses",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Leshan Giant Buddha",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Chengdu Panda Base",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Qibao Ancient Town",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Longhua Temple",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Shanghai History Museum",
+                        "minutes": 240
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Shanghai Railway Hotel in Shanghai. In Shanghai, he needs to visit Shanghai Sightseeing Tunnel for 300 minutes, Huangpu River Cruise for 180 minutes, Qibao Ancient Town for 120 minutes, Century Park for 120 minutes, Shanghai Disney for 240 minutes, Shanghai History Museum for 300 minutes.In Chengdu, he needs to visit The Chengdu Wuhou Shrine for 150 minutes, Leshan Giant Buddha for 240 minutes, Chengdu Panda Base for 240 minutes, Du Fu Thatched Cottage for 150 minutes. And the order can be decided by you.\n2. 5 days (2023-07-03 00:00 ~ 2023-07-08 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-03 00:00",
+                "end_time": "2023-07-08 00:00",
+                "origin_city": "Shanghai",
+                "origin_place": "Shanghai Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Shanghai Sightseeing Tunnel",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Huangpu River Cruise",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Qibao Ancient Town",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Century Park",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Shanghai Disney",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Shanghai History Museum",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "The Chengdu Wuhou Shrine",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Leshan Giant Buddha",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Chengdu Panda Base",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Du Fu Thatched Cottage",
+                        "minutes": 150
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Beijing Railway Hotel in Beijing. In Beijing, he needs to visit Beijing Olympic Park for 180 minutes, Tiananmen Square for 240 minutes, The Temple of Heaven for 150 minutes, Beijing Stone Carvings Art Museum for 150 minutes, Shihua Cave for 210 minutes, The Forbidden City for 210 minutes.In Hangzhou, he needs to visit Hefang Street for 180 minutes, Lingyin Temple for 210 minutes, Quaint Water Towns for 300 minutes, West Lake for 210 minutes. And the order can be decided by you.\n2. 5 days (2023-07-04 00:00 ~ 2023-07-09 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-04 00:00",
+                "end_time": "2023-07-09 00:00",
+                "origin_city": "Beijing",
+                "origin_place": "Beijing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Tiananmen Square",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "The Forbidden City",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Hefang Street",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Lingyin Temple",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Quaint Water Towns",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "West Lake",
+                        "minutes": 210
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Nanjing Railway Hotel in Nanjing. In Guangzhou, he needs to visit Canton Tower for 180 minutes, Huacheng Square for 150 minutes, Chimelong Tourist Resort for 180 minutes, Baiyun Mountain for 150 minutes, Yuexiu Park for 240 minutes.In Shanghai, he needs to visit Shanghai Disney for 180 minutes, Shanghai History Museum for 210 minutes. And the order can be decided by you.\n2. 5 days (2023-07-07 00:00 ~ 2023-07-12 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-07 00:00",
+                "end_time": "2023-07-12 00:00",
+                "origin_city": "Nanjing",
+                "origin_place": "Nanjing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Canton Tower",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Huacheng Square",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Chimelong Tourist Resort",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Baiyun Mountain",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Yuexiu Park",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Shanghai Disney",
+                        "minutes": 180
+                    },
+                    {
+                        "spot": "Shanghai History Museum",
+                        "minutes": 210
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Shanghai Railway Hotel in Shanghai. In Chengdu, he needs to visit Du Fu Thatched Cottage for 240 minutes, Chengdu Tea Houses for 270 minutes, The Chengdu Wuhou Shrine for 270 minutes. And the order can be decided by you.\n2. 5 days (2023-07-07 00:00 ~ 2023-07-12 00:00) for this trip.\n3. Ignore the opening hours of attractions, assuming they are open all day\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-07 00:00",
+                "end_time": "2023-07-12 00:00",
+                "origin_city": "Shanghai",
+                "origin_place": "Shanghai Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": false,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Du Fu Thatched Cottage",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Chengdu Tea Houses",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "The Chengdu Wuhou Shrine",
+                        "minutes": 270
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Chengdu Railway Hotel in Chengdu. In Chengdu, he needs to visit Leshan Giant Buddha for 270 minutes, Chengdu Panda Base for 300 minutes, Chengdu Tea Houses for 300 minutes, Du Fu Thatched Cottage for 270 minutes, The Chengdu Wuhou Shrine for 240 minutes.In Nanjing, he needs to visit Bailuzhou Park for 240 minutes, Ming Palace for 120 minutes, Qinhuai River for 150 minutes. And the order can be decided by you.\n2. 5 days (2023-07-10 00:00 ~ 2023-07-15 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-10 00:00",
+                "end_time": "2023-07-15 00:00",
+                "origin_city": "Chengdu",
+                "origin_place": "Chengdu Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Leshan Giant Buddha",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Chengdu Panda Base",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Chengdu Tea Houses",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Du Fu Thatched Cottage",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "The Chengdu Wuhou Shrine",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Bailuzhou Park",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "Qinhuai River",
+                        "minutes": 150
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Beijing Railway Hotel in Beijing. In Beijing, he needs to visit The Great Wall for 300 minutes, Shihua Cave for 300 minutes, Beijing Stone Carvings Art Museum for 210 minutes, The Temple of Heaven for 120 minutes, The Summer Palace for 240 minutes, Beijing Olympic Park for 270 minutes. And the order can be decided by you.\n2. 5 days (2023-07-04 00:00 ~ 2023-07-09 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-04 00:00",
+                "end_time": "2023-07-09 00:00",
+                "origin_city": "Beijing",
+                "origin_place": "Beijing Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "The Great Wall",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Shihua Cave",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Beijing Stone Carvings Art Museum",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "The Temple of Heaven",
+                        "minutes": 120
+                    },
+                    {
+                        "spot": "The Summer Palace",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Beijing Olympic Park",
+                        "minutes": 270
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Shanghai Railway Hotel in Shanghai. In Nanjing, he needs to visit Taiping Heavenly-Kingdom Palace for 300 minutes, Qinhuai River for 270 minutes, Lake Xuanwu for 150 minutes, Ming Palace for 270 minutes. And the order can be decided by you.\n2. 5 days (2023-07-08 00:00 ~ 2023-07-13 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-08 00:00",
+                "end_time": "2023-07-13 00:00",
+                "origin_city": "Shanghai",
+                "origin_place": "Shanghai Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Taiping Heavenly-Kingdom Palace",
+                        "minutes": 300
+                    },
+                    {
+                        "spot": "Qinhuai River",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Lake Xuanwu",
+                        "minutes": 150
+                    },
+                    {
+                        "spot": "Ming Palace",
+                        "minutes": 270
+                    }
+                ]
+            }
+        },
+        "type": 3
+    },
+    {
+        "question": "Bob is going to visit some spots across cities, please make a visit plan for him, including Including inter-city transportation, intra-city transportation, and visit time for each spot.The demands are as follows:\n1. He now lives in Wuhan Railway Hotel in Wuhan. In Guangzhou, he needs to visit Yuexiu Park for 210 minutes, Chimelong Tourist Resort for 270 minutes, Canton Tower for 270 minutes, Huacheng Square for 270 minutes.In Chengdu, he needs to visit Chengdu Panda Base for 240 minutes, Chengdu Tea Houses for 120 minutes. And the order can be decided by you.\n2. 5 days (2023-07-08 00:00 ~ 2023-07-13 00:00) for this trip.\n3. The daily opening_hours of spots can be obtained from the database table place. \"opening_hours_begin\" and \"opening_hours_end\" are the opening and closing times respectively\n4. On the basis of completing the above conditions (especially the budget), spend as little time as possible.\n",
+        "demands": {
+            "TravelSimulator": {
+                "begin_time": "2023-07-08 00:00",
+                "end_time": "2023-07-13 00:00",
+                "origin_city": "Wuhan",
+                "origin_place": "Wuhan Railway Hotel",
+                "budget": 99999,
+                "check_opening_hours": true,
+                "check_meal": false,
+                "type": 3
+            },
+            "Constraints": {
+                "SpotDurationConstraint": [
+                    {
+                        "spot": "Yuexiu Park",
+                        "minutes": 210
+                    },
+                    {
+                        "spot": "Chimelong Tourist Resort",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Canton Tower",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Huacheng Square",
+                        "minutes": 270
+                    },
+                    {
+                        "spot": "Chengdu Panda Base",
+                        "minutes": 240
+                    },
+                    {
+                        "spot": "Chengdu Tea Houses",
+                        "minutes": 120
+                    }
+                ]
+            }
+        },
+        "type": 3
+    }
+]

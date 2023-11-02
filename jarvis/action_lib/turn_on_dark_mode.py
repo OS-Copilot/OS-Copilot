@@ -8,10 +8,11 @@ class turn_on_dark_mode(BaseAction):
 
     @property
     def _command(self):
-        return self._python(
-            self._import("atom", "operations"),
-            "adjust_theme('Adwaita-dark')"
-        )
+        return 'shortcuts run "Dark Mode"'
+        # return self._python(
+        #     self._import("atom", "operations"),
+        #     "adjust_theme('Adwaita-dark')"
+        # )
 
     # def _success(self):
     #     return "Successfully turned the system into the Dark Mode"

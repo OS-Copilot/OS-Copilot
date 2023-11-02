@@ -1,9 +1,11 @@
 import subprocess
 import time
 import os
-from typing import Optional
+from typing import Optional, Union, List
+from jarvis.agent.base_agent import BaseAgent
 from jarvis.core.schema import ActionReturn, ActionStatusCode, EnvState
 import asyncio
+
 
 class BaseEnviroment:
     """Base class for all actions.
@@ -33,6 +35,7 @@ class BaseEnviroment:
         self.server_name = "test"
         self.env_state = None
         # print(self.working_dir)
+        # self.init_env()
 
     def init_env(self):
         # cur_dir = os.getcwd()
@@ -69,17 +72,27 @@ class BaseEnviroment:
             return f.readlines()
 
     def observe(self) -> None:
-        for _command in ["pwd", "ls"]:
-            command = _command + self.log_state
-            subprocess.run(["tmux", "send-keys", "-t", self.server_name, command, "Enter"])
-            # todo 处理异步的问题，可能提交过去还没执行完。
-            time.sleep(self.timeout)
-            if _command == "pwd":
-                self.env_state.pwd = self.read_log(self.state_log_path)
-            else:
-                self.env_state.ls = self.read_log(self.state_log_path)
+        command = "pwd" + self.log_state
+        subprocess.run(["tmux", "send-keys", "-t", self.server_name, command, "Enter"])
+        time.sleep(1)
+        self.env_state.pwd = self.read_log(self.state_log_path)
+        self.working_dir = self.env_state.pwd[0].strip()
+        # print("working dir:", self.working_dir)
+        result = subprocess.run(['ls'], cwd=self.working_dir, capture_output=True, text=True)
+        self.env_state.ls = [result.stdout]
+        # 输出执行结果
+        # print(result.stdout)
+        # for _command in ["pwd", "ls"]:
+        #     command = _command + self.log_state
+        #     subprocess.run(["tmux", "send-keys", "-t", self.server_name, command, "Enter"])
+        #     # todo 处理异步的问题，可能提交过去还没执行完。
+        #     time.sleep(self.timeout)
+        #     if _command == "pwd":
+        #         self.env_state.pwd = self.read_log(self.state_log_path)
+        #     else:
+        #         self.env_state.ls = self.read_log(self.state_log_path)
         self.env_state.result = self.read_log(self.execute_log_path)
-
+        # print(self.env_state)
     @property
     def name(self):
         return self._name
@@ -97,4 +110,5 @@ class BaseEnviroment:
 
 if __name__ == '__main__':
     env = BaseEnviroment()
+    env.env_state = EnvState()
     result = env.observe()
