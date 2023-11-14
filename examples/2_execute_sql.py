@@ -1,5 +1,5 @@
 from jarvis.agent.openai_agent import OpenAIAgent
-from jarvis.enviroment.base_env import BaseEnviroment
+from jarvis.enviroment.old_env import BaseEnviroment
 
 '''
 A minimal example for base env and openai agent
@@ -23,8 +23,7 @@ for a in action:
     print(environment.step(command))
     # time.sleep(2)
 
-from jarvis.action_lib.execute_sql import execute_sql
+from jarvis.action_lib.execute_sql import ExecuteSQL
 
-action = execute_sql()
-action.run(db_path='../tasks/travel/database/travel.db',
-           query='SELECT * FROM railway\nWHERE number="D1000";')
+action = ExecuteSQL()
+action(query='SELECT * FROM railway\nWHERE number="D1000";')

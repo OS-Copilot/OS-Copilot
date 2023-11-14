@@ -1,5 +1,5 @@
 import time
-from jarvis.enviroment.base_env import BaseEnviroment
+from jarvis.enviroment.old_env import BaseEnviroment
 from jarvis.agent.openai_agent import OpenAIAgent
 
 if __name__ == '__main__':

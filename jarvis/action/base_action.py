@@ -1,7 +1,7 @@
 import subprocess
 import time
 import os
-from typing import Optional
+from typing import Optional, Union
 import textwrap
 from jarvis.core.schema import ActionReturn, ActionStatusCode
 
@@ -19,19 +19,18 @@ class BaseAction:
     def __init__(self,
                  description: Optional[str] = None,
                  name: Optional[str] = None,
-                 timeout: Optional[int] = 2) -> None:
+                 timeout: int = 2,
+                 action_type: Optional[str] = 'BASH') -> None:
         if name is None:
             name = self.__class__.__name__
         self._name = name
         self._description = description
         self._timeout = timeout
-        # self.execute_log_path = execute_log_path
-        # self.state_log_path = state_log_path
-        # self.log_execute = logging_command + self.execute_log_path
-        # self.log_state = logging_command + self.state_log_path
-        # self.working_dir = os.path.abspath(os.path.join(os.getcwd(), "..", "..", "working_dir"))
-        # self.server_name = "test"
-        # print(self.working_dir)
+        assert action_type in ['BASH', 'CODE', 'TOOL']
+        self.action_type = action_type
+
+    def __call__(self, *args, **kwargs):
+        raise NotImplementedError
 
     def _python(self, *lines):
         return f'python -Bc "{"; ".join(lines)}"'
@@ -39,9 +38,9 @@ class BaseAction:
     def _import(self, *packages):
         return f'from jarvis.{".".join(packages)} import *'
 
-    @property
-    def _command(self):
-        raise NotImplementedError
+    # @property
+    # def _command(self):
+    #     raise NotImplementedError
 
     @property
     def timeout(self):

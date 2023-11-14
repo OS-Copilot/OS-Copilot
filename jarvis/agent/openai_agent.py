@@ -1,7 +1,7 @@
 import json
 from jarvis.core.llms import OpenAI
 from jarvis.agent.base_agent import BaseAgent
-from jarvis.enviroment.base_env import BaseEnviroment
+from jarvis.enviroment.old_env import BaseEnviroment
 from jarvis.core.schema import EnvState
 
 

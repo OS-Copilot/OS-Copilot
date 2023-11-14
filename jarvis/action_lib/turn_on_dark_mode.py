@@ -1,14 +1,18 @@
 from jarvis.action.base_action import BaseAction
 
 
-class turn_on_dark_mode(BaseAction):
+class DarkMode(BaseAction):
     def __init__(self) -> None:
         super().__init__()
         self._description = "Using turn_on_dark_mode() will change your system into the dark mode."
+        self.action_type = 'BASH'
 
-    @property
-    def _command(self):
+    def __call__(self, *args, **kwargs):
         return 'shortcuts run "Dark Mode"'
+
+    # @property
+    # def _command(self):
+    #     return 'shortcuts run "Dark Mode"'
         # return self._python(
         #     self._import("atom", "operations"),
         #     "adjust_theme('Adwaita-dark')"
