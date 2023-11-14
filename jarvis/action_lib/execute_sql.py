@@ -7,20 +7,18 @@ action = execute_sql()
 action.run(db_path='../tasks/travel/database/travel.db', query='PRAGMA table_info(railway)')
 """
 
-class execute_sql(BaseAction):
+
+class ExecuteSQL(BaseAction):
     def __init__(self) -> None:
         super().__init__()
         self._description = "Using turn_on_light_mode() will change your system into the light mode."
 
-    @property
-    def _command(self):
-        return self._python(_COMMAND)
-
-
-    def run(self, db_path: str, query: str):
+    def __call__(self, query: str = 'PRAGMA table_info(railway)'):
+        if not query:
+            return "No query, return"
         import sqlite3
 
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3.connect('../../tasks/travel/database/travel.db')
         cursor = conn.cursor()
         results = {
             "query": query,
@@ -36,6 +34,11 @@ class execute_sql(BaseAction):
         conn.close()
 
         return results
+
+    # @property
+    # def _command(self):
+    #     return self._python(_COMMAND)
+
     # def _success(self):
     #     return "Successfully turned the system into the Light Mode"
 

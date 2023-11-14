@@ -32,5 +32,6 @@ class ActionReturn:
 class EnvState:
     command: List[str] = field(default_factory=list)
     result: Optional[str] = None
+    error: Optional[str] = None
     pwd: Optional[str] = None
     ls: Optional[str] = None

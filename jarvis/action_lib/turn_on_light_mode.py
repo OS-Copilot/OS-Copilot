@@ -1,14 +1,17 @@
 from jarvis.action.base_action import BaseAction
 
 
-class turn_on_light_mode(BaseAction):
+class LightMode(BaseAction):
     def __init__(self) -> None:
         super().__init__()
         self._description = "Using turn_on_light_mode() will change your system into the light mode."
 
-    @property
-    def _command(self):
+    def __call__(self, *args, **kwargs):
         return 'shortcuts run "Light Mode"'
+
+    # @property
+    # def _command(self):
+    #     return 'shortcuts run "Light Mode"'
         # return self._python(
         #     self._import("atom", "operations"),
         #     "adjust_theme('Adwaita')"
