@@ -11,6 +11,7 @@ if __name__ == '__main__':
     action = [
         'turn_on_dark_mode',
         'turn_on_light_mode'
+        # 'mac_set_brightness'
     ]
 
     # environment.init_env()
