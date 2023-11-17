@@ -8,7 +8,7 @@ action.run(db_path='../tasks/travel/database/travel.db', query='PRAGMA table_inf
 """
 
 
-class ExecuteSQL(BaseAction):
+class execute_sql(BaseAction):
     def __init__(self) -> None:
         super().__init__()
         self._description = "Using turn_on_light_mode() will change your system into the light mode."

@@ -1,7 +1,7 @@
 from jarvis.action.base_action import BaseAction
 
 
-class DarkMode(BaseAction):
+class turn_on_dark_mode(BaseAction):
     def __init__(self) -> None:
         super().__init__()
         self._description = "Using turn_on_dark_mode() will change your system into the dark mode."

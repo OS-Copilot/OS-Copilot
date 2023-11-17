@@ -1,7 +1,7 @@
 from jarvis.action.base_action import BaseAction
 
 
-class OrgLayout(BaseAction):
+class organize_app_layout(BaseAction):
     def __init__(self) -> None:
         super().__init__()
         self._description = "Using organize_app_layout() will help user reorganize their Desktop layout for better working condition and focus more easily."

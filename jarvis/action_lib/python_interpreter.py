@@ -45,7 +45,7 @@ def solution():
 ```"""
 
 
-class PythonInterpreter(BaseAction):
+class python_interpreter(BaseAction):
     """A Python executor that can execute Python scripts.
 
     Args:

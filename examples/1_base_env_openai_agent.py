@@ -1,13 +1,15 @@
 from jarvis.agent.openai_agent import OpenAIAgent
-from jarvis.enviroment.old_env import BaseEnviroment
+# from jarvis.enviroment.old_env import BaseEnviroment
+from jarvis.enviroment.bash_env import BashEnv
 
 '''
 A minimal example for base env and openai agent
 The goal of this example is to demonstrate how agent parse response to get actions, and env execute those actions.
 '''
 
-environment = BaseEnviroment()
-agent = OpenAIAgent(config_path="config.json")
+# environment = BaseEnviroment()
+environment = BashEnv()
+agent = OpenAIAgent(config_path="examples/config.json")
 
 response = '''
 Thought: To set up the working environment, we can focus on two sub-goals: turning on dark mode and organizing the app layout.
