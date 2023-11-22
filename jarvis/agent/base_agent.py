@@ -25,13 +25,13 @@ class BaseAgent:
             path = os.path.abspath(os.path.join(__file__, "..", "..", "action_lib"))
         sys.path.append(path)
         files = glob.glob(path + "/*.py")
-        for file in files:
-            if file.endswith('.py') and "__init__" not in file:
-                class_name = file[:-3].split('/')[-1]  # 去除.py后缀，获取类名
-                module = importlib.import_module(class_name)
-                tmp_obj = getattr(module, class_name)()
-                self.action_lib.update({class_name: tmp_obj})
-                self.action_lib_description.update({class_name: tmp_obj.description})
+        # for file in files:
+        #     if file.endswith('.py') and "__init__" not in file:
+        #         class_name = file[:-3].split('/')[-1]  # 去除.py后缀，获取类名
+        #         module = importlib.import_module(class_name)
+        #         tmp_obj = getattr(module, class_name)()
+        #         self.action_lib.update({class_name: tmp_obj})
+        #         self.action_lib_description.update({class_name: tmp_obj.description})
 
 
 if __name__ == '__main__':
