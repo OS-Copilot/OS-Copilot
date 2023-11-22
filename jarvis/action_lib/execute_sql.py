@@ -18,7 +18,8 @@ class execute_sql(BaseAction):
             return "No query, return"
         import sqlite3
 
-        conn = sqlite3.connect('../../tasks/travel/database/travel.db')
+        # conn = sqlite3.connect('../../tasks/travel/database/travel.db') 原来
+        conn = sqlite3.connect('../tasks/travel/database/travel.db') # wzm修改，将数据库路径改为相对于工作目录的
         cursor = conn.cursor()
         results = {
             "query": query,
@@ -34,7 +35,6 @@ class execute_sql(BaseAction):
         conn.close()
 
         return results
-
     # @property
     # def _command(self):
     #     return self._python(_COMMAND)

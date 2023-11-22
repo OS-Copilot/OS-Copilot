@@ -38,6 +38,7 @@ class PythonEnv(Env):
                 check=True, cwd=self.working_dir, timeout=self.timeout,
                 stdout=subprocess.PIPE
             )
+            # wzm修改：如果有标准化输出
             if results.stdout:
                 stout = results.stdout.strip().split('\n')
                 self.env_state.result = "\n".join(stout[:-1])

@@ -1,6 +1,7 @@
 import subprocess
 import time
 import os
+
 from typing import Optional, Union, List
 from jarvis.core.schema import ActionReturn, ActionStatusCode, EnvState
 from jarvis.enviroment.env import Env
@@ -49,6 +50,7 @@ class BashEnv(Env):
 
 if __name__ == '__main__':
     env = BashEnv()
+    print(env.name)
     print(env.step("ls"))
     print(env.step("cd ../../"))
     print(env.step("gogo"))

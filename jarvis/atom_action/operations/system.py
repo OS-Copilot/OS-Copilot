@@ -14,3 +14,7 @@ def adjust_brightness(brightness: int) -> None:
     assert brightness >= 0.5 and brightness <= 1
     brightness = str(brightness)
     return xrandr("--output", screen(), "--brightness", brightness)
+
+# add by wzm
+def terminal_show_file_content(path: str) -> None:
+    return terminal('--geometry=130x44',"--", "bash", "-c", "cat {}; read line".format(path))

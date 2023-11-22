@@ -1,6 +1,7 @@
 from jarvis.action.base_action import BaseAction
 from jarvis.atom_action.operations.media import view_office_document, play_video, play_audio, view_txt
 
+
 class open_document(BaseAction):
     def __init__(self) -> None:
         super().__init__()
@@ -20,4 +21,5 @@ class open_document(BaseAction):
         # 如果是文本文件或者其它文件
         else:
             view_txt(path)
+
 
