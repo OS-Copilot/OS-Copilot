@@ -1,34 +1,30 @@
 from jarvis.agent.openai_agent import OpenAIAgent
-from jarvis.enviroment.old_env import BaseEnviroment
+from jarvis.enviroment.py_env import PythonEnv
 
 '''
 A minimal example for base env and openai agent
 The goal of this example is to demonstrate how agent parse response to get actions, and env execute those actions.
 '''
 
-environment = BaseEnviroment()
+environment = PythonEnv()
 agent = OpenAIAgent(config_path="config.json")
 
 response = '''
-Thought: To open a document, we can focus on one goal: open the specified document(word, pdf, pptx, txt).
+Thought: To open a document named , we can focus on one goal: open the specified document(word, pdf, pptx, txt etc.).
 
 Actions: 
 1. <action>open_document</action>
-Paramters:
-1. <parameter><arg>path:/home/heroding/桌面/test.txt</arg><arg>name:test.txt</arg><arg>type:txt</arg></parameter>
+
+Check local action_lib, the required action code is in the library, according to the function description in the code, combined with the information provided by the user, You can instantiate classes for different tasks.
+
+invoke:
+1. <invoke>open_document()("/home/heroding/桌面/rnn.pptx" , "pptx")</invoke>
 '''
 
 action = agent.extract_action(response, begin_str='<action>', end_str='</action>')
-paramter = agent.extract_parameter(response, begin_str='<parameter>', end_str='</parameter>')
-print(paramter)
-# import time
-# for a in action:
-#     command = agent.action_lib[a]
-#     # print(a, command)
-#     print(environment.step(command))
-#     # time.sleep(2)
+invoke = agent.extract_invoke(response, begin_str='<invoke>', end_str='</invoke>')
 
-# from jarvis.action_lib.execute_sql import ExecuteSQL
-
-# action = ExecuteSQL()
-# action(query='SELECT * FROM railway\nWHERE number="D1000";')
+for (i, a) in enumerate(action):
+    command = agent.action_lib[a] + "\n" + invoke[i]
+    # print(command)
+    print(environment.step(command))

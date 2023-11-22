@@ -75,32 +75,42 @@ class OpenAIAgent(BaseAgent):
             _begin = message.find(begin_str)
             _end = message.find(end_str)
         return result
-
-
-    def extract_parameter(self, message, begin_str='[BEGIN]', end_str='[END]'):
+    
+    def extract_invoke(self, message, begin_str='[BEGIN]', end_str='[END]'):
         result = []
-        _begin_parameter = message.find(begin_str)
-        _end_parameter = message.find(end_str)
-        # go through parameters
-        while not (_begin_parameter == -1 or _end_parameter == -1):
-            # get current task parameters
-            parameter = message[_begin_parameter + len(begin_str):_end_parameter].strip()
-            _begin_arg = parameter.find("<arg>")
-            _end_arg = parameter.find("</arg>")
-            args = {}
-            # go through args
-            while not (_begin_arg == -1 or _end_arg == -1): 
-                arg = parameter[_begin_arg + len("<arg>"): _end_arg].strip()
-                key, value = arg.split(":")
-                args[key] = value
-                parameter = parameter[_end_arg + len("</arg>"):].strip()
-                _begin_arg = parameter.find("<arg>")
-                _end_arg = parameter.find("</arg>")
-            result.append(args)
-            message = message[_end_parameter + len(end_str):]
-            _begin_parameter = message.find(begin_str)
-            _end_parameter = message.find(end_str)
-        return result
+        _begin = message.find(begin_str)
+        _end = message.find(end_str)
+        while not (_begin == -1 or _end == -1):
+            result.append(message[_begin + len(begin_str):_end].strip())
+            message = message[_end + len(end_str):]
+            _begin = message.find(begin_str)
+            _end = message.find(end_str)
+        return result    
+
+    # # @dzc
+    # def extract_parameter(self, message, begin_str='[BEGIN]', end_str='[END]'):
+    #     result = []
+    #     _begin_parameter = message.find(begin_str)
+    #     _end_parameter = message.find(end_str)
+    #     # go through parameters
+    #     while not (_begin_parameter == -1 or _end_parameter == -1):
+    #         # get current task parameters
+    #         parameter = message[_begin_parameter + len(begin_str):_end_parameter].strip()
+    #         _begin_arg = parameter.find("<arg>")
+    #         _end_arg = parameter.find("</arg>")
+    #         args = []
+    #         # go through args
+    #         while not (_begin_arg == -1 or _end_arg == -1): 
+    #             arg = parameter[_begin_arg + len("<arg>"): _end_arg].strip()
+    #             args.append(arg)
+    #             parameter = parameter[_end_arg + len("</arg>"):].strip()
+    #             _begin_arg = parameter.find("<arg>")
+    #             _end_arg = parameter.find("</arg>")
+    #         result.append(args)
+    #         message = message[_end_parameter + len(end_str):]
+    #         _begin_parameter = message.find(begin_str)
+    #         _end_parameter = message.find(end_str)
+    #     return result
 
     def chat(self, goal: str):
         self._history = []

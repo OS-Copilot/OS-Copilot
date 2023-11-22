@@ -28,5 +28,7 @@ code = Bash("code")
 
 # application
 evince = Bash("evince")
+gedit = Bash("gedit")
 rhythmbox_client = Bash("rhythmbox-client")
 totem = Bash("totem")
+libreoffice = Bash("libreoffice")
