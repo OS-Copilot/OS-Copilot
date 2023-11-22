@@ -6,6 +6,10 @@ from ..src import *
 def view_document(file_path) -> None:
     return evince(file_path)
 
+# add by wzm
+def view_office_document(file_path) -> None:
+    return libreoffice(file_path)
+
 def play_audio(file_path) -> None:
     return rhythmbox_client(f"--play-uri=\"{file_path}\"")
 

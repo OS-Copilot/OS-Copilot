@@ -24,6 +24,8 @@ class PythonEnv(Env):
     def step(self, _command: str, args: list[str] | str = []) -> EnvState:
 
         tmp_code_file = NamedTemporaryFile("w", dir=self.working_dir, suffix=".py", encoding="utf-8")
+        # wzm修改，解决拿不到最后一行输出的当前工作目录问题
+        _command = _command.strip() + "\n"  + "import os" + "\n" + "print(os.getcwd())"
         tmp_code_file.write(_command)
         tmp_code_file.flush()
         filename = tmp_code_file.name
@@ -37,6 +39,7 @@ class PythonEnv(Env):
                 check=True, cwd=self.working_dir, timeout=self.timeout,
                 stdout=subprocess.PIPE
             )
+            # wzm修改：如果有标准化输出
             if results.stdout:
                 stout = results.stdout.strip().split('\n')
                 self.env_state.result = "\n".join(stout[:-1])
