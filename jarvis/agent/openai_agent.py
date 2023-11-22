@@ -94,8 +94,8 @@ if __name__ == '__main__':
         "organize_app_layout()": "Using organize_app_layout() will help user reorganize their Desktop layout for better working condition and focus more easily."
     }
     environment = BaseEnviroment()
-    agent = OpenAIAgent(config_path="../../examples/config.json", environment=environment)
-
+    # agent = OpenAIAgent(config_path="../../examples/config.json", environment=environment)
+    agent = OpenAIAgent(config_path="../../examples/config.json")
     # print(agent.action_lib)
     # print(agent.action_lib_description)
     # executation_action = agent.action_lib["turn_on_dark_mode"]()
@@ -114,5 +114,6 @@ Actions:
     for a in action:
         print(a)
         command = agent.action_lib[a]
-        print(agent.env.step(command))
+        # print(agent.env.step(command))
+        print(environment.step(command))
         time.sleep(2)
