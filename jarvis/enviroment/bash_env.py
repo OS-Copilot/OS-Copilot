@@ -22,7 +22,9 @@ class BashEnv(Env):
 
     def step(self, _command) -> EnvState:
         self.env_state = EnvState(command=_command)
-        _command = _command() + ' && pwd'
+        print("where is the error???")
+        _command = _command + ' && pwd'
+        print("give me the answer!!!")
         try:
             results = subprocess.run([_command], capture_output=True, check=True, cwd=self.working_dir,
                                      text=True, shell=True, timeout=self.timeout)

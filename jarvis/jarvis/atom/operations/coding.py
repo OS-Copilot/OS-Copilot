@@ -11,7 +11,3 @@ def open_editor(file_path: str) -> None:
 
 def open_vscode(path: str) -> None:
     return code(path)
-
-
-
-

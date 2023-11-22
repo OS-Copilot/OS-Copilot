@@ -40,4 +40,4 @@ class Env:
 if __name__ == '__main__':
     env = Env()
     env.env_state = EnvState()
-    result = env.observe()
+    # result = env.observe()

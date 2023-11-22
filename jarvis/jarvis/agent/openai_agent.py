@@ -1,7 +1,7 @@
 import json
 from jarvis.core.llms import OpenAI
 from jarvis.agent.base_agent import BaseAgent
-from jarvis.enviroment.old_env import BaseEnviroment
+from jarvis.enviroment.base_env import BaseEnviroment
 from jarvis.core.schema import EnvState
 
 
@@ -33,9 +33,10 @@ class OpenAIAgent(BaseAgent):
     """
     BaseAgent is the base class of all agents.
     """
-    def __init__(self, config_path=None):
+    def __init__(self, config_path=None, environment: BaseEnviroment = None):
         super().__init__()
         self.llm = OpenAI(config_path)
+        self.env = environment
         self.actions = None
         self.max_iter = 10
         self.system_prompt = """You are a personal assistant that aims to automate the workflow for human.\nYou are capable of understanding human intent and decompose it into several subgoals that can be addressed via language generation or acomplished using external tools.\nSome of the external tools you can use and their functionalities are as follows:
@@ -74,32 +75,6 @@ class OpenAIAgent(BaseAgent):
             message = message[_end + len(end_str):]
             _begin = message.find(begin_str)
             _end = message.find(end_str)
-        return result
-
-
-    def extract_parameter(self, message, begin_str='[BEGIN]', end_str='[END]'):
-        result = []
-        _begin_parameter = message.find(begin_str)
-        _end_parameter = message.find(end_str)
-        # go through parameters
-        while not (_begin_parameter == -1 or _end_parameter == -1):
-            # get current task parameters
-            parameter = message[_begin_parameter + len(begin_str):_end_parameter].strip()
-            _begin_arg = parameter.find("<arg>")
-            _end_arg = parameter.find("</arg>")
-            args = {}
-            # go through args
-            while not (_begin_arg == -1 or _end_arg == -1): 
-                arg = parameter[_begin_arg + len("<arg>"): _end_arg].strip()
-                key, value = arg.split(":")
-                args[key] = value
-                parameter = parameter[_end_arg + len("</arg>"):].strip()
-                _begin_arg = parameter.find("<arg>")
-                _end_arg = parameter.find("</arg>")
-            result.append(args)
-            message = message[_end_parameter + len(end_str):]
-            _begin_parameter = message.find(begin_str)
-            _end_parameter = message.find(end_str)
         return result
 
     def chat(self, goal: str):

@@ -1,7 +1,7 @@
 import sys
 
 sys.dont_write_bytecode = True
-from jarvis.atom_action.src import *
+from jarvis.jarvis.atom.src import *
 
 def view_document(file_path) -> None:
     return evince(file_path)
@@ -12,6 +12,9 @@ def play_audio(file_path) -> None:
 def play_video(file_path) -> None:
     return totem(file_path)
 
+def root_view_document(file_path) -> None:
+    return Pkexec_evince(file_path)
 
-path = "/home/heroding/桌面/CCF.pdf"
+path = "/home/heroding/桌面/test.txt"
 view_document(path)
+print(view_document(path))
