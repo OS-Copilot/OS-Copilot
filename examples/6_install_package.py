@@ -26,4 +26,4 @@ invoke = agent.extract_invoke(response, begin_str='<invoke>', end_str='</invoke>
 
 for (i, a) in enumerate(action):
     command = agent.action_lib[a] + "\n" + invoke[i]
-    print(environment.step(command))
+    print(environment.step(command).result)

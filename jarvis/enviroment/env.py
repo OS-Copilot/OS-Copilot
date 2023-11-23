@@ -18,7 +18,7 @@ class Env:
 
     def __init__(self) -> None:
         self._name: str = self.__class__.__name__
-        self.timeout: int = 2
+        self.timeout: int = 30
         self.working_dir = os.path.abspath(os.path.join(__file__, "..", "..", "..", "working_dir"))
         self.env_state: EnvState | None = None
 

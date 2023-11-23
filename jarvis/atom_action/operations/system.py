@@ -7,6 +7,9 @@ from ..query import screen
 def sudo_install(package: str) -> None:
     return Pkexec_apt("install", package)
 
+def pip_install(package: str) -> None:
+    return pip("install", package)
+
 def adjust_theme(theme: str) -> None:
     return gsettings("set", "org.gnome.desktop.interface", "gtk-theme", theme)
 

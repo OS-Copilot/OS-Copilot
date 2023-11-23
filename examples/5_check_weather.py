@@ -21,15 +21,8 @@ Actions:
 
 action = agent.extract_action(response, begin_str='<action>', end_str='</action>')
 invoke = agent.extract_action(response, begin_str='<invoke>', end_str='</invoke>')
-print(invoke)
-import time
+
 for (i,a) in enumerate(action):
     command = agent.action_lib[a] + "\n" + invoke[i]
-    # print(a, command)
     print(environment.step(command).result)
-    # time.sleep(2)
 
-# from jarvis.action_lib.execute_sql import execute_sql as ExecuteSQL
-
-# action = ExecuteSQL()
-# action(query='SELECT * FROM railway\nWHERE number="D1000";')
