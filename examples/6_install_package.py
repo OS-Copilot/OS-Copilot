@@ -3,22 +3,22 @@ from jarvis.enviroment.py_env import PythonEnv
 
 '''
 Made By DZC
-The function is to be able to open any type of document.
+The function is to install environment missing package.
 '''
 
 environment = PythonEnv()
 agent = OpenAIAgent(config_path="config.json")
 
 response = '''
-Thought: To open a document named , we can focus on one goal: open the specified document(word, pdf, pptx, txt etc.).
+Thought: To  install environment missing package , we can focus on one goal: run "pip install xxx" in Bash.
 
 Actions: 
-1. <action>open_document</action>
+1. <action>install_package</action>
 
 Check local action_lib, the required action code is in the library, according to the function description in the code, combined with the information provided by the user, You can instantiate classes for different tasks.
 
 invoke:
-1. <invoke>open_document()("/home/heroding/桌面/rnn.pptx" , "pptx")</invoke>
+1. <invoke>install_package()("numpy")</invoke>
 '''
 
 action = agent.extract_action(response, begin_str='<action>', end_str='</action>')
