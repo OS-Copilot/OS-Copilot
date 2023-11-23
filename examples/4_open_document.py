@@ -15,7 +15,7 @@ response = '''
 Thought: To set up the working environment, we can focus on two sub-goals: turning on dark mode and organizing the app layout.
 
 Actions: 
-1. <action>open_document</action> <invoke>open_document()("./信息系统项目申报书.docx")</invoke>
+1. <action>open_document</action> <invoke>open_document()("./作业10答案.pdf")</invoke>
 
 '''
 
