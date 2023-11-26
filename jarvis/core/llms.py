@@ -16,12 +16,13 @@ class OpenAI:
         openai.organization = config['OPENAI_ORGANIZATION']
 
     def chat(self, messages, temperature=0, sleep_time=2):
-        response = openai.ChatCompletion.create(
+        response = openai.chat.completions.create(
             model=self.model_name,
             messages=messages,
             temperature=temperature
         )
         # time.sleep(sleep_time)
-        return response['choices'][0]['message']
+        # return response['choices'][0]['message']
+        return response.choices[0].message.content
 
 
