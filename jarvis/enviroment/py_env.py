@@ -36,7 +36,8 @@ class PythonEnv(Env):
                 ["python", '-B', str(filename)],
                 encoding="utf8",
                 check=True, cwd=self.working_dir, timeout=self.timeout,
-                stdout=subprocess.PIPE
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
             # wzm修改：如果有标准化输出
             if results.stdout:

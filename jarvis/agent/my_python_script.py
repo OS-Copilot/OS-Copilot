@@ -1,3 +1,4 @@
+
 from jarvis.action.base_action import BaseAction
 import subprocess
 
@@ -21,9 +22,9 @@ class DownloadAndPlayAudio(BaseAction):
         # Get the file name from the link
         file_name = link.split("/")[-1]
 
-        # Play the downloaded audio file
+        # Play the audio file
         subprocess.run(["xdg-open", f"~/Desktop/{file_name}"])
 
 # Example usage
 task = DownloadAndPlayAudio()
-task("https://dasex101-random-learning.oss-cn-shanghai.aliyuncs.com/DataEthics/Taylor%20Swift%20-%20Look%20What%20You%20Made%20Me%20Do.mp3")
+task("https://example.com/audio.mp3")
