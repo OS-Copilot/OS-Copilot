@@ -1,3 +1,2 @@
-<invoke>DownloadAndPlayAudio()("https://www.example.com/audio.mp3")</invoke>
-
-Fake Parameters: None
+<invoke>DownloadAndPlayAudio()("https://example.com/audio.mp3")</invoke>
+<fake-params>None</fake-params>

@@ -89,44 +89,44 @@ class LinuxInvokeGenerator():
 
     
 
-class_code = '''
+# class_code = '''
                        
-from jarvis.action.base_action import BaseAction
-import subprocess
+# from jarvis.action.base_action import BaseAction
+# import subprocess
 
-class DownloadAndPlayAudio(BaseAction):
-    def __init__(self):
-        self._description = "Download audio from the given link and play it in the system"
+# class DownloadAndPlayAudio(BaseAction):
+#     def __init__(self):
+#         self._description = "Download audio from the given link and play it in the system"
 
-    def __call__(self, link):
-        """
-        Download audio from the given link and play it in the system.
+#     def __call__(self, link):
+#         """
+#         Download audio from the given link and play it in the system.
 
-        Args:
-            link (str): The URL of the audio file to be downloaded.
+#         Args:
+#             link (str): The URL of the audio file to be downloaded.
 
-        Returns:
-            None
-        """
-        # Download the audio file to the desktop
-        subprocess.run(["wget", link, "-P", "~/Desktop"])
+#         Returns:
+#             None
+#         """
+#         # Download the audio file to the desktop
+#         subprocess.run(["wget", link, "-P", "~/Desktop"])
 
-        # Get the file name from the link
-        file_name = link.split("/")[-1]
+#         # Get the file name from the link
+#         file_name = link.split("/")[-1]
 
-        # Play the audio file
-        subprocess.run(["xdg-open", f"~/Desktop/{file_name}"])
+#         # Play the audio file
+#         subprocess.run(["xdg-open", f"~/Desktop/{file_name}"])
 
-# Example usage
-# task = DownloadAndPlayAudio()
-# task("https://example.com/audio.mp3")
-'''
-task_description = '''
-download music from the Internet to the DeskTop, and play it.
-'''
+# # Example usage
+# # task = DownloadAndPlayAudio()
+# # task("https://example.com/audio.mp3")
+# '''
+# task_description = '''
+# download music from the Internet to the DeskTop, and play it.
+# '''
 
-test = LinuxInvokeGenerator(config_path="../../examples/config.json")
-file_path = 'invoke.txt'
-res = test.invoke_generator(class_code, task_description)
-with open(file_path, 'w', encoding='utf-8') as file:
-    file.write(res)
+# test = LinuxInvokeGenerator(config_path="../../examples/config.json")
+# file_path = 'invoke.txt'
+# res = test.invoke_generator(class_code, task_description)
+# with open(file_path, 'w', encoding='utf-8') as file:
+#     file.write(res)

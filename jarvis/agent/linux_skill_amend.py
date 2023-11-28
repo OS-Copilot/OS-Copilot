@@ -51,4 +51,3 @@ class LinuxSkillAmend():
             {"role": "user", "content": self.user_prompt},
         ]
         return self.llm.chat(self.message)
-
