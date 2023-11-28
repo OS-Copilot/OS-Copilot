@@ -21,8 +21,12 @@ class PythonEnv(Env):
         super().__init__()
         self._name: str = self.__class__.__name__
 
+<<<<<<< HEAD
     def step(self, _command: str, args: Union[list[str], str] = []) -> EnvState:
 
+=======
+    def step(self, _command: str, args: list[str] | str = []) -> EnvState:
+>>>>>>> 4a892f6411471c671bbaf605ba10fc8b42db61f4
         tmp_code_file = NamedTemporaryFile("w", dir=self.working_dir, suffix=".py", encoding="utf-8")
         # wzm修改，解决拿不到最后一行输出的当前工作目录问题
         _command = _command.strip() + "\n"  + "import os" + "\n" + "print(os.getcwd())"
@@ -37,7 +41,8 @@ class PythonEnv(Env):
                 ["python", '-B', str(filename)],
                 encoding="utf8",
                 check=True, cwd=self.working_dir, timeout=self.timeout,
-                stdout=subprocess.PIPE
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
             # wzm修改：如果有标准化输出
             if results.stdout:

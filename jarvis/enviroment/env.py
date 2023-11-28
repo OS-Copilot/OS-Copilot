@@ -18,7 +18,7 @@ class Env:
 
     def __init__(self) -> None:
         self._name: str = self.__class__.__name__
-        self.timeout: int = 2
+        self.timeout: int = 30
         self.working_dir = os.path.abspath(os.path.join(__file__, "..", "..", "..", "working_dir"))
         if not os.path.exists(self.working_dir):
             os.makedirs(self.working_dir)
@@ -44,4 +44,4 @@ class Env:
 if __name__ == '__main__':
     env = Env()
     env.env_state = EnvState()
-    result = env.observe()
+    # result = env.observe()

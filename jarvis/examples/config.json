@@ -1,0 +1,31 @@
+{
+  "model_name": "gpt-3.5-turbo-16k-0613",
+  "OPENAI_API_KEY": "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",
+  "OPENAI_ORGANIZATION": "",
+  "config": {
+    "API_KEY": "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",
+    "MAX_CHAT_HISTORY": "10",
+    "User_Names": "[\"User\"]",
+    "TOP_K": "3"
+  },
+  "LLM_type": "OpenAI",
+  "LLM": {
+    "temperature": 0.0,
+    "model": "gpt-3.5-turbo-16k-0613",
+    "log_path": "logs/god"
+  },
+  "agents": {
+    "Yang bufan": {
+      "style": "indifferent and idle",
+      "roles": {
+        "Response_state": "Yang bufan"
+      }
+    },
+    "User": {
+      "style": "soso",
+      "roles": {
+        "Response_state": "User"
+      }
+    }
+  }
+}
