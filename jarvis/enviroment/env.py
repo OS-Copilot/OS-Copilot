@@ -20,7 +20,10 @@ class Env:
         self._name: str = self.__class__.__name__
         self.timeout: int = 2
         self.working_dir = os.path.abspath(os.path.join(__file__, "..", "..", "..", "working_dir"))
-        self.env_state: EnvState | None = None
+        if not os.path.exists(self.working_dir):
+            os.makedirs(self.working_dir)
+
+        self.env_state: Union[EnvState, None] = None
 
     def step(self, _command) -> EnvState:
         raise NotImplementedError

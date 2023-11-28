@@ -44,24 +44,18 @@ def get_ticket(number):
     return ticket
 
 
-print(get_ticket('D1000'))
+# def get_opening_hours(spot):
+#     query = f"SELECT * FROM place\nWHERE name = '{spot}';"
+#     config_manager.clear_proxies()
 
-
-def get_opening_hours(spot):
-    query = f"SELECT * FROM place\nWHERE name = '{spot}';"
-    config_manager.clear_proxies()
-
-    item = query_database(query)
-    config_manager.apply_proxies()
-    if item is None or len(item) == 0:
-        return None
-    item = item[0]
-    opening_hours_begin = item[3]
-    opening_hours_end = item[4]
-    return opening_hours_begin, opening_hours_end
-
-
-print(get_opening_hours('Tiananmen Square'))
+#     item = query_database(query)
+#     config_manager.apply_proxies()
+#     if item is None or len(item) == 0:
+#         return None
+#     item = item[0]
+#     opening_hours_begin = item[3]
+#     opening_hours_end = item[4]
+#     return opening_hours_begin, opening_hours_end
 
 
 def get_in_city_transport(origin, destination):
@@ -390,3 +384,7 @@ class TravelSimulator:
         if score == 80:
             score += advanced_score
         return score
+
+
+# print(get_opening_hours('Tiananmen Square'))
+# print(get_ticket('D1000'))

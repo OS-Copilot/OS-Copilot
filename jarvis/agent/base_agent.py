@@ -32,7 +32,7 @@ class BaseAgent:
                 source_code = inspect.getsource(module) # wzm修改，通过自省获得文件源码
                 tmp_obj = getattr(module, class_name)() #存储对象方式
                 # 存储源码字符串
-                self.action_lib.update({class_name:  source_code })# wzm修改，技能库存储文件源码而不是对象
+                self.action_lib.update({class_name:  source_code})# wzm修改，技能库存储文件源码而不是对象
                 # self.action_lib.update({class_name: tmp_obj})
                 self.action_lib_description.update({class_name: tmp_obj.description})
 
