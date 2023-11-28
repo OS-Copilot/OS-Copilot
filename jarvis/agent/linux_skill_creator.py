@@ -18,11 +18,13 @@ And the code you write should also follow the following criteria:
 5.For tasks involving Linux bash commands, use the subprocess library to execute these commands within the Python class.
 6.The code should include detailed comments explaining the purpose of the class, the role of each parameter, and a clear example of how to use the class.
 7. If downloading a file is involved, the file name must follow the underscore (_) format to prevent garbled characters in the name.
-Now you will be provided with the following two information:
+Now you will be provided with the following information,please write python code to accomplish the task and be compatible with system environments, versions and language according to these information. The path names of the system may be inconsistent in different system languages.
+'''
+_LINUX_USER_PROMPT ='''
+User's information is as follows:
 System Version: {system_version}
 Task: {task}
 System language: simplified chinese
-Please write python code to accomplish the task and be compatible with system environments, versions and language. The path names of the system may be inconsistent in different system languages.
 '''
 class LinuxSkillCreator():
     """
@@ -39,13 +41,14 @@ class LinuxSkillCreator():
         # self.mac_systom_prompts = 
 
     def format_message(self, task):
-        self.prompt = _LINUX_SYSTEM_PROMPT.format(
+        self.sys_prompt = _LINUX_SYSTEM_PROMPT
+        self.user_prompt = _LINUX_USER_PROMPT.format(
             system_version=self.system_version,
             task=task
         )
         self.message = [
-            {"role": "system", "content": self.prompt},
-            {"role": "user", "content": task},
+            {"role": "system", "content": self.sys_prompt},
+            {"role": "user", "content": self.usr_prompt},
         ]
         return self.llm.chat(self.message)
 

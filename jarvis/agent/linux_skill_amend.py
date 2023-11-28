@@ -17,11 +17,13 @@ And the code you write should also follow the following criteria:
 2. All modifications must address the specific issues identified in the error analysis.
 3. Ensure the final code is syntactically correct, optimized for performance, and follows Python best practices.
 4. The solution must enable the code to successfully complete the intended task without errors.
-Now you will be provided with the following two information:
+Now you will be provided with the following information, please modify the original python code to fix all the problems according to these information:
+'''
+_LINUX_USER_AMEND_PROMPT = '''
+User's information are as follows:
 Original Code: {original_code}
 Task: {task}
 Error Messages: {error}
-Please modify the original python code to fix all the problems.
 '''
 
 
@@ -38,14 +40,15 @@ class LinuxSkillAmend():
 
     # amend the code to fullfill the task.
     def amend_code(self, original_code, task, error):
-        self.prompt = _LINUX_SYSTEM_AMEND_PROMPT.format(
+        self.sys_prompt = _LINUX_SYSTEM_AMEND_PROMPT
+        self.user_prompt = _LINUX_USER_AMEND_PROMPT.format(
            original_code = original_code,
            task = task,
            error = error 
         )
         self.message = [
-            {"role": "system", "content": self.prompt},
-            {"role": "user", "content": task},
+            {"role": "system", "content": self.sys_prompt},
+            {"role": "user", "content": self.user_prompt},
         ]
         return self.llm.chat(self.message)
 

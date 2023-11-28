@@ -27,8 +27,24 @@ task = "Download audio from a given link and play it on the system."
 for (i, a) in enumerate(action):
     command = agent.action_lib[a] + '\n' + invoke[i]
     res = environment.step(command)
-    if res.error != None:
+    times = 0
+    # Test skill_amend and check the output in txt file.
+    # if res.error != None:
+    #     new_code = skill_amend.amend_code(command, task, res.error)
+    #     path = "new_code.txt"
+    #     with open(path, 'w', encoding='utf-8') as file:
+    #         file.write(new_code)
+
+    # Loop through code fixes until there are no errors or the number of fixes is exceeded.        
+    while res.error != None and times < 3:
         new_code = skill_amend.amend_code(command, task, res.error)
-        path = "new_code.txt"
-        with open(path, 'w', encoding='utf-8') as file:
-            file.write(new_code)
+        if '```python' in new_code:
+            new_code = new_code.split('```python')[1].split('```')[0]
+        elif '```' in new_code:
+            new_code = new_code.split('```')[1].split('```')[0]
+        command = new_code + '\n' + invoke[i]
+        res = environment.step(command)
+        times = times + 1
+
+    # TODO: If the code runs correctly, save the code to action_lib, otherwise the user will be prompted that the task cannot be executed.
+    
