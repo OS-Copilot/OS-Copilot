@@ -33,4 +33,3 @@ class turn_on_light_mode(BaseAction):
     #         return e
         # except subprocess.TimeoutExpired:
         #     raise TimeoutError(f"Command '{command}' timed out after {self.timeout} seconds.")
-
