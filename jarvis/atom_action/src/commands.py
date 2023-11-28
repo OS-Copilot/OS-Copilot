@@ -31,6 +31,7 @@ code = Bash("code")
 # application
 evince = Bash("evince")
 libreoffice = Bash("libreoffice") # add by wzm
+soffice = Bash("/Applications/LibreOffice.app/Contents/MacOS/soffice") # libreoffice for macos
 rhythmbox_client = Bash("rhythmbox-client")
 totem = Bash("totem")
 

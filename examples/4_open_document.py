@@ -9,13 +9,13 @@ Made By WZM
 
 # environment = BaseEnviroment()
 environment = PythonEnv()
-agent = OpenAIAgent(config_path="config.json")
+agent = OpenAIAgent(config_path="examples/config.json")
 
 response = '''
 Thought: To set up the working environment, we can focus on two sub-goals: turning on dark mode and organizing the app layout.
 
 Actions: 
-1. <action>open_document</action> <invoke>open_document()("./信息系统项目申报书.docx")</invoke>
+1. <action>open_document</action> <invoke>open_document()("/Users/hanchengcheng/Desktop/云大合作重点研发计划/国家版本典藏资源数字化服务关键技术与平台研发-重点研发计划申报书.pdf")</invoke>
 
 '''
 
