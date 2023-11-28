@@ -20,6 +20,27 @@ task_name()
 '''
 
 _LINUX_SYSTEM_PROMPT = '''
+You are a helpful assistant that writes Python code to complete any task specified by me.
+I will give you the following informations:
+System Version: {system_version}
+Task: {task}
+You should only respond in the format as described below:
+
+from jarvis.action.base_action import BaseAction
+
+# TODO: you should write a class in the following format, and the class name should be the same as the task name,besides,you can design the parameters of __call__ as you want.
+class task_name(BaseAction):
+    def __init__(self) -> None:
+        super().__init__()
+        # self._description should be initialized as the description of the task
+        self._description = ""
+        # self.action_type should be initialized as the type of the task, which can be 'BASH' or 'PYTHON'
+        self.action_type = ''
+
+    def __call__(self, *args):
+        # TODO: write your code here
+
+
 
 '''
 
