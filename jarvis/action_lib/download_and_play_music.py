@@ -31,5 +31,5 @@ class download_and_play_music(BaseAction):
 
 
 # Example usage
-# task = DownloadAndPlayAudio()
+# task = download_and_play_music()
 # task("https://dasex101-random-learning.oss-cn-shanghai.aliyuncs.com/DataEthics/Taylor%20Swift%20-%20Look%20What%20You%20Made%20Me%20Do.mp3")

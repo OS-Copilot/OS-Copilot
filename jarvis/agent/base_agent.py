@@ -31,13 +31,6 @@ class BaseAgent:
             if file.endswith('.py') and "__init__" not in file:
                 class_name = file[:-3].split('/')[-1]  # 去除.py后缀，获取类名
                 module = importlib.import_module(class_name)
-<<<<<<< HEAD
-                source_code = inspect.getsource(module) # wzm修改，通过自省获得文件源码
-                tmp_obj = getattr(module, class_name)() #存储对象方式
-                # 存储源码字符串
-                self.action_lib.update({class_name:  source_code})# wzm修改，技能库存储文件源码而不是对象
-                # self.action_lib.update({class_name: tmp_obj})
-=======
                 # get origin code
                 source_code = inspect.getsource(module)
                 # get class object
@@ -45,7 +38,6 @@ class BaseAgent:
                 # save origin code
                 self.action_lib.update({class_name: source_code})
                 # save code description
->>>>>>> 4a892f6411471c671bbaf605ba10fc8b42db61f4
                 self.action_lib_description.update({class_name: tmp_obj.description})
                 
     # get class source code
