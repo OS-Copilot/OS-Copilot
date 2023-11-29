@@ -10,7 +10,7 @@ Made By WZM
 
 # environment = BaseEnviroment()
 environment = PythonEnv()
-agent = OpenAIAgent(config_path="examples/config.json")
+agent = OpenAIAgent(config_path="config.json")
 
 response = '''
 Thought: To set up the working environment, we can focus on two sub-goals: turning on dark mode and organizing the app layout.
