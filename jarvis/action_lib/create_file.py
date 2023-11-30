@@ -7,18 +7,17 @@ class create_file(BaseAction):
 
     def __call__(self, *args, **kwargs):
         # Get the working directory from the user's information
-        working_directory = '/home/heroding/桌面/Jarvis/working_dir'
+        working_dir = '/home/heroding/桌面/Jarvis/working_dir'
 
         # Create the full path for the directory and the file
-        directory_path = os.path.join(working_directory, 'test2')
+        directory_path = os.path.join(working_dir, 'test2')
         file_path = os.path.join(directory_path, 'sth2.txt')
 
         # Change the current working directory to the specified path
-        os.chdir(working_directory)
+        os.chdir(working_dir)
 
         # Create the directory if it doesn't exist
-        if not os.path.exists(directory_path):
-            os.makedirs(directory_path)
+        os.makedirs(directory_path, exist_ok=True)
 
         # Write 'hello world' to the file
         with open(file_path, 'w') as file:

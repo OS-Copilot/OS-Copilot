@@ -3,10 +3,10 @@ import openai
 import time
 import json
 
-proxy = {
-'http': 'http://localhost:2081',
-'https': 'http://localhost:2081',
-}
+# proxy = {
+# 'http': 'http://localhost:2081',
+# 'https': 'http://localhost:2081',
+# }
 
 
 class OpenAI:
@@ -19,7 +19,7 @@ class OpenAI:
         self.model_name = config['model_name']
         openai.api_key = config['OPENAI_API_KEY']
         openai.organization = config['OPENAI_ORGANIZATION']
-        openai.proxy = proxy
+        # openai.proxy = proxy
 
     def chat(self, messages, temperature=0, sleep_time=2):
         response = openai.chat.completions.create(

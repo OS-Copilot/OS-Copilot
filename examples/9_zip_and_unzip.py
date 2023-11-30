@@ -3,8 +3,8 @@ from jarvis.enviroment.py_env import PythonEnv
 from jarvis.agent.linux_skill_create_agent import LinuxSkillCreateAgent
 import time
 '''
-Made By DZC & WZM
-target: Create a new folder in the specified directory and create a txt file, then write the hello word into the file.
+Made By DZC
+target: Zip files in a specific folder and unzip them in the specified folder.
 '''
 # environment
 environment = PythonEnv()
@@ -17,11 +17,11 @@ skill_create_agent = LinuxSkillCreateAgent(config_path="./config.json")
 
 # We assume that the response result comes from the task planning agent.
 response = '''
-Thought: In order to solve this task, first create a folder named test2, then create a file named sth2.txt in the folder directory, and finally write the text "hello world" into it. We can parse the above steps into the following actions and corresponding descriptions.
+Thought: In order to solve this task, first compress files in the folder test2, then decompress them in folder test. 
 
 Actions: 
-1. <action>create_folder</action> <description>create a folder which is named test2 under the default working directory</description>
-2. <action>create_file</action> <description>create a txt file which is named sth2.txt under a directory named test2 which is under the working directory.Then Write hello world in it.</description>
+1. <action>zip_files</action> <description>Zip all the files in the folder called test2 and name the zip file as test2.zip. </description>
+2. <action>unzip_files</action> <description>Unzip test2.zip in the folder called test2 to the folder called test. </description>
 Check local action_lib, the required action code is in the library, according to the function description in the code, combined with the information provided by the user, You can instantiate classes for different tasks.
 
 '''
@@ -38,6 +38,9 @@ for action, description in zip(actions, task_descriptions):
 
     # Create the invoke of the tool class
     invoke_msg = skill_create_agent.invoke_generate_format_message(code, description)
+    print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+    print(invoke_msg)
+    print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     invoke = skill_create_agent.extract_information(invoke_msg,  begin_str='<invoke>', end_str='</invoke>')[0]
     code = code + '\n' + invoke
 
@@ -59,6 +62,7 @@ for action, description in zip(actions, task_descriptions):
             need_mend = True
     else:
         need_mend = True    
+
     # The code failed to complete its task, fix the code
     current_code = code
     while (trial_times < 3 and need_mend == True):
