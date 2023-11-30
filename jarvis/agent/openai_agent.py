@@ -65,6 +65,7 @@ class OpenAIAgent(BaseAgent):
         ]
         return self.llm.chat(self.message)
 
+    # Extract action from text
     def extract_action(self, message, begin_str='[BEGIN]', end_str='[END]'):
         result = []
         _begin = message.find(begin_str)
@@ -76,7 +77,8 @@ class OpenAIAgent(BaseAgent):
             _end = message.find(end_str)
         return result
     
-    def extract_invoke(self, message, begin_str='[BEGIN]', end_str='[END]'):
+    # Extract information from text
+    def extract_information(self, message, begin_str='[BEGIN]', end_str='[END]'):
         result = []
         _begin = message.find(begin_str)
         _end = message.find(end_str)
@@ -85,7 +87,18 @@ class OpenAIAgent(BaseAgent):
             message = message[_end + len(end_str):]
             _begin = message.find(begin_str)
             _end = message.find(end_str)
-        return result    
+        return result
+    
+    # def extract_invoke(self, message, begin_str='[BEGIN]', end_str='[END]'):
+    #     result = []
+    #     _begin = message.find(begin_str)
+    #     _end = message.find(end_str)
+    #     while not (_begin == -1 or _end == -1):
+    #         result.append(message[_begin + len(begin_str):_end].strip())
+    #         message = message[_end + len(end_str):]
+    #         _begin = message.find(begin_str)
+    #         _end = message.find(end_str)
+    #     return result    
 
     # # @dzc
     # def extract_parameter(self, message, begin_str='[BEGIN]', end_str='[END]'):

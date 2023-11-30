@@ -23,6 +23,7 @@ taskJudger = LinuxTaskJudger(config_path="./config.json")
 # use to amend the code
 skillAmender = LinuxSkillAmend(config_path="./config.json")
 
+# We assume that the response result comes from the task planning agent.
 response = '''
 Thought: In order to solve this task, first create a folder named test2, then create a file named sth2.txt in the folder directory, and finally write the text "hello world" into it. We can parse the above steps into the following actions and corresponding descriptions.
 
@@ -33,8 +34,8 @@ Check local action_lib, the required action code is in the library, according to
 
 '''
 
-action = agent.extract_action(response, begin_str='<action>', end_str='</action>')
-task_description = agent.extract_action(response, begin_str='<description>', end_str='</description>')
+action = agent.extract_information(response, begin_str='<action>', end_str='</action>')
+task_description = agent.extract_information(response, begin_str='<description>', end_str='</description>')
 
 # loop all the subtasks
 for a,t in zip(action,task_description):
@@ -46,7 +47,7 @@ for a,t in zip(action,task_description):
     # create the invoke code
     msg_invoke = invokeGenerator.invoke_generator(code, t)
     print(msg_invoke)
-    invoke = agent.extract_action(msg_invoke, begin_str='<invoke>', end_str='</invoke>')[0]
+    invoke = agent.extract_information(msg_invoke, begin_str='<invoke>', end_str='</invoke>')[0]
     code = code + '\n' + invoke
 
     # execute the tool code

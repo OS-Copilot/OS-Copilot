@@ -1,9 +1,9 @@
 {
-  "model_name": "gpt-3.5-turbo-16k-0613",
-  "OPENAI_API_KEY": "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",
-  "OPENAI_ORGANIZATION": "",
+  "model_name": "gpt-3.5-turbo-1106",
+  "OPENAI_API_KEY": "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",
+  "OPENAI_ORGANIZATION": "org-fSyygvftM73W0pK4VjoK395W",
   "config": {
-    "API_KEY": "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",
+    "API_KEY": "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",
     "MAX_CHAT_HISTORY": "10",
     "User_Names": "[\"User\"]",
     "TOP_K": "3"
@@ -11,7 +11,7 @@
   "LLM_type": "OpenAI",
   "LLM": {
     "temperature": 0.0,
-    "model": "gpt-3.5-turbo-16k-0613",
+    "model": "gpt-3.5-turbo-1106",
     "log_path": "logs/god"
   },
   "agents": {

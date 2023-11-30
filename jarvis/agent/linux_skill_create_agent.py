@@ -1,6 +1,6 @@
 from jarvis.action.get_os_version import get_os_version, check_os_version
 from jarvis.core.llms import OpenAI
-from prompt import prompt_dict
+from jarvis.agent.prompt import prompt_dict
 import re
 import json
 
@@ -68,7 +68,7 @@ class LinuxSkillCreateAgent():
         return self.llm.chat(self.message)    
     
     # Send task judge prompt to LLM and get JSON response
-    def judge(self, current_code,task,code_output,working_dir,files_and_folders):
+    def task_judge_format_message(self, current_code,task,code_output,working_dir,files_and_folders):
         self.sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_JUDGE_PROMPT']
         self.user_prompt = self.prompt['_LINUX_TASK_JUDGE_PROMPT'].format(
            current_code=current_code,
@@ -82,7 +82,11 @@ class LinuxSkillCreateAgent():
             {"role": "user", "content": self.user_prompt},
         ]
         response =self.llm.chat(self.message)
-        judge_json = json.loads(response)
+        judge_json = '{' + '\n' + self.extract_information(response, '{', '}')[0] + '\n' + '}'
+        print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+        print(judge_json)
+        print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")        
+        judge_json = json.loads(judge_json)
         return judge_json    
 
     # Extract python code from response
@@ -117,4 +121,16 @@ class LinuxSkillCreateAgent():
         call_method_docstring = call_method_docstring_match.group(1).strip() if call_method_docstring_match else None
 
         return class_name, call_method_docstring
+    
+    # Extract information from text
+    def extract_information(self, message, begin_str='[BEGIN]', end_str='[END]'):
+        result = []
+        _begin = message.find(begin_str)
+        _end = message.find(end_str)
+        while not (_begin == -1 or _end == -1):
+            result.append(message[_begin + len(begin_str):_end].strip())
+            message = message[_end + len(end_str):]
+            _begin = message.find(begin_str)
+            _end = message.find(end_str)
+        return result
     
