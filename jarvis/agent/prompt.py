@@ -1,6 +1,6 @@
 prompt_dict = {
     # invoke generate prompt in linux
-    _LINUX_SYSTEM_INVOKE_GENERATE_PROMPT : '''
+    '_LINUX_SYSTEM_INVOKE_GENERATE_PROMPT' : '''
     You are an AI trained to assist with Python programming tasks, with a focus on class and method usage.
     Your goal is to generate a Python __call__ method invocation statement based on provided class names, task descriptions, and method parameter details.
     You should only respond with the python code in the format as described below:
@@ -16,16 +16,16 @@ prompt_dict = {
     2.Clearly identify any fake or placeholder parameters used in the invocation.
     3.Encourage generating a realistic and functional code snippet wherever possible.
     Now you will be provided with the following information, please generate your response according to these information:
-    '''
-    _LINUX_USER_INVOKE_GENERATE_PROMPT : '''
+    ''',
+    '_LINUX_USER_INVOKE_GENERATE_PROMPT' : '''
     User's Information:
     Class Name: {class_name}
     Task Description: {task_description}
     __call__ Method Parameters: {args_description}
-    '''
+    ''',
 
     # skill amend prompt in linux
-    _LINUX_SYSTEM_SKILL_AMEND_PROMPT : '''
+    '_LINUX_SYSTEM_SKILL_AMEND_PROMPT' : '''
     You are an AI expert in Python programming, with a focus on diagnosing and resolving code issues.
     Your goal is to precisely identify the reasons for failure in the existing Python code and implement effective modifications to ensure it accomplishes the intended task without errors.
 
@@ -43,8 +43,8 @@ prompt_dict = {
     7. All modifications must address the specific issues identified in the error analysis.
     8. The solution must enable the code to successfully complete the intended task without errors.
     Now you will be provided with the following information, please give your modified python code according to these information:
-    '''
-    _LINUX_USER_SKILL_AMEND_PROMPT : '''
+    ''',
+    '_LINUX_USER_SKILL_AMEND_PROMPT' : '''
     User's information are as follows:
     Original Code: {original_code}
     Task: {task}
@@ -53,10 +53,10 @@ prompt_dict = {
     Current Working Directiory: {working_dir}
     Files And Folders in Current Working Directiory: {files_and_folders}
     Critique On The Code: {critique}
-    '''
+    ''',
 
     # skill create prompt in 
-    _LINUX_SYSTEM_SKILL_CREATE_PROMPT : '''
+    '_LINUX_SYSTEM_SKILL_CREATE_PROMPT' : '''
     You are helpful assistant to assist in writing Python tool code for tasks completed on Linux operating systems. Your expertise lies in creating Python classes that perform specific tasks, adhering to a predefined format and structure.
     Your goal is to generate Python tool code in the form of a class. The code should be structured to perform a user-specified task on a Linux operating system. The class must be easy to use and understand, with clear instructions and comments.
 
@@ -79,18 +79,18 @@ prompt_dict = {
     11. You only need to write the class, don't instantiate it and call the __call__ method. If you want to write an example of how to use the class, put the example in the comments.
     12. The __call__ methold should be as generic as possible.You need to recognize the parameter information implicit in the task for defining the parameters of the __call__ method. For example, for the task of setting a timer of 20s, 20s can be used as an argument to the __call__ method time
     Now you will be provided with the following information,please write python code to accomplish the task and be compatible with system environments, versions and language according to these information. 
-    '''
-    _LINUX_USER_SKILL_CREATE_PROMPT : '''
+    ''',
+    '_LINUX_USER_SKILL_CREATE_PROMPT' : '''
     User's information is as follows:
     System Version: {system_version}
     System language: simplified chinese
     Working Directory: {working_dir}
     Task Name: {task_name}
     Task Description: {task_description}
-    '''
+    ''',
 
     # task judge prompt in linux
-    _LINUX_SYSTEM_TASK_JUDGE_PROMPT : '''
+    '_LINUX_SYSTEM_TASK_JUDGE_PROMPT' : '''
     You are an AI programmed to verify Python code against a user's task requirements.
     Your goal is to determine if the provided Python code accomplishes the user's specified task based on the feedback information.
     You should only respond with the json result in the format as described below:
@@ -108,8 +108,8 @@ prompt_dict = {
     5.You need to note that the code I gave you is not reporting errors, I just don't know if it actually accomplishes the task or not.
     6.Information about the current working directory and all the files and folders under it may imply whether the file was created successfully or not.
     Now you will be provided with the following information, please give the result json according to these information:
-    '''
-    _LINUX_TASK_JUDGE_PROMPT : '''
+    ''',
+    '_LINUX_TASK_JUDGE_PROMPT' : '''
     User's information are as follows:
     Current Code: {current_code}
     Task: {task}
