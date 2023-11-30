@@ -24,24 +24,15 @@ taskJudger = LinuxTaskJudger(config_path="./config.json")
 skillAmender = LinuxSkillAmend(config_path="./config.json")
 
 response = '''
-Thought: To download a file from internet , we can focus on xxx.
+Thought: In order to solve this task, first create a folder named test2, then create a file named sth2.txt in the folder directory, and finally write the text "hello world" into it. We can parse the above steps into the following actions and corresponding descriptions.
 
-Actions: If there 
+Actions: 
 1. <action>create_folder</action> <description>create a folder which is named test2 under the default working directory</description>
 2. <action>create_file</action> <description>create a txt file which is named sth2.txt under a directory named test2 which is under the working directory.Then Write hello world in it.</description>
 Check local action_lib, the required action code is in the library, according to the function description in the code, combined with the information provided by the user, You can instantiate classes for different tasks.
 
 '''
-# response = '''
-# Thought: To download a file from internet , we can focus on xxx.
 
-
-# Actions: 
-# 1. <action>open_txt_with_viewer</action> <description>find the txt file named sth.txt under the working directory or its child and grandchildren's folder and open it with Document Viewer in ubuntu</description>
-# Check local action_lib, the required action code is in the library, according to the function description in the code, combined with the information provided by the user, You can instantiate classes for different tasks.
-
-# '''
-# get action and task description
 action = agent.extract_action(response, begin_str='<action>', end_str='</action>')
 task_description = agent.extract_action(response, begin_str='<description>', end_str='</description>')
 
@@ -76,7 +67,7 @@ for a,t in zip(action,task_description):
         need_amend = True
     # amend code and recheck
     current_code = code
-    while (trial_times < 3) and  (need_amend == True):
+    while (trial_times < 3) and (need_amend == True):
         trial_times += 1
         print("current amend times: {}".format(trial_times))
         amend_result = skillAmender.amend_code(current_code, t, state.error, state.result, state.pwd, state.ls, critique)
