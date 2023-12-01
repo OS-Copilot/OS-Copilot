@@ -1,0 +1,141 @@
+from jarvis.agent.base_agent import BaseAgent
+from jarvis.core.llms import OpenAI
+from jarvis.core.utils import generate_prompt
+
+
+USER_PROMPT='''
+Task: {task}
+
+'''
+PLANNING_SYSTEM_PROMPT = '''
+
+'''
+PLANNING_EXAMPLE_MESSAGES = [{'role': 'system', 'name': 'example_user',
+                     'content': '''Task Requirements: Bob is in Shanghai and going to travel in several cities, please make a ticket purchase plan and travel sequence for him.The demands are as follows:
+1. visit ['Beijing']. The order doesn't matter and he needs to return to Shanghai finally.
+2. He is free to travel from 2023.7.1 to 2023.7.20. The budget for transportation is 1000.0 CNY.
+3. Play at least 3 days in Beijing.
+4. If you arrive in a city before 12:00 noon, that day can be counted as a day of play. If it's past 12 o'clock, it doesn't count as a day.
+5. On the basis of completing the above conditions (especially the budget), spend as little time as possible.
+'''},
+                    {'role': 'system', 'name': 'example_assistant', 'content':
+                        '''Based on the requirements, we can know that Bob need to go to Beijing from Shanghai, stay in Beijing for 3 days and then go to Shanghai from Beijing.
+Given the task, the first step is to find available train tickets that fit Bob's schedule and budget. This is a subtask that requires the use of external resources, so I will assign it to another agent.
+<subtask>
+{
+"subtask_name": "find_available_train_tickets",
+"goal": "Find train tickets from Shanghai to Beijing and back to Shanghai that fit within the travel dates, budget, and allow for at least 3 full days of play in Beijing. If the arrival is before 12:00 noon, it counts as a day of play.",
+"criticism": "Must ensure that the total cost of the round trip tickets does not exceed the budget of 1000.0 CNY and that the timings allow for at least 3 full days in Beijing. For each ticket, you must give me the ticket number, origin, destination, departure time, arrival time and the price.",
+"milestones": ["Identify a suitable train from Shanghai to Beijing that arrives before 12:00 noon, ensuring a day of play.", "Identify a return train from Beijing to Shanghai after at least 3 days in Beijing.", "Ensure the total cost of both tickets is within the budget of 1000.0 CNY."]
+}
+</subtask>
+<action>subagent_handle("find_available_train_tickets")</action>
+
+Once I receive the information about the train tickets, I will proceed with planning the rest of Bob's travel schedule.
+'''},
+
+                    {'role': 'system', 'name': 'example_user',
+                     'content': '''Action:
+<action>subagent_handle("find_available_train_tickets")</action>
+Result:
+For Bob's travel from Beijing to Chengdu and back, the updated option is:
+- Departure on train **G1371** from Beijing to Chengdu on **2023-07-02 08:57**, arriving at **2023-07-02 17:54**. This costs **747.0 CNY** and takes approximately 8 hours 57 minutes.
+- Return on train **K1382** from Chengdu to Beijing on **2023-07-02 19:04**, arriving at **2023-07-03 11:52**. This costs **252.0 CNY** and takes about 16 hours 48 minutes.
+The total round trip costs **999.0 CNY** and will take about 25 hours 45 minutes.
+For future planning:
+With this new itinerary, Bob will be able to spend a full 24 hours in Chengdu.
+Bob can now proceed to research places of interest in Chengdu and plan his day accordingly. He can use the 'place' and 'in_city_transport' tables for this purpose.
+Bob should also consider the transport options within Chengdu, ensuring he can visit his chosen destinations without spending too much time commuting.
+'''},
+                    {'role': 'system', 'name': 'example_assistant', 'content':
+                        '''Next we can get the final plan. This task is simple so I can do it without other agents. We just need to use go_to_city() and stay_in() here. Based on the information provided, here is the final travel plan for Bob:
+<plan>go_to_city("Beijing", "Chengdu", "2023-07-02 08:57", "2023-07-02 17:54", "G1371")</plan>
+<plan>stay_in("Chengdu", "2023-07-02 17:54", "2023-07-03 17:54")</plan>
+<plan>go_to_city("Chengdu", "Beijing", "2023-07-03 19:04", "2023-07-04 11:52", "K1382")</plan>
+The task is completed. <action>over()</over>
+'''}]
+
+
+
+
+
+
+class JarvisAgent(BaseAgent):
+    """ AI代理类，包含规划、检索和执行模块 """
+
+    def __init__(self, config_path=None):
+        super().__init__()
+        self.llm = OpenAI(config_path)
+        self.planner = PlanningModule(self.llm)
+        self.retriever = RetrievalModule()
+        self.executor = ExecutionModule()
+
+    def planning(self, task):
+        # 综合处理任务的方法
+        subtasks = self.planner.decompose_task(task)
+        for subtask in subtasks:
+            action = self.retriever.search_action(subtask)
+            if action:
+                result = self.executor.execute_action(action)
+                # 进一步处理结果
+
+
+class PlanningModule:
+    """ 规划模块，负责将复杂任务拆解为子任务 """
+
+    def __init__(self, llm:OpenAI=None, system_replace_dict:dict=None):
+        # 初始化代码，如设置初始参数
+        if llm == None:
+            raise NotImplementedError
+        self.llm = llm
+        self.messages = []
+        self.system_prompt = generate_prompt(PLANNING_SYSTEM_PROMPT, replace_dict=system_replace_dict)
+        self.messages.append({'role': 'system',
+                              'content': self.system_prompt})
+        self.messages.extend(PLANNING_EXAMPLE_MESSAGES)
+
+
+    def decompose_task(self, task):
+        # 实现任务拆解逻辑
+        self.user_prompt = USER_PROMPT.format(
+            task=task
+        )
+        self.messages.append({'role': 'user',
+                              'content': self.user_prompt})
+        response = self.llm.chat(self.messages)
+        response_text = response['content']
+        # TODO: 解析出子任务
+        return response_text
+
+
+class RetrievalModule:
+    """ 检索模块，负责在动作库中检索可用动作 """
+
+    def __init__(self):
+        # 初始化代码，如动作库的加载
+        pass
+
+    def search_action(self, subtask):
+        # 实现检索动作逻辑
+        pass
+
+
+class ExecutionModule:
+    """ 执行模块，负责执行动作并更新动作库 """
+
+    def __init__(self):
+        # 初始化代码，如设置执行环境
+        pass
+
+    def execute_action(self, action):
+        # 实现动作执行逻辑
+        pass
+
+    def store_action(self, action):
+        # 实现动作存储逻辑
+        pass
+
+
+# 示例使用
+agent = AIAgent()
+agent.process_task("示例任务")

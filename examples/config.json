@@ -2,30 +2,5 @@
   "model_name": "gpt-4-1106-preview",
   "OPENAI_API_KEY": "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",
   "OPENAI_ORGANIZATION": "org-fSyygvftM73W0pK4VjoK395W",
-  "config": {
-    "API_KEY": "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",
-    "MAX_CHAT_HISTORY": "10",
-    "User_Names": "[\"User\"]",
-    "TOP_K": "3"
-  },
-  "LLM_type": "OpenAI",
-  "LLM": {
-    "temperature": 0.0,
-    "model": "gpt-4-1106-preview",
-    "log_path": "logs/god"
-  },
-  "agents": {
-    "Yang bufan": {
-      "style": "indifferent and idle",
-      "roles": {
-        "Response_state": "Yang bufan"
-      }
-    },
-    "User": {
-      "style": "soso",
-      "roles": {
-        "Response_state": "User"
-      }
-    }
-  }
+  "LLM_type": "OpenAI"
 }
