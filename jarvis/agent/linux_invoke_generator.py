@@ -17,6 +17,7 @@ Criteria:
 1.The __call__ method invocation must be syntactically correct as per Python standards.
 2.Clearly identify any fake or placeholder parameters used in the invocation.
 3.Encourage generating a realistic and functional code snippet wherever possible.
+4. If necessary, you can use the working directory provided by the user as a parameter passed into the __call__ method.
 Now you will be provided with the following information, please generate your response according to these information:
 '''
 _LINUX_USER_INVOKE_GENERATOR_PROMPT = '''
@@ -24,6 +25,7 @@ User's Information:
 Class Name: {class_name}
 Task Description: {task_description}
 __call__ Method Parameters: {args_description}
+Working Directory: {working_dir}
 '''
 
 
@@ -39,13 +41,14 @@ class LinuxInvokeGenerator():
             print(e)
 
     # Generate calls for the selected tool class
-    def invoke_generator(self, class_code, task_description):
+    def invoke_generator(self, class_code, task_description,working_dir):
         class_name, args_description = self.extract_class_name_and_args_description(class_code)
         self.sys_prompt = _LINUX_SYSTEM_INVOKE_GENERATOR_PROMPT
         self.user_prompt = _LINUX_USER_INVOKE_GENERATOR_PROMPT.format(
            class_name = class_name,
            task_description = task_description,
-           args_description = args_description 
+           args_description = args_description,
+           working_dir = working_dir
         )
         self.message = [
             {"role": "system", "content": self.sys_prompt},

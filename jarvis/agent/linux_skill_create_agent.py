@@ -35,13 +35,14 @@ class LinuxSkillCreateAgent():
         return self.llm.chat(self.message)
 
     # Send invoke generate message to LLM
-    def invoke_generate_format_message(self, class_code, task_description):
+    def invoke_generate_format_message(self, class_code, task_description,working_dir):
         class_name, args_description = self.extract_class_name_and_args_description(class_code)
         self.sys_prompt = self.prompt['_LINUX_SYSTEM_INVOKE_GENERATE_PROMPT']
         self.user_prompt = self.prompt['_LINUX_USER_INVOKE_GENERATE_PROMPT'].format(
            class_name = class_name,
            task_description = task_description,
-           args_description = args_description 
+           args_description = args_description,
+           working_dir = working_dir
         )
         self.message = [
             {"role": "system", "content": self.sys_prompt},
