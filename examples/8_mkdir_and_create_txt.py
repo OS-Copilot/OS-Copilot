@@ -20,11 +20,13 @@ response = '''
 Thought: In order to solve this task, first create a folder named test2, then create a file named sth2.txt in the folder directory, and finally write the text "hello world" into it. We can parse the above steps into the following actions and corresponding descriptions.
 
 Actions: 
-1. <action>create_folder</action> <description>create a folder which is named test2 under the default working directory</description>
-2. <action>create_file</action> <description>create a txt file which is named sth2.txt under a directory named test2 which is under the working directory.Then Write hello world in it.</description>
+1. <action>create_folder</action> <description>create a folder which is named myfold under the default working directory</description>
+2. <action>create_text_file_and_write_something</action> <description>create a txt file which is named result.txt under a directory named myfold which is under the working directory.Then Write hello world in it.</description>
+3. <action>open_text_file</action> <description>open the file named result.txt in the folder named myfold through unbuntu text viewer.</description>
 Check local action_lib, the required action code is in the library, according to the function description in the code, combined with the information provided by the user, You can instantiate classes for different tasks.
 
 '''
+
 # Get actions and corresponding descriptions
 actions = retrieve_agent.extract_information(response, begin_str='<action>', end_str='</action>')
 task_descriptions = retrieve_agent.extract_information(response, begin_str='<description>', end_str='</description>')
@@ -37,8 +39,11 @@ for action, description in zip(actions, task_descriptions):
     print(code)
 
     # Create the invoke of the tool class
-    invoke_msg = skill_create_agent.invoke_generate_format_message(code, description)
+    invoke_msg = skill_create_agent.invoke_generate_format_message(code, description,working_dir=environment.working_dir)
     invoke = skill_create_agent.extract_information(invoke_msg,  begin_str='<invoke>', end_str='</invoke>')[0]
+    print("************************[invoke]**************************")
+    print(invoke)
+    print("*********************************************************")
     code = code + '\n' + invoke
 
     # Run the tool code

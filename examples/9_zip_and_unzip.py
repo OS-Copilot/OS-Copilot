@@ -37,7 +37,7 @@ for action, description in zip(actions, task_descriptions):
     print(code)
 
     # Create the invoke of the tool class
-    invoke_msg = skill_create_agent.invoke_generate_format_message(code, description)
+    invoke_msg = skill_create_agent.invoke_generate_format_message(code, description,working_dir=environment.working_dir)
     print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     print(invoke_msg)
     print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
