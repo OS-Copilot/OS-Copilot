@@ -45,7 +45,7 @@ for a,t in zip(action,task_description):
     print(code)
 
     # create the invoke code
-    msg_invoke = invokeGenerator.invoke_generator(code, t)
+    msg_invoke = invokeGenerator.invoke_generator(code, t,working_dir=environment.working_dir)
     print(msg_invoke)
     invoke = agent.extract_information(msg_invoke, begin_str='<invoke>', end_str='</invoke>')[0]
     code = code + '\n' + invoke

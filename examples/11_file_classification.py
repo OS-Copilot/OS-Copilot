@@ -4,7 +4,7 @@ from jarvis.agent.linux_skill_create_agent import LinuxSkillCreateAgent
 import time
 '''
 Made By DZC & WZM
-target: Zip files in a specific folder and unzip them in the specified folder.
+target: Classify files in a specified folder.
 '''
 # environment
 environment = PythonEnv()
@@ -17,14 +17,15 @@ skill_create_agent = LinuxSkillCreateAgent(config_path="./config.json")
 
 # We assume that the response result comes from the task planning agent.
 response = '''
-Thought: In order to solve this task, first compress files in the folder test2, then decompress them in folder test. 
+Thought: In order to solve this task, first search the txt text in the document file in the working directory. If the text contains the word "agent", put the path of the text into agent.txt and wrap it in a new line. The second step is put the retrieved files into the folder named agent, the path of the retrieved files is placed in the txt file named agent, Each line is the path of a file.
 
 Actions: 
-1. <action>zip_files</action> <description>Zip all the files in the folder called test2 and name the zip file as test2.zip. </description>
-2. <action>unzip_files</action> <description>Unzip test2.zip in the folder called test2 to the folder called test. </description>
+1. <action>retrieve_document</action> <description>search the txt text in the folder call document in the working directory. If the text contains the word "agent", put the full path of the text into agent.txt and wrap it in a new line.</description>
+2. <action>organize_document</action> <description>put the retrieved files into the folder named agent, the path of the retrieved files is placed in the txt file named agent, Each line is the path of a file.</description>
 Check local action_lib, the required action code is in the library, according to the function description in the code, combined with the information provided by the user, You can instantiate classes for different tasks.
 
 '''
+
 # Get actions and corresponding descriptions
 actions = retrieve_agent.extract_information(response, begin_str='<action>', end_str='</action>')
 task_descriptions = retrieve_agent.extract_information(response, begin_str='<description>', end_str='</description>')
@@ -62,7 +63,6 @@ for action, description in zip(actions, task_descriptions):
             need_mend = True
     else:
         need_mend = True    
-
     # The code failed to complete its task, fix the code
     current_code = code
     while (trial_times < 3 and need_mend == True):
