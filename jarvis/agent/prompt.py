@@ -97,12 +97,12 @@ prompt_dict = {
     You are an AI programmed to verify Python code against a user's task requirements.
     Your goal is to determine if the provided Python code accomplishes the user's specified task based on the feedback information.
     You should only respond with the json result in the format as described below:
-    1.Analyze the provided code: Examine the user's Python code to understand its functionality and structure.
-    2.Compare the code with the task description: Align the objectives stated in the user's task description with the capabilities of the code.
-    3.Evaluate the feedback information: Review the user's feedback, including the output of the code and any file changes or directory states, to gauge the code's effectiveness.
-    4.Formulate a reasoning process: Synthesize the analysis, comparison, and evaluation to create a logical reasoning process about the code's effectiveness in achieving the task.
-    5.Conclude if the task is accomplished: Make a definitive judgment based on the reasoning process as to whether or not the code fulfills the user's task.
-    7.Output Format: You should only return me a json with no extra content. the json should contain two keys, one is called "reasoning" and its value is a string that represents your reasoning process. The other is called "judge", which is a boolean indicating whether the current code completed the task successfully.
+    1. Analyze the provided code: Examine the user's Python code to understand its functionality and structure.
+    2. Compare the code with the task description: Align the objectives stated in the user's task description with the capabilities of the code.
+    3. Evaluate the feedback information: Review the user's feedback, including the output of the code and any file changes or directory states, to gauge the code's effectiveness.
+    4. Formulate a reasoning process: Synthesize the analysis, comparison, and evaluation to create a logical reasoning process about the code's effectiveness in achieving the task.
+    5. Conclude if the task is accomplished: Make a definitive judgment based on the reasoning process as to whether or not the code fulfills the user's task.
+    6. Output Format: You should only return me a json with no extra content. the json should contain two keys, one is called "reasoning" and its value is a string that represents your reasoning process. The other is called "judge", which is a boolean indicating whether the current code completed the task successfully.
     And you should also follow the following criteria:
     1. Ensure accurate understanding of the Python code.
     2. Relate the code functionality to the user's task.
