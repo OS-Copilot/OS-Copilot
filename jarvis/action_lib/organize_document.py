@@ -4,33 +4,36 @@ import shutil
 
 class organize_document(BaseAction):
     def __init__(self):
-        self._description = "This class organizes the retrieved files into a folder named agent, with the file paths listed in a txt file named agent."
+        self._description = "This class organizes retrieved files into a folder named agent, with the file paths listed in a txt file named agent."
 
-    def __call__(self, working_directory, file_list_path):
+    def __call__(self, file_path, working_directory=None):
         """
-        This method organizes the retrieved files into a folder named agent, with the file paths listed in a txt file named agent.
+        Organize retrieved files into a folder named agent, with the file paths listed in a txt file named agent.
 
         Args:
-        working_directory (str): The working directory where the files will be organized.
-        file_list_path (str): The path to the txt file containing the list of file paths.
+        file_path (str): The path of the txt file containing the retrieved file paths.
+        working_directory (str, optional): The working directory path. If not provided, the current working directory will be used.
 
         Returns:
         None
         """
-        # Change the current working directory to the specified working directory
-        os.chdir(working_directory)
+        # Set the working directory
+        if working_directory:
+            os.chdir(working_directory)
+        
+        # Create the folder named agent
+        os.makedirs("agent", exist_ok=True)
 
-        # Create the folder named agent if it doesn't exist
-        agent_folder = os.path.join(working_directory, 'agent')
-        if not os.path.exists(agent_folder):
-            os.makedirs(agent_folder)
+        # Read the txt file and move the files to the agent folder
+        with open(file_path, 'r', encoding='utf-8') as file:
+            for line in file:
+                file_path = line.strip()
+                if os.path.exists(file_path):
+                    file_name = os.path.basename(file_path)
+                    shutil.move(file_path, os.path.join("agent", file_name))
+                else:
+                    print(f"File not found: {file_path}")
 
-        # Read the file paths from the txt file
-        with open(file_list_path, 'r', encoding='utf-8') as file:
-            file_paths = file.read().splitlines()
-
-        # Move the retrieved files into the agent folder
-        for file_path in file_paths:
-            file_name = os.path.basename(file_path)
-            destination_path = os.path.join(agent_folder, file_name)
-            shutil.move(file_path, destination_path)
+# Example of how to use the class:
+# org_doc = organize_document()
+# org_doc(file_path="retrieved_files.txt", working_directory="/home/heroding/桌面/Jarvis/working_dir")
