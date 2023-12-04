@@ -61,25 +61,26 @@ class BaseAgent:
 
 
 if __name__ == '__main__':
-    agent = BaseAgent()
-    agent.init_action_lib()
-    from jarvis.enviroment.py_env import PythonEnv
-    myEnv = PythonEnv()
-    # toolName = "execute_sql"
-    # res = myEnv.step(a.action_lib['{toolname}'.format(toolname=toolName)]+"\n"+"print({toolname}()())".format(toolname=toolName))
-    # print(res.result)
-    # print(a.action_lib_description)
-    # res = a.action_lib["execute_sql"]()
-    # print(res)
-    # print(a.action_lib)
-    # print(a.action_lib_description)
-    for k,v in agent.action_lib.items():
-        toolName = k
-        toolCode = v
-        args = None
-        # print(v())
-        if(k == "python_interpreter"):
-            args = "print('hello world')"
-        res = myEnv.step(v+"\n"+"print({toolname}()({args}))".format(toolname=toolName,args=args))
-        print(res.result)
-        myEnv.reset()
+    # agent = BaseAgent()
+    # agent.init_action_lib()
+    # from jarvis.enviroment.py_env import PythonEnv
+    # myEnv = PythonEnv()
+    # # toolName = "execute_sql"
+    # # res = myEnv.step(a.action_lib['{toolname}'.format(toolname=toolName)]+"\n"+"print({toolname}()())".format(toolname=toolName))
+    # # print(res.result)
+    # # print(a.action_lib_description)
+    # # res = a.action_lib["execute_sql"]()
+    # # print(res)
+    # # print(a.action_lib)
+    # # print(a.action_lib_description)
+    # for k,v in agent.action_lib.items():
+    #     toolName = k
+    #     toolCode = v
+    #     print(k)
+        # args = None
+        # # print(v())
+        # if(k == "python_interpreter"):
+        #     args = "print('hello world')"
+        # res = myEnv.step(v+"\n"+"print({toolname}()({args}))".format(toolname=toolName,args=args))
+        # print(res.result)
+        # myEnv.reset()

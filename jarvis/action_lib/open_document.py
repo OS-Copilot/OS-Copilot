@@ -1,7 +1,7 @@
 from jarvis.action.base_action import BaseAction
 from jarvis.atom_action.operations.media import view_office_document, play_video, play_audio, view_txt
 
-from action.get_os_version import get_os_version, check_os_version
+from jarvis.action.get_os_version import get_os_version, check_os_version
 
 
 class open_document(BaseAction):
