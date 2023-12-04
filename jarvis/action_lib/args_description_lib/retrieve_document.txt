@@ -1,8 +1,5 @@
-Search for txt files in the 'document' folder within the specified working directory.
-        If the text contains the word 'agent', the full path of the text is added to agent.txt and wrapped in a new line.
-
-        Args:
-        working_directory (str): The path to the working directory.
-
+Args:
+        working_directory (str): The path to the working directory. If not provided, the current working directory will be used.
+        
         Returns:
         None

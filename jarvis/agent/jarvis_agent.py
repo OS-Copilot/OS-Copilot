@@ -167,9 +167,19 @@ class ExecutionModule:
         return new_code
 
         
-    def store_action(self, code):
-        # 实现动作存储逻辑，对于没有问题的动作代码，对其代码、描述、参数信息、返回信息进行存储
-        pass
+    def store_action(self, action, code, action_lib_path, args_description_lib_path, action_description_lib_path):
+        # 实现动作存储逻辑，对于没有问题的动作代码，对其代码、描述、参数信息进行存储
+        # 代码、描述、参数保存路径
+        code_file_path = action_lib_path + '/' + action + '.py'
+        args_description_file_path = args_description_lib_path + '/' + action + '.txt'
+        action_description_file_path = action_description_lib_path + '/' + action + '.txt'  
+        # 获取描述、参数信息
+        args_description = self.extract_args_description(code)
+        action_description = self.extract_action_description(code)
+        # 保存代码、描述、参数
+        self.save_str_to_path(code, code_file_path)
+        self.save_str_to_path(args_description, args_description_file_path)
+        self.save_str_to_path(action_description, action_description_file_path)
 
     # Send skill create message to LLM
     def skill_create_format_message(self, task_name, task_description, working_dir):
@@ -187,7 +197,7 @@ class ExecutionModule:
         return self.llm.chat(self.message)
 
     # Send invoke generate message to LLM
-    def invoke_generate_format_message(self, class_code, task_description,working_dir):
+    def invoke_generate_format_message(self, class_code, task_description, working_dir):
         class_name, args_description = self.extract_class_name_and_args_description(class_code)
         self.sys_prompt = self.prompt['_LINUX_SYSTEM_INVOKE_GENERATE_PROMPT']
         self.user_prompt = self.prompt['_LINUX_USER_INVOKE_GENERATE_PROMPT'].format(
@@ -203,7 +213,7 @@ class ExecutionModule:
         return self.llm.chat(self.message)        
     
     # Send skill amend message to LLM
-    def skill_amend_format_message(self, original_code, task, error,code_output,working_dir,files_and_folders,critique):
+    def skill_amend_format_message(self, original_code, task, error,code_output, working_dir, files_and_folders, critique):
         self.sys_prompt = self.prompt['_LINUX_SYSTEM_SKILL_AMEND_PROMPT']
         self.user_prompt = self.prompt['_LINUX_USER_SKILL_AMEND_PROMPT'].format(
            original_code = original_code,
@@ -221,7 +231,7 @@ class ExecutionModule:
         return self.llm.chat(self.message)    
     
     # Send task judge prompt to LLM and get JSON response
-    def task_judge_format_message(self, current_code,task,code_output,working_dir,files_and_folders):
+    def task_judge_format_message(self, current_code, task,code_output, working_dir, files_and_folders):
         self.sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_JUDGE_PROMPT']
         self.user_prompt = self.prompt['_LINUX_TASK_JUDGE_PROMPT'].format(
            current_code=current_code,
@@ -291,8 +301,17 @@ class ExecutionModule:
             _begin = message.find(begin_str)
             _end = message.find(end_str)
         return result    
+    
+    # save str content to the specified path 
+    def save_str_to_path(self, content, path):
+        with open(path, 'w', encoding='utf-8') as f:
+            lines = content.strip().splitlines()
+            content = '\n'.join(lines)
+            f.write(content)
+                
 
 
 # 示例使用
 # agent = AIAgent()
 # agent.process_task("示例任务")
+# agent = ExecutionModule(config_path='../../examples/config.json')

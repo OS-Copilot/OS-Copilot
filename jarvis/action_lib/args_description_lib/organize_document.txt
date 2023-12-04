@@ -1,8 +1,8 @@
-Organize the retrieved files into a folder named agent.
+Organize the retrieved files into a folder named agent, with the file paths placed in a txt file named agent.txt.
 
         Args:
-        working_directory (str): The working directory where the retrieved files and agent.txt file are located.
-        agent_txt_path (str): The path to the agent.txt file containing the paths of the retrieved files.
+        working_directory (str): The working directory where the files will be organized.
+        file_list_path (str): The path to the txt file containing the list of file paths.
 
         Returns:
         None

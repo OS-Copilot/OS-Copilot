@@ -4,15 +4,15 @@ import shutil
 
 class organize_document(BaseAction):
     def __init__(self):
-        self._description = "This class organizes the retrieved files into a folder named agent, using the paths listed in the agent.txt file."
+        self._description = "This class organizes the retrieved files into a folder named agent, with the file paths placed in a txt file named agent.txt."
 
-    def __call__(self, working_directory, agent_txt_path):
+    def __call__(self, working_directory, file_list_path):
         """
-        Organize the retrieved files into a folder named agent.
+        Organize the retrieved files into a folder named agent, with the file paths placed in a txt file named agent.txt.
 
         Args:
-        working_directory (str): The working directory where the retrieved files and agent.txt file are located.
-        agent_txt_path (str): The path to the agent.txt file containing the paths of the retrieved files.
+        working_directory (str): The working directory where the files will be organized.
+        file_list_path (str): The path to the txt file containing the list of file paths.
 
         Returns:
         None
@@ -21,19 +21,24 @@ class organize_document(BaseAction):
         os.chdir(working_directory)
 
         # Create the folder named agent if it doesn't exist
-        agent_folder_path = os.path.join(working_directory, 'agent')
-        if not os.path.exists(agent_folder_path):
-            os.makedirs(agent_folder_path)
+        agent_folder = os.path.join(working_directory, 'agent')
+        if not os.path.exists(agent_folder):
+            os.makedirs(agent_folder)
 
-        # Read the paths from the agent.txt file
-        with open(agent_txt_path, 'r', encoding='utf-8') as file:
-            file_paths = file.read().splitlines()
+        # Read the file paths from the txt file
+        with open(file_list_path, 'r', encoding='utf-8') as file:
+            file_paths = file.readlines()
+        
+        # Remove any leading or trailing whitespaces from the file paths
+        file_paths = [path.strip() for path in file_paths]
 
-        # Move the retrieved files to the agent folder
-        for file_path in file_paths:
-            file_name = os.path.basename(file_path)
-            destination_path = os.path.join(agent_folder_path, file_name)
-            shutil.move(file_path, destination_path)
+        # Move the files to the agent folder
+        for path in file_paths:
+            file_name = os.path.basename(path)
+            destination_path = os.path.join(agent_folder, file_name)
+            shutil.move(path, destination_path)
 
-        # Optionally, remove the agent.txt file after organizing the documents
-        # os.remove(agent_txt_path)
+        # Create the agent.txt file with the updated file paths
+        with open(os.path.join(working_directory, 'agent.txt'), 'w', encoding='utf-8') as file:
+            for path in file_paths:
+                file.write(path + '\n')

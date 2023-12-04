@@ -3,36 +3,36 @@ import os
 
 class retrieve_document(BaseAction):
     def __init__(self):
-        self._description = "Search the txt text in the folder called document in the working directory. If the text contains the word 'agent', put the full path of the text into agent.txt and wrap it in a new line."
+        self._description = "Search for a txt document in the 'document' folder within the working directory, and if the document contains the word 'agent', save its full path to agent.txt."
 
-    def __call__(self, working_directory):
+    def __call__(self, working_directory=None):
         """
-        Search for txt files in the 'document' folder within the specified working directory.
-        If the text contains the word 'agent', the full path of the text is added to agent.txt and wrapped in a new line.
-
         Args:
-        working_directory (str): The path to the working directory.
-
+        working_directory (str): The path to the working directory. If not provided, the current working directory will be used.
+        
         Returns:
         None
         """
-        # Change the current working directory to the specified working directory
-        os.chdir(working_directory)
-
-        # Create a list to store the paths of the txt files containing the word 'agent'
-        agent_files = []
-
-        # Iterate through the 'document' folder to find txt files
-        for root, dirs, files in os.walk('document'):
-            for file in files:
-                if file.endswith(".txt"):
-                    file_path = os.path.join(root, file)
-                    with open(file_path, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                        if 'agent' in content:
-                            agent_files.append(file_path)
-
-        # Write the paths of the txt files containing the word 'agent' to agent.txt
-        with open('agent.txt', 'w', encoding='utf-8') as agent_file:
-            for file_path in agent_files:
-                agent_file.write(file_path + '\n')
+        # Set the working directory
+        if working_directory:
+            os.chdir(working_directory)
+        
+        # Define the folder and file names
+        folder_name = "document"
+        search_word = "agent"
+        output_file = "agent.txt"
+        
+        # Check if the document folder exists
+        if os.path.exists(folder_name) and os.path.isdir(folder_name):
+            # Change the working directory to the document folder
+            os.chdir(folder_name)
+            
+            # Search for txt files containing the search word
+            agent_files = [file for file in os.listdir() if file.endswith(".txt") and search_word in open(file).read()]
+            
+            # Write the full path of the agent files to agent.txt
+            with open(output_file, "w") as f:
+                for file in agent_files:
+                    f.write(os.path.abspath(file) + "\n")
+        else:
+            print(f"The '{folder_name}' folder does not exist in the working directory.")
