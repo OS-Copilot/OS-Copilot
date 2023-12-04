@@ -38,6 +38,6 @@ class retrieve_document(BaseAction):
                             agent_files.append(file_path)
 
         # Write the paths of the agent files to agent.txt
-        with open("agent.txt", 'w', encoding='utf-8') as agent_file:
+        with open("agent.txt", "w", encoding='utf-8') as agent_file:
             for file_path in agent_files:
                 agent_file.write(file_path + "\n")
