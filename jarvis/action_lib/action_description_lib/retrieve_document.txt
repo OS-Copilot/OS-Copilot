@@ -1,0 +1,1 @@
+Search the txt text in the folder called document in the working directory. If the text contains the word 'agent', put the full path of the text into agent.txt and wrap it in a new line.

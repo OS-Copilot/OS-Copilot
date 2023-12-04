@@ -9,7 +9,7 @@ prompt_dict = {
     3. Parameter Details Interpretation: Interpret the parameter details of the __call__ method. This will involve extracting the type of parameters and their role in the method.
     4. Generating Invocation Statement: Construct the __call__ method invocation statement. This includes instantiating the class and passing the appropriate arguments to the __call__ method based on the task description. For example, if my class is called Demo, and its __call__ method takes parameters a and b, then my invocation statement could be Demo()(a,b).
     5. Fake Parameter Identification: If the required parameter information (like a URL or file path) is not provided and a placeholder or fake parameter is used, clearly identify and list these as not being actual or valid values.All the fake paramters you list should be separated by comma.If there are no fake parameters,you should give a None.
-    6. Output Format: The final output should include two parts:The first one is the invocation statement,which will be enclosed in <invoke></invoke> tags.The second one is all the fake parameters you identified, which will be enclosed in <fake-params></fake-params> tags.
+    6. Output Format: The final output should include two parts:The first one is the invocation statement, which must be enclosed in <invoke></invoke> tags.The second one is all the fake parameters you identified, which will be enclosed in <fake-params></fake-params> tags.
     And the response you write should also follow the following criteria:
     Criteria:
     1. The __call__ method invocation must be syntactically correct as per Python standards.
@@ -81,6 +81,7 @@ prompt_dict = {
     11. The working directory given by the user can not be hardcoded in your code, because different user can have different working directory at different time.
     12. If you need to access the user's working directory, you should make the user's working directory a parameter that can be passed to the __call__ method. If the user provides a value for the working directory as a parameter, then use the path provided by the user as the working directory path. Otherwise, you can obtain it using methods like os.getcwd().
     13. You only need to write the class, don't instantiate it and call the __call__ method. If you want to write an example of how to use the class, be sure to put the example in the comments.
+    14. The description of parameters in the __call__ method must follow a standardized format: Args: [description of input parameters], Returns: [description of the method's return value].
     Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information. 
     ''',
     '_LINUX_USER_SKILL_CREATE_PROMPT' : '''
@@ -96,21 +97,21 @@ prompt_dict = {
     '_LINUX_SYSTEM_TASK_JUDGE_PROMPT' : '''
     You are an AI program expert to verify Python code against a user's task requirements.
     Your goal is to determine if the provided Python code accomplishes the user's specified task based on the feedback information.
-    You should only respond with the json result in the format as described below:
+    You should only respond with the JSON result in the format as described below:
     1. Analyze the provided code: Examine the user's Python code to understand its functionality and structure.
     2. Compare the code with the task description: Align the objectives stated in the user's task description with the capabilities of the code.
     3. Evaluate the feedback information: Review the user's feedback, including the output of the code and any file changes or directory states, to gauge the code's effectiveness.
     4. Formulate a reasoning process: Synthesize the analysis, comparison, and evaluation to create a logical reasoning process about the code's effectiveness in achieving the task.
-    5. Conclude if the task is accomplished: Make a definitive judgment based on the reasoning process as to whether or not the code fulfills the user's task.
-    6. Output Format: You should only return me a json with no extra content. the json should contain two keys, one is called "reasoning" and its value is a string that represents your reasoning process. The other is called "judge", which is a boolean indicating whether the current code completed the task successfully.
+    5. Assess the Task Completion Degree: Determine the level of task accomplishment based on the reasoning process, assigning an integer score between 1 and 10 to reflect the extent to which the code fulfills the user's task.
+    6. Output Format: You should only return a JSON with no extra content. The JSON should contain two keys: one is called 'reasoning', with its value being a string that represents your reasoning process; the other is called 'score', which is a number between 1 and 10, representing the completion degree of the current task.
     And you should also follow the following criteria:
     1. Ensure accurate understanding of the Python code.
     2. Relate the code functionality to the user's task.
-    3. Assess the feedback information for evidence of task completion.
+    3. Assess the completion degree of the task based on the feedback information.
     4. Provide clear, logical reasoning.
-    5. You need to note that the code I gave you is not reporting errors, I just don't know if it actually accomplishes the task or not.
-    6. If the task is about file creation, information about the current working directory and all the files and folders under it may help you determine whether the file was created successfully.
-    Now you will be provided with the following information, please give the result json according to these information:
+    5. You need to aware that the code I provided does not generate errors, I am just uncertain whether it effectively accomplishes the intended task.
+    6. If the task involves file creation, information regarding the current working directory and all its subdirectories and files may assist you in determining whether the file has been successfully created.
+    Now you will be provided with the following information, please give the result JSON according to these information:
     ''',
     '_LINUX_TASK_JUDGE_PROMPT' : '''
     User's information are as follows:

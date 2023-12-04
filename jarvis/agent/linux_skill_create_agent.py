@@ -119,9 +119,17 @@ class LinuxSkillCreateAgent():
         # Extracting the __call__ method's docstring
         call_method_docstring_pattern = r"def __call__\([^)]*\):\s+\"\"\"(.*?)\"\"\""
         call_method_docstring_match = re.search(call_method_docstring_pattern, class_code, re.DOTALL)
-        call_method_docstring = call_method_docstring_match.group(1).strip() if call_method_docstring_match else None
+        args_description = call_method_docstring_match.group(1).strip() if call_method_docstring_match else None
 
-        return class_name, call_method_docstring
+        return class_name, args_description
+    
+    # Extract args description from python code
+    def extract_args_description(self, class_code):
+        # Extracting the __call__ method's docstring
+        call_method_docstring_pattern = r"def __call__\([^)]*\):\s+\"\"\"(.*?)\"\"\""
+        call_method_docstring_match = re.search(call_method_docstring_pattern, class_code, re.DOTALL)
+        args_description = call_method_docstring_match.group(1).strip() if call_method_docstring_match else None
+        return args_description
     
     # Extract information from text
     def extract_information(self, message, begin_str='[BEGIN]', end_str='[END]'):
@@ -135,3 +143,54 @@ class LinuxSkillCreateAgent():
             _end = message.find(end_str)
         return result
     
+        # Extract args description and returns_description from python code
+    def extract_inputs_description_and_returns_description(self, class_code):
+        # Extracting the __call__ method's docstring
+        call_method_docstring_pattern = r"def __call__\([^)]*\):\s+\"\"\"(.*?)\"\"\""
+        call_method_docstring_match = re.search(call_method_docstring_pattern, class_code, re.DOTALL)
+        call_method_docstring = call_method_docstring_match.group(1).strip() if call_method_docstring_match else None
+        # 使用正则表达式提取 Args 部分
+        args_pattern = r"Args:\s*(.*?)\s*(Returns:|$)"
+        args_match = re.search(args_pattern, call_method_docstring, re.DOTALL)
+        args_description = args_match.group(1).strip() if args_match else None
+        # 使用正则表达式提取 Returns 部分
+        returns_pattern = r"Returns:\s*(.*)"
+        returns_match = re.search(returns_pattern, call_method_docstring, re.DOTALL)
+        returns_description = returns_match.group(1).strip() if returns_match else None
+        return args_description, returns_description
+    
+        # Extract action description from python code
+    def extract_action_description(self, class_code):
+        # Extracting the __init__ method's description
+        init_pattern = r"def __init__\s*\(self[^)]*\):\s*(?:.|\n)*?self\._description\s*=\s*\"([^\"]+)\""
+        action_match = re.search(init_pattern, class_code, re.DOTALL)
+        action_description = action_match.group(1).strip() if action_match else None
+        return action_description
+    
+# skill_create_agent = LinuxSkillCreateAgent(config_path='../../examples/config.json')
+# action_description = skill_create_agent.extract_action_description('''
+# class view_cpu_usage(BaseAction):
+#     def __init__(self):
+#         self._description = "Open the terminal interface and view the system's CPU usage."
+
+#     def __call__(self, working_directory=None, *args, **kwargs):
+#         """
+#         Open the terminal interface and view the system's CPU usage.
+
+#         Args:
+#         working_directory (str): The working directory path. If not provided, the default working directory will be used.
+
+#         Returns:
+#         None
+#         """
+#         try:
+#             # If working_directory is provided, change the current working directory to the specified path
+#             if working_directory:
+#                 subprocess.run(["top"], cwd=working_directory, shell=True)
+#             else:
+#                 subprocess.run(["top"])
+#         except Exception as e:
+#             print(f"An error occurred: {e}")
+
+# ''')
+# print(action_description)

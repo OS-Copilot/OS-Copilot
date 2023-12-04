@@ -1,3 +1,4 @@
+import os
 from jarvis.action.base_action import BaseAction
 import subprocess
 
@@ -10,16 +11,15 @@ class view_cpu_usage(BaseAction):
         Open the terminal interface and view the system's CPU usage.
 
         Args:
-        working_directory (str): The working directory where the terminal will be opened. If not provided, the current working directory will be used.
-
+        working_directory (str): The working directory where the terminal will be opened.
+        
         Returns:
         None
         """
-        try:
-            # Set the working directory
-            if working_directory:
-                subprocess.run(["gnome-terminal", "--working-directory", working_directory, "--", "top"])
-            else:
-                subprocess.run(["gnome-terminal", "--", "top"])
-        except Exception as e:
-            print(f"An error occurred: {e}")
+        # Check if working_directory is provided, if not, use the current working directory
+        if working_directory:
+            # Change the current working directory to the provided working_directory
+            os.chdir(working_directory)
+        
+        # Open the terminal and call relevant instructions to view the system's CPU usage
+        subprocess.run(["gnome-terminal", "--", "top"])
