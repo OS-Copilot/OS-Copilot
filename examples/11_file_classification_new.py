@@ -64,7 +64,7 @@ for action, description in zip(actions, task_descriptions):
         new_code = execute_agent.amend_action(current_code, description, state, critique)
         current_code = new_code
         # Run the current code and check for errors
-        state = execute_agent.execute_action(current_code, task_descrption)
+        state = execute_agent.execute_action(current_code, description)
         print(state)
         # Recheck
         if state.error == None:

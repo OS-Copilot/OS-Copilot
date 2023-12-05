@@ -1,0 +1,1 @@
+Unzip test2.zip in the folder called test2 to the folder called test.

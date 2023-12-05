@@ -8,7 +8,7 @@ import importlib
 import inspect
 import sys
 '''
-    Made by @wzm
+    Made by @wzm & dzc
     使用Chroma向量数据库进行任务代码的检索、存储和更新
 '''
 
@@ -42,6 +42,7 @@ class ActionManager:
             f"Action Manager's vectordb is not synced with actions.json.\n"
             f"There are {self.vectordb._collection.count()} actions in vectordb but {len(self.actions)} actions in actions.json.\n"
         )
+
     # 查看代码库中所有的代码
     @property
     def programs(self):
@@ -96,6 +97,7 @@ class ActionManager:
         with open(f"{self.action_lib_dir}/actions.json", "w") as fc:
             json.dump(self.actions,fc,indent=4)
         self.vectordb.persist()
+    
     # 检索相关任务代码
     def retrieve_actions(self, query):
         k = min(self.vectordb._collection.count(), self.retrieval_top_k)
@@ -113,28 +115,69 @@ class ActionManager:
             actions.append(self.actions[doc.metadata["name"]]["code"])
         return actions
 
+    # 删除任务代码
+    def delete_action(self, action):
+        # 从向量数据库中删除任务
+        if action in self.actions:
+            self.vectordb._collection.delete(ids=[action])
+            print(
+            f"\033[33m delete {action} from vectordb successfully! \033[0m"
+            )              
+        # 从actions.json中删除任务
+        with open(f"{self.action_lib_dir}/actions.json", "r") as file:
+            action_infos = json.load(file)
+        if action in action_infos:
+            del action_infos[action]
+        with open(f"{self.action_lib_dir}/actions.json", "w") as file:
+            json.dump(action_infos, file, indent=4)
+            print(
+            f"\033[33m delete {action} info from JSON successfully! \033[0m"
+            )            
+        # 删除code
+        code_path = f"{self.action_lib_dir}/code/{action}.py"
+        if os.path.exists(code_path):
+            os.remove(code_path)
+            print(
+            f"\033[33m delete {action} code successfully! \033[0m"
+            )
+        # 删除description
+        description_path = f"{self.action_lib_dir}/action_description/{action}.txt"
+        if os.path.exists(description_path):
+            os.remove(description_path)
+            print(
+            f"\033[33m delete {action} description txt successfully! \033[0m"
+            )   
+        # 删除args description
+        args_path = f"{self.action_lib_dir}/args_description/{action}.txt"
+        if os.path.exists(args_path):
+            os.remove(args_path)
+            print(
+            f"\033[33m delete {action} args description txt successfully! \033[0m"
+            )                
     
 # demo
-# actionManager = ActionManager(config_path="../../examples/config.json", action_lib_dir="../action_lib", retrieval_top_k=1)
-# sys.path.append('../action_lib')
-# # # 添加所有任务代码
-# # files = glob.glob("../action_lib" + "/*.py")
-# # for file in files:
-# #     if file.endswith('.py') and "__init__" not in file:
-# #         class_name = file[:-3].split('/')[-1]  # 去除.py后缀，获取类名
-# #         print(f"当前类:{class_name}")
-# #         module = importlib.import_module(class_name)
-# #         # get origin code
-# #         source_code = inspect.getsource(module)
-# #         # get class object
-# #         tmp_obj = getattr(module, class_name)() 
-# #         # 报错到向量数据库和字典
-# #         actionManager.add_new_action({
-# #             "task_name": class_name,
-# #             "code": source_code,
-# #             "description": tmp_obj.description
-# #         })
+actionManager = ActionManager(config_path="../../examples/config.json", action_lib_dir="../action_lib", retrieval_top_k=1)
+# sys.path.append('../action_lib/code')
+# # 添加所有任务代码
+# files = glob.glob("../action_lib/code" + "/*.py")
+# for file in files:
+#     if file.endswith('.py') and "__init__" not in file:
+#         class_name = file[:-3].split('/')[-1]  # 去除.py后缀，获取类名
+#         print(f"当前类:{class_name}")
+#         module = importlib.import_module(class_name)
+#         # get origin code
+#         source_code = inspect.getsource(module)
+#         # get class object
+#         tmp_obj = getattr(module, class_name)() 
+#         # 报错到向量数据库和字典
+#         actionManager.add_new_action({
+#             "task_name": class_name,
+#             "code": source_code,
+#             "description": tmp_obj.description
+#         })
 # # 检索
 # res = actionManager.retrieve_actions("give me a picture from web")
 # print(res[0])
-# print(actionManager.descriptions)
+
+# 删除
+actionManager.delete_action("retrieve_document")

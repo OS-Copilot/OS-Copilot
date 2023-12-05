@@ -1,0 +1,1 @@
+Using organize_app_layout() will help user reorganize their Desktop layout for better working condition and focus more easily.

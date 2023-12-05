@@ -1,5 +1,0 @@
-Args:
-        working_directory (str): The working directory where the retrieved files and agent.txt file are located.
-        agent_txt_path (str): The path to the agent.txt file containing the paths of the retrieved files.
-        Returns:
-        None

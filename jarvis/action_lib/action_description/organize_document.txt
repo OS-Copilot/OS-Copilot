@@ -1,1 +1,0 @@
-This class organizes the retrieved files into a folder named agent, with the file paths listed in the agent.txt file.

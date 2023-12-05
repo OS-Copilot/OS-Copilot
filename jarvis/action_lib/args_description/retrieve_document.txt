@@ -1,7 +1,0 @@
-Search for a txt document in the 'document' folder within the working directory, and if the document contains the word 'agent', save its full path to agent.txt.
-
-        Args:
-        working_directory (str): The path to the working directory. If not provided, the current working directory will be used.
-
-        Returns:
-        None
