@@ -130,13 +130,13 @@ class RetrievalModule:
 class ExecutionModule(BaseAgent):
     """ 执行模块，负责执行动作并更新动作库 """
 
-    def __init__(self, config_path=None, max_iter=3):
+    def __init__(self, config_path=None, action_lib_dir=None, max_iter=3):
         # 模块初始化，包括设置执行环境，初始化prompt等
         super().__init__()
         # 模型，环境，数据库
         self.llm = OpenAI(config_path)
         self.environment = PythonEnv()
-        self.action_lib = ActionManager()
+        self.action_lib = ActionManager(config_path, action_lib_dir)
         self.system_version = get_os_version()
         self.prompt = prompt_dict
         self.max_iter = max_iter
@@ -145,18 +145,18 @@ class ExecutionModule(BaseAgent):
         except ValueError as e:
             print(e)
     
-    def generate_action(self, task_name, task_description, working_dir):
+    def generate_action(self, task_name, task_description):
         # 生成动作代码逻辑，生成可以完成动作的代码，返回生成的代码
-        create_msg = self.skill_create_format_message(task_name, task_description, working_dir)
+        create_msg = self.skill_create_format_message(task_name, task_description, self.environment.working_dir)
         code = self.extract_python_code(create_msg)
         return code
 
-    def execute_action(self, environment, code, task_description, working_dir):
+    def execute_action(self, code, task_description):
         # 实现动作执行逻辑，实例化动作类并执行，返回执行完毕的状态
-        invoke_msg = self.invoke_generate_format_message(code, task_description, working_dir)
+        invoke_msg = self.invoke_generate_format_message(code, task_description, self.environment.working_dir)
         invoke = self.extract_information(invoke_msg, begin_str='<invoke>', end_str='</invoke>')[0]
         code = code + '\n' + invoke
-        state = environment.step(code)
+        state = self.environment.step(code)
         return state
 
     def judge_action(self, code, task_description, state):
@@ -173,19 +173,20 @@ class ExecutionModule(BaseAgent):
         return new_code
 
         
-    def store_action(self, action, code, action_lib_path, args_description_lib_path, action_description_lib_path):
-        # 实现动作存储逻辑，对于没有问题的动作代码，对其代码、描述、参数信息进行存储
-        # 代码、描述、参数保存路径
-        code_file_path = action_lib_path + '/' + action + '.py'
-        args_description_file_path = args_description_lib_path + '/' + action + '.txt'
-        action_description_file_path = action_description_lib_path + '/' + action + '.txt'  
-        # 获取描述、参数信息
+    def store_action(self, action, code):
+        # 实现动作存储逻辑，对新的动作进行存储
+        #  获取描述信息
         args_description = self.extract_args_description(code)
         action_description = self.extract_action_description(code)
-        # 保存代码、描述、参数
-        self.save_str_to_path(code, code_file_path)
+        # 保存动作名称、代码，描述到JSON中
+        action_info = self.save_action_info_to_json(action, code, action_description)
+        # 保存代码，描述到数据库和JSON文件中
+        self.action_lib.add_new_action(action_info)
+        # 参数描述保存路径
+        args_description_file_path = self.action_lib.action_lib_dir + '/args_description/' + action + '.txt'      
+        # 保存参数
         self.save_str_to_path(args_description, args_description_file_path)
-        self.save_str_to_path(action_description, action_description_file_path)
+
 
     # Send skill create message to LLM
     def skill_create_format_message(self, task_name, task_description, working_dir):
@@ -315,6 +316,14 @@ class ExecutionModule(BaseAgent):
             content = '\n'.join(lines)
             f.write(content)
                 
+    # save action info to json 
+    def save_action_info_to_json(self, action, code, description):
+        info = {
+            "task_name" : action,
+            "code": code,
+            "description": description
+        }
+        return info
 
 
 # 示例使用

@@ -34,10 +34,10 @@ class OpenAIAgent(BaseAgent):
     """
     BaseAgent is the base class of all agents.
     """
-    def __init__(self, config_path=None):
-        super().__init__(config_path)
+    def __init__(self, config_path=None, action_lib_dir=None):
+        super().__init__()
         self.llm = OpenAI(config_path)
-        self.action_lib = ActionManager()
+        self.action_lib = ActionManager(config_path=config_path, action_lib_dir=action_lib_dir)
         # self.actions = None
         self.max_iter = 3
         self.system_prompt = """You are a personal assistant that aims to automate the workflow for human.\nYou are capable of understanding human intent and decompose it into several subgoals that can be addressed via language generation or acomplished using external tools.\nSome of the external tools you can use and their functionalities are as follows:
