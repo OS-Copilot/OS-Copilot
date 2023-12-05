@@ -3,6 +3,7 @@ from jarvis.core.llms import OpenAI
 from jarvis.agent.base_agent import BaseAgent
 from jarvis.enviroment.old_env import BaseEnviroment
 from jarvis.core.schema import EnvState
+from jarvis.core.action_manager import ActionManager
 
 
 a = "{action_input} the input to the action, could be any valid input for python programs or shell commands, such numbers, strings, or path to a file, etc."
@@ -34,17 +35,19 @@ class OpenAIAgent(BaseAgent):
     BaseAgent is the base class of all agents.
     """
     def __init__(self, config_path=None):
-        super().__init__()
+        super().__init__(config_path)
         self.llm = OpenAI(config_path)
-        self.actions = None
-        self.max_iter = 10
+        self.action_lib = ActionManager()
+        # self.actions = None
+        self.max_iter = 3
         self.system_prompt = """You are a personal assistant that aims to automate the workflow for human.\nYou are capable of understanding human intent and decompose it into several subgoals that can be addressed via language generation or acomplished using external tools.\nSome of the external tools you can use and their functionalities are as follows:
         """
-        self.action_names = self.action_lib.keys()
+        self.action_names = self.action_lib.action_names
+        self.available_action_description = self.action_lib.descriptions
         # todo: 添加工具检索模块
-        self.available_action_description = ""
-        for i, name in enumerate(self.action_names):
-            self.available_action_description += "Tool {}: <action>{}</action>\n{}\n".format(i+1, name, self.action_lib_description[name])
+        # self.available_action_description = ""
+        # for i, name in enumerate(self.action_names):
+        #     self.available_action_description += "Tool {}: <action>{}</action>\n{}\n".format(i+1, name, self.action_lib_description[name])
 
     def from_config(self, config_path=None):
         self.llm = OpenAI(config_path)

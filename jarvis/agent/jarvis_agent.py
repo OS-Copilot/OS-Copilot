@@ -1,5 +1,7 @@
 from jarvis.agent.base_agent import BaseAgent
+from jarvis.enviroment.py_env import PythonEnv
 from jarvis.core.llms import OpenAI
+from jarvis.core.action_manager import ActionManager
 from jarvis.core.utils import generate_prompt
 from jarvis.action.get_os_version import get_os_version, check_os_version
 from jarvis.core.llms import OpenAI
@@ -125,15 +127,19 @@ class RetrievalModule:
         pass
 
 
-class ExecutionModule:
+class ExecutionModule(BaseAgent):
     """ 执行模块，负责执行动作并更新动作库 """
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path=None, max_iter=3):
         # 模块初始化，包括设置执行环境，初始化prompt等
         super().__init__()
+        # 模型，环境，数据库
         self.llm = OpenAI(config_path)
+        self.environment = PythonEnv()
+        self.action_lib = ActionManager()
         self.system_version = get_os_version()
         self.prompt = prompt_dict
+        self.max_iter = max_iter
         try:
             check_os_version(self.system_version)
         except ValueError as e:

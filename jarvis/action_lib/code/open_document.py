@@ -26,4 +26,3 @@ class open_document(BaseAction):
         # 如果是文本文件或者其它文件
         else:
             view_txt(path)
-

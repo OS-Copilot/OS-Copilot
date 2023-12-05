@@ -6,8 +6,7 @@ from jarvis.agent.jarvis_agent import ExecutionModule
 Made By DZC & WZM
 target: Classify files in a specified folder.
 '''
-# environment
-environment = PythonEnv()
+
 # path of action lib
 action_lib_path = "../jarvis/action_lib"
 args_description_lib_path = action_lib_path + "/args_description_lib"
@@ -35,11 +34,11 @@ task_descriptions = retrieve_agent.extract_information(response, begin_str='<des
 # Loop all the actions
 for action, description in zip(actions, task_descriptions):
     # Create python tool class code
-    code = execute_agent.generate_action(action, description, environment.working_dir)
+    code = execute_agent.generate_action(action, description, execute_agent.environment.working_dir)
     print(code)
 
     # Execute python tool class code
-    state = execute_agent.execute_action(environment, code, description, environment.working_dir)
+    state = execute_agent.execute_action(execute_agent.environment, code, description, execute_agent.environment.working_dir)
     print(state)
 
     # Check whether the code runs correctly, if not, amend the code
@@ -56,13 +55,13 @@ for action, description in zip(actions, task_descriptions):
         need_mend = True    
     # The code failed to complete its task, fix the code
     current_code = code
-    while (trial_times < 3 and need_mend == True):
+    while (trial_times < execute_agent.max_iter and need_mend == True):
         trial_times += 1
         print("current amend times: {}".format(trial_times))
         new_code = execute_agent.amend_action(current_code, description, state, critique)
         current_code = new_code
         # Run the current code and check for errors
-        state = environment.step(current_code)
+        state = execute_agent.environment.step(current_code)
         print(state)
         # Recheck
         if state.error == None:

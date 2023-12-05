@@ -1,1 +1,0 @@
-Search for a txt document in the 'document' folder within the working directory, and if the document contains the word 'agent', save its full path to agent.txt.
