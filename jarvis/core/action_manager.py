@@ -156,7 +156,7 @@ class ActionManager:
             )                
     
 # demo
-actionManager = ActionManager(config_path="../../examples/config.json", action_lib_dir="../action_lib", retrieval_top_k=1)
+# actionManager = ActionManager(config_path="../../examples/config.json", action_lib_dir="../action_lib", retrieval_top_k=1)
 # sys.path.append('../action_lib/code')
 # # 添加所有任务代码
 # files = glob.glob("../action_lib/code" + "/*.py")
@@ -180,4 +180,4 @@ actionManager = ActionManager(config_path="../../examples/config.json", action_l
 # print(res[0])
 
 # 删除
-actionManager.delete_action("retrieve_document")
+# actionManager.delete_action("retrieve_document")
