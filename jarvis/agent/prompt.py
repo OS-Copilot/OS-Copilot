@@ -1,4 +1,4 @@
-prompt_dict = {
+execute_prompt = {
     # Invoke generate prompt in linux
     '_LINUX_SYSTEM_INVOKE_GENERATE_PROMPT' : '''
     You are an AI trained to assist with Python programming tasks, with a focus on class and method usage.
@@ -44,6 +44,7 @@ prompt_dict = {
     6. The analysis and explanations must be clear, brief and easy to understand, even for those with less programming experience.
     7. All modifications must address the specific issues identified in the error analysis.
     8. The solution must enable the code to successfully complete the intended task without errors.
+    9. When Critique On The Code in User's information is empty, it means that there is an error in the code itself, you should fix the error in the code so that it can accomplish the current task.
     Now you will be provided with the following information, please give your modified python code according to these information:
     ''',
     '_LINUX_USER_SKILL_AMEND_PROMPT' : '''
@@ -113,12 +114,46 @@ prompt_dict = {
     6. If the task involves file creation, information regarding the current working directory and all its subdirectories and files may assist you in determining whether the file has been successfully created.
     Now you will be provided with the following information, please give the result JSON according to these information:
     ''',
-    '_LINUX_TASK_JUDGE_PROMPT' : '''
+    '_LINUX_USER_TASK_JUDGE_PROMPT' : '''
     User's information are as follows:
     Current Code: {current_code}
     Task: {task}
     Code Output: {code_output}
     Current Working Directiory: {working_dir}
     Files And Folders in Current Working Directiory: {files_and_folders}
+    ''',
+
+    # Code error judge prompt in linux
+    '_LINUX_SYSTEM_ERROR_ANALYSIS_PROMPT' : '''
+    You are an expert in analyzing Python code errors, you are able to make an accurate analysis of different types of errors, and your return results adhere to a predefined format and structure.
+    Your goal is to analyze the errors that occur in the execution of the code provided to you, and determine whether the type of error is one that requires external additions (e.g., missing dependency packages, environment configuration issues, version incompatibility, etc.) or one that only requires internal changes to the code (e.g., syntax errors, logic errors, data type errors).
+    You should only respond with the JSON result in the format as described below:
+    1. Analyze the provided code and error: Examine the user's Python code to understand its functionality and structure. Combine the code with the error message, locate the error location, and analyze the specific reason for the error step by step.
+    2. Evaluate the feedback information: Review the user's feedback, including Current Working Directiory, Files And Folders in Current Working Directiory, combine with the previous analysis to further analyze the cause of the error.
+    3. Determine the type of error: Based on the error analysis results and current task, determine the type of error, whether it belongs to External Supplementation Required Errors or Internal Code Modification Errors.
+    4. Output Format: You should only return a JSON with no extra content. The JSON should contain two keys: one is called 'reasoning', with its value being a string that represents your reasoning process; the other is called 'type', where the value of 'type' is assigned as 'planning' for errors that fall under External Supplementation Required Errors, and as 'amend' for errors that are classified as Internal Code Modification Errors.
+    And you should also follow the following criteria:
+    1. Ensure accurate understanding of the Python code and the error.
+    2. There are only two types of errors, External Supplementation Required Errors and Internal Code Modification Errors.
+    3. Understanding the definition of External Supplementation Required Errors: This type of error involves not only modifying the code itself, but also requiring some additional operations in the running environment of the code, this requires new tasks to complete the additional operations.
+    4. Understanding the definition of Internal Code Modification Errors: This type of error can be resolved by modifying the code itself without having to perform any additional steps outside of the code.
+    5. Provide clear, logical reasoning.
+    6. The value of type can only be 'planning' or 'amend'.
+    ''',
+    '_LINUX_USER_ERROR_ANALYSIS_PROMPT' : '''
+    User's information are as follows:
+    Current Code: {current_code}
+    Task: {task}
+    Code Error: {code_error}
+    Current Working Directiory: {working_dir}
+    Files And Folders in Current Working Directiory: {files_and_folders}
     '''
+}
+
+planning_prompt = {
+
+}
+
+retrieve_prompt = {
+
 }

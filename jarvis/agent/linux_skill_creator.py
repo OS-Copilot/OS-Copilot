@@ -72,7 +72,7 @@ class LinuxSkillCreator():
 
 # skillCreator = LinuxSkillCreator(config_path="../../examples/config.json")
 # task = "Please download the audio I have given link from the Internet to the desktop of the system and play it in the system."
-# python_code = skillCreator.format_message(task)
+# python_code = skillCreator.format_message(task,"","")
 # if '```python' in python_code:
 #     python_code = python_code.split('```python')[1].split('```')[0]
 # elif '```' in python_code:

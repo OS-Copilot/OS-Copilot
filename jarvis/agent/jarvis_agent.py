@@ -5,7 +5,7 @@ from jarvis.core.action_manager import ActionManager
 from jarvis.core.utils import generate_prompt
 from jarvis.action.get_os_version import get_os_version, check_os_version
 from jarvis.core.llms import OpenAI
-from jarvis.agent.prompt import prompt_dict
+from jarvis.agent.prompt import execute_prompt, retrieve_prompt, planning_prompt
 import re
 import json
 
@@ -70,12 +70,12 @@ The task is completed. <action>over()</over>
 class JarvisAgent(BaseAgent):
     """ AI代理类，包含规划、检索和执行模块 """
 
-    def __init__(self, config_path=None):
+    def __init__(self, config_path=None, action_lib_dir=None, max_iter=3):
         super().__init__()
         self.llm = OpenAI(config_path)
         self.planner = PlanningModule(self.llm)
         self.retriever = RetrievalModule()
-        self.executor = ExecutionModule()
+        self.executor = ExecutionModule(config_path, action_lib_dir, max_iter)
 
     def planning(self, task):
         # 综合处理任务的方法
@@ -87,7 +87,7 @@ class JarvisAgent(BaseAgent):
                 # 进一步处理结果
 
 
-class PlanningModule:
+class PlanningModule(BaseAgent):
     """ 规划模块，负责将复杂任务拆解为子任务 """
 
     def __init__(self, llm:OpenAI=None, system_replace_dict:dict=None):
@@ -138,7 +138,7 @@ class ExecutionModule(BaseAgent):
         self.environment = PythonEnv()
         self.action_lib = ActionManager(config_path, action_lib_dir)
         self.system_version = get_os_version()
-        self.prompt = prompt_dict
+        self.prompt = execute_prompt
         self.max_iter = max_iter
         try:
             check_os_version(self.system_version)
@@ -162,9 +162,9 @@ class ExecutionModule(BaseAgent):
     def judge_action(self, code, task_description, state):
         # 实现动作判断逻辑，判断动作是否完成当前任务，返回判断的JSON结果
         judge_json = self.task_judge_format_message(code, task_description, state.result, state.pwd, state.ls)
-        critique = judge_json['reasoning']
+        reasoning = judge_json['reasoning']
         score = judge_json['score']
-        return critique, score
+        return reasoning, score
 
     def amend_action(self, current_code, task_description, state, critique):
         # 实现动作修复逻辑，对于未完成任务或者有错误的代码进行修复，返回修复后的代码
@@ -172,6 +172,13 @@ class ExecutionModule(BaseAgent):
         new_code = self.extract_python_code(amend_msg)[0]
         return new_code
 
+    def analysis_action(self, code, task_description, state):
+        # 实现对代码错误的分析，如果是需要新的操作的环境错误，转到planning模块，否则交给amend_action，返回JSON
+        analysis_json = self.error_analysis_format_message(code, task_description, state.error, state.pwd, state.ls)
+        reasoning = analysis_json['reasoning']
+        type = analysis_json['type']
+        return reasoning, type
+        
         
     def store_action(self, action, code):
         # 实现动作存储逻辑，对新的动作进行存储
@@ -190,39 +197,39 @@ class ExecutionModule(BaseAgent):
 
     # Send skill create message to LLM
     def skill_create_format_message(self, task_name, task_description, working_dir):
-        self.sys_prompt = self.prompt['_LINUX_SYSTEM_SKILL_CREATE_PROMPT']
-        self.user_prompt = self.prompt['_LINUX_USER_SKILL_CREATE_PROMPT'].format(
+        sys_prompt = self.prompt['_LINUX_SYSTEM_SKILL_CREATE_PROMPT']
+        user_prompt = self.prompt['_LINUX_USER_SKILL_CREATE_PROMPT'].format(
             system_version=self.system_version,
             task_description=task_description,
             working_dir=working_dir,
             task_name=task_name
         )
         self.message = [
-            {"role": "system", "content": self.sys_prompt},
-            {"role": "user", "content": self.user_prompt},
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_prompt},
         ]
         return self.llm.chat(self.message)
 
     # Send invoke generate message to LLM
     def invoke_generate_format_message(self, class_code, task_description, working_dir):
         class_name, args_description = self.extract_class_name_and_args_description(class_code)
-        self.sys_prompt = self.prompt['_LINUX_SYSTEM_INVOKE_GENERATE_PROMPT']
-        self.user_prompt = self.prompt['_LINUX_USER_INVOKE_GENERATE_PROMPT'].format(
+        sys_prompt = self.prompt['_LINUX_SYSTEM_INVOKE_GENERATE_PROMPT']
+        user_prompt = self.prompt['_LINUX_USER_INVOKE_GENERATE_PROMPT'].format(
            class_name = class_name,
            task_description = task_description,
            args_description = args_description,
            working_dir = working_dir
         )
         self.message = [
-            {"role": "system", "content": self.sys_prompt},
-            {"role": "user", "content": self.user_prompt},
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_prompt},
         ]
         return self.llm.chat(self.message)        
     
     # Send skill amend message to LLM
     def skill_amend_format_message(self, original_code, task, error,code_output, working_dir, files_and_folders, critique):
-        self.sys_prompt = self.prompt['_LINUX_SYSTEM_SKILL_AMEND_PROMPT']
-        self.user_prompt = self.prompt['_LINUX_USER_SKILL_AMEND_PROMPT'].format(
+        sys_prompt = self.prompt['_LINUX_SYSTEM_SKILL_AMEND_PROMPT']
+        user_prompt = self.prompt['_LINUX_USER_SKILL_AMEND_PROMPT'].format(
            original_code = original_code,
            task = task,
            error = error,
@@ -232,15 +239,15 @@ class ExecutionModule(BaseAgent):
             critique = critique
         )
         self.message = [
-            {"role": "system", "content": self.sys_prompt},
-            {"role": "user", "content": self.user_prompt},
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_prompt},
         ]
         return self.llm.chat(self.message)    
     
     # Send task judge prompt to LLM and get JSON response
-    def task_judge_format_message(self, current_code, task,code_output, working_dir, files_and_folders):
-        self.sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_JUDGE_PROMPT']
-        self.user_prompt = self.prompt['_LINUX_TASK_JUDGE_PROMPT'].format(
+    def task_judge_format_message(self, current_code, task, code_output, working_dir, files_and_folders):
+        sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_JUDGE_PROMPT']
+        user_prompt = self.prompt['_LINUX_USER_TASK_JUDGE_PROMPT'].format(
            current_code=current_code,
            task=task,
            code_output=code_output,
@@ -248,8 +255,8 @@ class ExecutionModule(BaseAgent):
            files_and_folders= files_and_folders
         )
         self.message = [
-            {"role": "system", "content": self.sys_prompt},
-            {"role": "user", "content": self.user_prompt},
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_prompt},
         ]
         response =self.llm.chat(self.message)
         judge_json = '{' + '\n' + self.extract_information(response, '{', '}')[0] + '\n' + '}'    
@@ -258,6 +265,28 @@ class ExecutionModule(BaseAgent):
         print("************************</judge_json>*************************")           
         judge_json = json.loads(judge_json)
         return judge_json    
+
+    # Send error analysis prompt to LLM and get JSON response
+    def error_analysis_format_message(self, current_code, task, code_error, working_dir, files_and_folders):
+        sys_prompt = self.prompt['_LINUX_SYSTEM_ERROR_ANALYSIS_PROMPT']
+        user_prompt = self.prompt['_LINUX_USER_ERROR_ANALYSIS_PROMPT'].format(
+           current_code=current_code,
+           task=task,
+           code_error=code_error,
+           working_dir=working_dir,
+           files_and_folders= files_and_folders
+        )
+        self.message = [
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_prompt},
+        ]
+        response =self.llm.chat(self.message)
+        analysis_json = '{' + '\n' + self.extract_information(response, '{', '}')[0] + '\n' + '}'    
+        print("************************<judge_json>**************************")
+        print(analysis_json)
+        print("************************</judge_json>*************************")           
+        analysis_json = json.loads(analysis_json)
+        return analysis_json  
 
     # Extract python code from response
     def extract_python_code(self, response):
@@ -329,4 +358,32 @@ class ExecutionModule(BaseAgent):
 # 示例使用
 # agent = AIAgent()
 # agent.process_task("示例任务")
-# agent = ExecutionModule(config_path='../../examples/config.json')
+# agent = ExecutionModule(config_path='../../examples/config.json', action_lib_dir="../../jarvis/action_lib")
+# json = agent.error_analysis_format_message('''
+# import pandas as pd
+# import numpy as np
+
+# # 创建一个包含随机数的DataFrame
+# df = pd.DataFrame(np.random.randn(10, 4), columns=['A', 'B', 'C', 'D'])
+
+# # 显示前几行数据
+# print("DataFrame:")
+# print(df)
+
+# # 计算基本统计数据
+# print("\nBasic Statistics:")
+# print(df.describe())
+
+# # 筛选出A列值大于0的行
+# filtered_df = df[df['A'] > 0]
+# print("\nRows where column A is greater than 0:")
+# pint(filtered_df)
+
+
+# ''',"Use pandas to operate on random arrays", '''
+# Traceback (most recent call last):
+#   File "/home/heroding/桌面/Jarvis/working_dir/test.py", line 18, in <module>
+#     pint(filtered_df)
+#     ^^^^
+# NameError: name 'pint' is not defined. Did you mean: 'print'?
+# ''', "/home/heroding/桌面/Jarvis/tasks/travel/run_task", "cache  general.py  __pycache__  run.py  serve.py  simulator.py")
