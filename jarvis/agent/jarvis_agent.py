@@ -75,10 +75,14 @@ class JarvisAgent(BaseAgent):
         self.action_lib = ActionManager(config_path, action_lib_dir)
         self.environment = PythonEnv()
         self.prompt = prompt
-        self.planner = PlanningModule(self.llm, self.environment, self.action_lib, self.prompt['planning_prompt'])
+        self.system_version = get_os_version()
+        self.planner = PlanningModule(self.llm, self.environment, self.action_lib, self.prompt['planning_prompt'], self.system_version)
         self.retriever = RetrievalModule()
-        self.executor = ExecutionModule(self.llm, self.environment, self.action_lib, self.prompt['execute_prompt'], max_iter)
-        
+        self.executor = ExecutionModule(self.llm, self.environment, self.action_lib, self.prompt['execute_prompt'], self.system_version, max_iter)
+        try:
+            check_os_version(self.system_version)
+        except ValueError as e:
+            print(e)        
 
     def planning(self, task):
         # 综合处理任务的方法
@@ -93,20 +97,18 @@ class JarvisAgent(BaseAgent):
 class PlanningModule(BaseAgent):
     """ 规划模块，负责将复杂任务拆解为子任务 """
 
-    def __init__(self, llm, environment, action_lib, prompt):
+    def __init__(self, llm, environment, action_lib, prompt, system_version):
         # 模块初始化，包括设置执行环境，初始化prompt等
         super().__init__()
         # 模型，环境，数据库
         self.llm = llm
         self.environment = environment
         self.action_lib = action_lib
-        self.system_version = get_os_version()
+        self.system_version = system_version
         self.prompt = prompt
-        try:
-            check_os_version(self.system_version)
-        except ValueError as e:
-            print(e)
-
+        # 动作图信息和动作拓扑排序
+        self.action_graph = []
+        self.action_list = []
 
     def decompose_task(self, task):
         # 实现任务拆解逻辑
@@ -120,13 +122,26 @@ class PlanningModule(BaseAgent):
         # TODO: 解析出子任务
         return response_text
 
+    def replan_task(self, reasoning, ):
+        # 重新计划新的任务
+        pass
 
-class RetrievalModule:
+    # Send decompse task prompt to LLM and get task list 
+    def decompose_task_format_message(self, task):
+        pass
+
+
+class RetrievalModule(BaseAgent):
     """ 检索模块，负责在动作库中检索可用动作 """
 
-    def __init__(self):
-        # 初始化代码，如动作库的加载
-        pass
+    def __init__(self, llm, environment, action_lib, prompt):
+        # 模块初始化，包括设置执行环境，初始化prompt等
+        super().__init__()
+        # 模型，环境，数据库
+        self.llm = llm
+        self.environment = environment
+        self.action_lib = action_lib
+        self.prompt = prompt
 
     def search_action(self, subtask):
         # 实现检索动作逻辑
@@ -136,20 +151,16 @@ class RetrievalModule:
 class ExecutionModule(BaseAgent):
     """ 执行模块，负责执行动作并更新动作库 """
 
-    def __init__(self, llm, environment, action_lib, prompt, max_iter):
+    def __init__(self, llm, environment, action_lib, prompt, system_version, max_iter):
         # 模块初始化，包括设置执行环境，初始化prompt等
         super().__init__()
         # 模型，环境，数据库
         self.llm = llm
         self.environment = environment
         self.action_lib = action_lib
-        self.system_version = get_os_version()
+        self.system_version = system_version
         self.prompt = prompt
         self.max_iter = max_iter
-        try:
-            check_os_version(self.system_version)
-        except ValueError as e:
-            print(e)
     
     def generate_action(self, task_name, task_description):
         # 生成动作代码逻辑，生成可以完成动作的代码，返回生成的代码
@@ -185,7 +196,6 @@ class ExecutionModule(BaseAgent):
         type = analysis_json['type']
         return reasoning, type
         
-        
     def store_action(self, action, code):
         # 实现动作存储逻辑，对新的动作进行存储
         #  获取描述信息
@@ -199,7 +209,6 @@ class ExecutionModule(BaseAgent):
         args_description_file_path = self.action_lib.action_lib_dir + '/args_description/' + action + '.txt'      
         # 保存参数
         self.save_str_to_path(args_description, args_description_file_path)
-
 
     # Send skill create message to LLM
     def skill_create_format_message(self, task_name, task_description, working_dir):
@@ -221,10 +230,10 @@ class ExecutionModule(BaseAgent):
         class_name, args_description = self.extract_class_name_and_args_description(class_code)
         sys_prompt = self.prompt['_LINUX_SYSTEM_INVOKE_GENERATE_PROMPT']
         user_prompt = self.prompt['_LINUX_USER_INVOKE_GENERATE_PROMPT'].format(
-           class_name = class_name,
-           task_description = task_description,
-           args_description = args_description,
-           working_dir = working_dir
+            class_name = class_name,
+            task_description = task_description,
+            args_description = args_description,
+            working_dir = working_dir
         )
         self.message = [
             {"role": "system", "content": sys_prompt},
@@ -233,13 +242,13 @@ class ExecutionModule(BaseAgent):
         return self.llm.chat(self.message)        
     
     # Send skill amend message to LLM
-    def skill_amend_format_message(self, original_code, task, error,code_output, working_dir, files_and_folders, critique):
+    def skill_amend_format_message(self, original_code, task, error, code_output, working_dir, files_and_folders, critique):
         sys_prompt = self.prompt['_LINUX_SYSTEM_SKILL_AMEND_PROMPT']
         user_prompt = self.prompt['_LINUX_USER_SKILL_AMEND_PROMPT'].format(
-           original_code = original_code,
-           task = task,
-           error = error,
-           code_output = code_output,
+            original_code = original_code,
+            task = task,
+            error = error,
+            code_output = code_output,
             working_dir = working_dir,
             files_and_folders = files_and_folders,
             critique = critique
@@ -254,11 +263,11 @@ class ExecutionModule(BaseAgent):
     def task_judge_format_message(self, current_code, task, code_output, working_dir, files_and_folders):
         sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_JUDGE_PROMPT']
         user_prompt = self.prompt['_LINUX_USER_TASK_JUDGE_PROMPT'].format(
-           current_code=current_code,
-           task=task,
-           code_output=code_output,
-           working_dir=working_dir,
-           files_and_folders= files_and_folders
+            current_code=current_code,
+            task=task,
+            code_output=code_output,
+            working_dir=working_dir,
+            files_and_folders= files_and_folders
         )
         self.message = [
             {"role": "system", "content": sys_prompt},
@@ -276,11 +285,11 @@ class ExecutionModule(BaseAgent):
     def error_analysis_format_message(self, current_code, task, code_error, working_dir, files_and_folders):
         sys_prompt = self.prompt['_LINUX_SYSTEM_ERROR_ANALYSIS_PROMPT']
         user_prompt = self.prompt['_LINUX_USER_ERROR_ANALYSIS_PROMPT'].format(
-           current_code=current_code,
-           task=task,
-           code_error=code_error,
-           working_dir=working_dir,
-           files_and_folders= files_and_folders
+            current_code=current_code,
+            task=task,
+            code_error=code_error,
+            working_dir=working_dir,
+            files_and_folders= files_and_folders
         )
         self.message = [
             {"role": "system", "content": sys_prompt},

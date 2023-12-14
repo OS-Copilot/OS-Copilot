@@ -1,7 +1,7 @@
 import subprocess
 import time
 import os
-from typing import Optional, Union, List
+from typing import Optional, Union
 from jarvis.core.schema import ActionReturn, ActionStatusCode, EnvState
 from jarvis.environment.env import Env
 from tempfile import NamedTemporaryFile
