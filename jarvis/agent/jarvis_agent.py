@@ -1,11 +1,10 @@
 from jarvis.agent.base_agent import BaseAgent
-from jarvis.enviroment.py_env import PythonEnv
+from jarvis.environment.py_env import PythonEnv
 from jarvis.core.llms import OpenAI
 from jarvis.core.action_manager import ActionManager
-from jarvis.core.utils import generate_prompt
 from jarvis.action.get_os_version import get_os_version, check_os_version
 from jarvis.core.llms import OpenAI
-from jarvis.agent.prompt import execute_prompt, retrieve_prompt, planning_prompt
+from jarvis.agent.prompt import prompt
 import re
 import json
 
@@ -73,9 +72,13 @@ class JarvisAgent(BaseAgent):
     def __init__(self, config_path=None, action_lib_dir=None, max_iter=3):
         super().__init__()
         self.llm = OpenAI(config_path)
-        self.planner = PlanningModule(self.llm)
+        self.action_lib = ActionManager(config_path, action_lib_dir)
+        self.environment = PythonEnv()
+        self.prompt = prompt
+        self.planner = PlanningModule(self.llm, self.environment, self.action_lib, self.prompt['planning_prompt'])
         self.retriever = RetrievalModule()
-        self.executor = ExecutionModule(config_path, action_lib_dir, max_iter)
+        self.executor = ExecutionModule(self.llm, self.environment, self.action_lib, self.prompt['execute_prompt'], max_iter)
+        
 
     def planning(self, task):
         # 综合处理任务的方法
@@ -90,16 +93,19 @@ class JarvisAgent(BaseAgent):
 class PlanningModule(BaseAgent):
     """ 规划模块，负责将复杂任务拆解为子任务 """
 
-    def __init__(self, llm:OpenAI=None, system_replace_dict:dict=None):
-        # 初始化代码，如设置初始参数
-        if llm == None:
-            raise NotImplementedError
+    def __init__(self, llm, environment, action_lib, prompt):
+        # 模块初始化，包括设置执行环境，初始化prompt等
+        super().__init__()
+        # 模型，环境，数据库
         self.llm = llm
-        self.messages = []
-        self.system_prompt = generate_prompt(PLANNING_SYSTEM_PROMPT, replace_dict=system_replace_dict)
-        self.messages.append({'role': 'system',
-                              'content': self.system_prompt})
-        self.messages.extend(PLANNING_EXAMPLE_MESSAGES)
+        self.environment = environment
+        self.action_lib = action_lib
+        self.system_version = get_os_version()
+        self.prompt = prompt
+        try:
+            check_os_version(self.system_version)
+        except ValueError as e:
+            print(e)
 
 
     def decompose_task(self, task):
@@ -130,15 +136,15 @@ class RetrievalModule:
 class ExecutionModule(BaseAgent):
     """ 执行模块，负责执行动作并更新动作库 """
 
-    def __init__(self, config_path=None, action_lib_dir=None, max_iter=3):
+    def __init__(self, llm, environment, action_lib, prompt, max_iter):
         # 模块初始化，包括设置执行环境，初始化prompt等
         super().__init__()
         # 模型，环境，数据库
-        self.llm = OpenAI(config_path)
-        self.environment = PythonEnv()
-        self.action_lib = ActionManager(config_path, action_lib_dir)
+        self.llm = llm
+        self.environment = environment
+        self.action_lib = action_lib
         self.system_version = get_os_version()
-        self.prompt = execute_prompt
+        self.prompt = prompt
         self.max_iter = max_iter
         try:
             check_os_version(self.system_version)
@@ -358,32 +364,32 @@ class ExecutionModule(BaseAgent):
 # 示例使用
 # agent = AIAgent()
 # agent.process_task("示例任务")
-# agent = ExecutionModule(config_path='../../examples/config.json', action_lib_dir="../../jarvis/action_lib")
-# json = agent.error_analysis_format_message('''
-# import pandas as pd
-# import numpy as np
+agent = JarvisAgent(config_path='../../examples/config.json', action_lib_dir="../../jarvis/action_lib")
+json = agent.executor.error_analysis_format_message('''
+import pandas as pd
+import numpy as np
 
-# # 创建一个包含随机数的DataFrame
-# df = pd.DataFrame(np.random.randn(10, 4), columns=['A', 'B', 'C', 'D'])
+# 创建一个包含随机数的DataFrame
+df = pd.DataFrame(np.random.randn(10, 4), columns=['A', 'B', 'C', 'D'])
 
-# # 显示前几行数据
-# print("DataFrame:")
-# print(df)
+# 显示前几行数据
+print("DataFrame:")
+print(df)
 
-# # 计算基本统计数据
-# print("\nBasic Statistics:")
-# print(df.describe())
+# 计算基本统计数据
+print("\nBasic Statistics:")
+print(df.describe())
 
-# # 筛选出A列值大于0的行
-# filtered_df = df[df['A'] > 0]
-# print("\nRows where column A is greater than 0:")
-# pint(filtered_df)
+# 筛选出A列值大于0的行
+filtered_df = df[df['A'] > 0]
+print("\nRows where column A is greater than 0:")
+pint(filtered_df)
 
 
-# ''',"Use pandas to operate on random arrays", '''
-# Traceback (most recent call last):
-#   File "/home/heroding/桌面/Jarvis/working_dir/test.py", line 18, in <module>
-#     pint(filtered_df)
-#     ^^^^
-# NameError: name 'pint' is not defined. Did you mean: 'print'?
-# ''', "/home/heroding/桌面/Jarvis/tasks/travel/run_task", "cache  general.py  __pycache__  run.py  serve.py  simulator.py")
+''',"Use pandas to operate on random arrays", '''
+Traceback (most recent call last):
+  File "/home/heroding/桌面/Jarvis/working_dir/test.py", line 18, in <module>
+    pint(filtered_df)
+    ^^^^
+NameError: name 'pint' is not defined. Did you mean: 'print'?
+''', "/home/heroding/桌面/Jarvis/tasks/travel/run_task", "cache  general.py  __pycache__  run.py  serve.py  simulator.py")

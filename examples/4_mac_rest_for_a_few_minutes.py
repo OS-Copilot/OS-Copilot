@@ -1,8 +1,8 @@
 from jarvis.agent.openai_agent import OpenAIAgent
 from jarvis.agent.skill_creator import SkillCreator
 # from jarvis.enviroment.old_env import BaseEnviroment
-from jarvis.enviroment.bash_env import BashEnv
-from jarvis.enviroment.py_env import PythonEnv
+from jarvis.environment.bash_env import BashEnv
+from jarvis.environment.py_env import PythonEnv
 
 '''
 A minimal example for creating new skills

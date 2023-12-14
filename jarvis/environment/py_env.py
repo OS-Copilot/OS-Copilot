@@ -1,13 +1,13 @@
 import subprocess
 import time
 import os
-
 from typing import Optional, Union, List
 from jarvis.core.schema import ActionReturn, ActionStatusCode, EnvState
-from jarvis.enviroment.env import Env
+from jarvis.environment.env import Env
+from tempfile import NamedTemporaryFile
 
 
-class BashEnv(Env):
+class PythonEnv(Env):
     """Base class for all actions.
 
     Args:
@@ -21,12 +21,25 @@ class BashEnv(Env):
         super().__init__()
         self._name: str = self.__class__.__name__
 
-    def step(self, _command) -> EnvState:
+    def step(self, _command: str, args: list[str] | str = []) -> EnvState:
+        tmp_code_file = NamedTemporaryFile("w", dir=self.working_dir, suffix=".py", encoding="utf-8")
+        # wzm修改，解决拿不到最后一行输出的当前工作目录问题
+        _command = _command.strip() + "\n"  + "import os" + "\n" + "print(os.getcwd())"
+        tmp_code_file.write(_command)
+        tmp_code_file.flush()
+        filename = tmp_code_file.name
+        if isinstance(args, str):
+            args = args.split()  # Convert space-separated string to a list
         self.env_state = EnvState(command=_command)
-        _command = _command() + ' && pwd'
         try:
-            results = subprocess.run([_command], capture_output=True, check=True, cwd=self.working_dir,
-                                     text=True, shell=True, timeout=self.timeout)
+            results = subprocess.run(
+                ["python", '-B', str(filename)],
+                encoding="utf8",
+                check=True, cwd=self.working_dir, timeout=self.timeout,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            # wzm修改：如果有标准化输出
             if results.stdout:
                 stout = results.stdout.strip().split('\n')
                 self.env_state.result = "\n".join(stout[:-1])
@@ -36,7 +49,10 @@ class BashEnv(Env):
             self.env_state.error = e.stderr
         except Exception as e:
             self.env_state.error = repr(e)
+        finally:
+            tmp_code_file.close()
         self.observe(self.working_dir)
+
         return self.env_state
 
     def reset(self):
@@ -48,11 +64,15 @@ class BashEnv(Env):
         self.env_state.ls = subprocess.run(['ls'], cwd=self.working_dir, capture_output=True, text=True).stdout
 
 
+DEFAULT_DESCRIPTION = """def solution():
+    print("hello world!")
+    print("hello world!")
+    return "return!"
+"""
 if __name__ == '__main__':
-    env = BashEnv()
-    print(env.name)
-    print(env.step("ls"))
-    print(env.step("cd ../../"))
-    print(env.step("gogo"))
-    env.reset()
-    print(env.step("sleep 3"))
+    env = PythonEnv()
+    print(env.step(DEFAULT_DESCRIPTION))
+    # print(env.step("cd ../../"))
+    # print(env.step("gogo"))
+    # env.reset()
+    # print(env.step("sleep 3"))

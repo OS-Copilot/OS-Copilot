@@ -1,5 +1,5 @@
 from jarvis.agent.openai_agent import OpenAIAgent
-from jarvis.enviroment.py_env import PythonEnv
+from jarvis.environment.py_env import PythonEnv
 from jarvis.agent.jarvis_agent import ExecutionModule
 
 '''

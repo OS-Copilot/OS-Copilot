@@ -3,7 +3,7 @@ import os
 
 from jarvis.agent.openai_agent import OpenAIAgent
 # from jarvis.enviroment.old_env import BaseEnviroment
-from jarvis.enviroment.bash_env import BashEnv
+from jarvis.environment.bash_env import BashEnv
 
 
 '''

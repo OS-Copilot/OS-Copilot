@@ -1,5 +1,5 @@
 from jarvis.agent.openai_agent import OpenAIAgent
-from jarvis.enviroment.py_env import PythonEnv
+from jarvis.environment.py_env import PythonEnv
 from jarvis.agent.linux_skill_creator import LinuxSkillCreator
 from jarvis.agent.linux_skill_amend import LinuxSkillAmend
 from jarvis.agent.linux_invoke_generator import LinuxInvokeGenerator
