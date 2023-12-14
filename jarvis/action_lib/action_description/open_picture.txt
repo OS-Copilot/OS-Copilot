@@ -1,1 +1,0 @@
-Using open_picture() will open the picture you want.

@@ -157,8 +157,9 @@ prompt = {
         ''',
         '_LINUX_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
-        Task: {task}
         System Version: {system_version}
+        Task: {task}
+        Action List: {action_list}
         ''',
 
     },

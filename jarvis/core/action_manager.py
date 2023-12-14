@@ -47,7 +47,7 @@ class ActionManager:
     @property
     def programs(self):
         programs = ""
-        for action_name, entry in self.actions.items():
+        for _, entry in self.actions.items():
             programs += f"{entry['code']}\n\n"
         return programs
     
@@ -155,29 +155,32 @@ class ActionManager:
             f"\033[33m delete {action} args description txt successfully! \033[0m"
             )                
     
-# demo
-# actionManager = ActionManager(config_path="../../examples/config.json", action_lib_dir="../action_lib", retrieval_top_k=1)
-# sys.path.append('../action_lib/code')
-# # 添加所有任务代码
-# files = glob.glob("../action_lib/code" + "/*.py")
-# for file in files:
-#     if file.endswith('.py') and "__init__" not in file:
-#         class_name = file[:-3].split('/')[-1]  # 去除.py后缀，获取类名
-#         print(f"当前类:{class_name}")
-#         module = importlib.import_module(class_name)
-#         # get origin code
-#         source_code = inspect.getsource(module)
-#         # get class object
-#         tmp_obj = getattr(module, class_name)() 
-#         # 报错到向量数据库和字典
-#         actionManager.add_new_action({
-#             "task_name": class_name,
-#             "code": source_code,
-#             "description": tmp_obj.description
-#         })
-# # 检索
-# res = actionManager.retrieve_actions("give me a picture from web")
-# print(res[0])
 
-# 删除
-# actionManager.delete_action("retrieve_document")
+if __name__ == '__main__':
+    actionManager = ActionManager(config_path="../../examples/config.json", action_lib_dir="../action_lib", retrieval_top_k=1)
+    # action_list = json.dumps(actionManager.descriptions)
+    # print(action_list)
+    # sys.path.append('../action_lib/code')
+    # # 添加所有任务代码
+    # files = glob.glob("../action_lib/code" + "/*.py")
+    # for file in files:
+    #     if file.endswith('.py') and "__init__" not in file:
+    #         class_name = file[:-3].split('/')[-1]  # 去除.py后缀，获取类名
+    #         print(f"当前类:{class_name}")
+    #         module = importlib.import_module(class_name)
+    #         # get origin code
+    #         source_code = inspect.getsource(module)
+    #         # get class object
+    #         tmp_obj = getattr(module, class_name)() 
+    #         # 报错到向量数据库和字典
+    #         actionManager.add_new_action({
+    #             "task_name": class_name,
+    #             "code": source_code,
+    #             "description": tmp_obj.description
+    #         })
+    # # 检索
+    # res = actionManager.retrieve_actions("give me a picture from web")
+    # print(res[0])
+
+    # 删除
+    actionManager.delete_action("retrieve_document")

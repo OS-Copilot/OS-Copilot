@@ -77,7 +77,7 @@ class JarvisAgent(BaseAgent):
         self.prompt = prompt
         self.system_version = get_os_version()
         self.planner = PlanningModule(self.llm, self.environment, self.action_lib, self.prompt['planning_prompt'], self.system_version)
-        self.retriever = RetrievalModule()
+        self.retriever = RetrievalModule(self.llm, self.environment, self.action_lib, self.prompt['retrieve_prompt'])
         self.executor = ExecutionModule(self.llm, self.environment, self.action_lib, self.prompt['execute_prompt'], self.system_version, max_iter)
         try:
             check_os_version(self.system_version)
@@ -127,8 +127,38 @@ class PlanningModule(BaseAgent):
         pass
 
     # Send decompse task prompt to LLM and get task list 
-    def decompose_task_format_message(self, task):
-        pass
+    def decompose_task_format_message(self, task, tool_list):
+        sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_DECOMPOSE_PROMPT']
+        user_prompt = self.prompt['_LINUX_USER_TASK_DECOMPOSE_PROMPT'].format(
+            system_version=self.system_version,
+            task=task,
+            tool_list = tool_list
+        )
+        self.message = [
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_prompt},
+        ]
+        return self.llm.chat(self.message)
+
+    # Extract information from text
+    def extract_information(self, message, begin_str='[BEGIN]', end_str='[END]'):
+        result = []
+        _begin = message.find(begin_str)
+        _end = message.find(end_str)
+        while not (_begin == -1 or _end == -1):
+            result.append(message[_begin + len(begin_str):_end].strip())
+            message = message[_end + len(end_str):]
+            _begin = message.find(begin_str)
+            _end = message.find(end_str)
+        return result  
+
+    # Get action list, including action names and descriptions
+    def get_action_list(self):
+        action_dict = self.action_lib.descriptions
+        action_list = json.dumps(action_dict)
+        return action_list
+
+
 
 
 class RetrievalModule(BaseAgent):
@@ -370,35 +400,33 @@ class ExecutionModule(BaseAgent):
         return info
 
 
-# 示例使用
-# agent = AIAgent()
-# agent.process_task("示例任务")
-agent = JarvisAgent(config_path='../../examples/config.json', action_lib_dir="../../jarvis/action_lib")
-json = agent.executor.error_analysis_format_message('''
-import pandas as pd
-import numpy as np
+if __name__ == '__main__':
+    agent = JarvisAgent(config_path='../../examples/config.json', action_lib_dir="../../jarvis/action_lib")
+    json = agent.executor.error_analysis_format_message('''
+    import pandas as pd
+    import numpy as np
 
-# 创建一个包含随机数的DataFrame
-df = pd.DataFrame(np.random.randn(10, 4), columns=['A', 'B', 'C', 'D'])
+    # 创建一个包含随机数的DataFrame
+    df = pd.DataFrame(np.random.randn(10, 4), columns=['A', 'B', 'C', 'D'])
 
-# 显示前几行数据
-print("DataFrame:")
-print(df)
+    # 显示前几行数据
+    print("DataFrame:")
+    print(df)
 
-# 计算基本统计数据
-print("\nBasic Statistics:")
-print(df.describe())
+    # 计算基本统计数据
+    print("\nBasic Statistics:")
+    print(df.describe())
 
-# 筛选出A列值大于0的行
-filtered_df = df[df['A'] > 0]
-print("\nRows where column A is greater than 0:")
-pint(filtered_df)
-
-
-''',"Use pandas to operate on random arrays", '''
-Traceback (most recent call last):
-  File "/home/heroding/桌面/Jarvis/working_dir/test.py", line 18, in <module>
+    # 筛选出A列值大于0的行
+    filtered_df = df[df['A'] > 0]
+    print("\nRows where column A is greater than 0:")
     pint(filtered_df)
-    ^^^^
-NameError: name 'pint' is not defined. Did you mean: 'print'?
-''', "/home/heroding/桌面/Jarvis/tasks/travel/run_task", "cache  general.py  __pycache__  run.py  serve.py  simulator.py")
+
+
+    ''',"Use pandas to operate on random arrays", '''
+    Traceback (most recent call last):
+    File "/home/heroding/桌面/Jarvis/working_dir/test.py", line 18, in <module>
+        pint(filtered_df)
+        ^^^^
+    NameError: name 'pint' is not defined. Did you mean: 'print'?
+    ''', "/home/heroding/桌面/Jarvis/tasks/travel/run_task", "cache  general.py  __pycache__  run.py  serve.py  simulator.py")

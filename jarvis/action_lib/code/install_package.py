@@ -23,20 +23,4 @@ class install_package(BaseAction):
         except subprocess.CalledProcessError as e:
             print(f"Failed to install package '{package}'. Error: {e}")
         
-        # try:
-        #     # 检查pip是否已安装
-        #     print("check pip ...")
-        #     subprocess.check_call([sys.executable, '-m', 'pip', '--version'])
-        # except subprocess.CalledProcessError:
-        #     # 安装pip
-        #     print("Installing pip...")
-        #     subprocess.check_call([sys.executable, '-m', 'ensurepip'])
-
-        # # 安装指定的包
-        # try:
-        #     print(f"Installing {package}...")
-        #     subprocess.check_call([sys.executable, '-m', 'pip', 'install', package])
-        #     print(f"{package} installed successfully.")
-        # except subprocess.CalledProcessError:
-        #     print(f"Failed to install {package}.")        
 
