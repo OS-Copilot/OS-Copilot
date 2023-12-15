@@ -1,0 +1,10 @@
+Create a zip archive of all files in the specified folder.
+
+        Args:
+            folder_path (str): The path to the folder whose files are to be zipped.
+            zip_name (str): The name of the resulting zip file.
+            working_directory (str, optional): The working directory where the folder is located. 
+                If not provided, the current working directory is used.
+
+        Returns:
+            None: This method performs a task and does not return a value.

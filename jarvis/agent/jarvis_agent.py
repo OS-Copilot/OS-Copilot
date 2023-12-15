@@ -203,7 +203,13 @@ class ExecutionModule(BaseAgent):
         invoke_msg = self.invoke_generate_format_message(code, task_description, self.environment.working_dir)
         invoke = self.extract_information(invoke_msg, begin_str='<invoke>', end_str='</invoke>')[0]
         code = code + '\n' + invoke
+        print("************************<code>**************************")
+        print(code)
+        print("************************</code>*************************")  
         state = self.environment.step(code)
+        print("************************<state>**************************")
+        print(state)
+        print("************************</state>*************************") 
         return state
 
     def judge_action(self, code, task_description, state):
@@ -216,7 +222,7 @@ class ExecutionModule(BaseAgent):
     def amend_action(self, current_code, task_description, state, critique):
         # 实现动作修复逻辑，对于未完成任务或者有错误的代码进行修复，返回修复后的代码
         amend_msg = self.skill_amend_format_message(current_code, task_description, state.error, state.result, state.pwd, state.ls, critique)
-        new_code = self.extract_python_code(amend_msg)[0]
+        new_code = self.extract_python_code(amend_msg)
         return new_code
 
     def analysis_action(self, code, task_description, state):

@@ -31,9 +31,8 @@ prompt = {
         '_LINUX_SYSTEM_SKILL_AMEND_PROMPT' : '''
         You are an AI expert in Python programming, with a focus on diagnosing and resolving code issues.
         Your goal is to precisely identify the reasons for failure in the existing Python code and implement effective modifications to ensure it accomplishes the intended task without errors.
-
         You should only respond with the python code in the format as described below:
-        1. Modified Code: Based on the error analysis, modify the original code to fix all the issues and give the final correct code that accomplishes the target task to the user.
+        1. Modified Code: Based on the error analysis, the original code is modified to fix all the problems and provide the final correct code to the user to accomplish the target task. If the code is error free, fix and refine the code based on the Critique On The Code provided by the user to accomplish the target task.
         2. Error Analysis: Conduct a step-by-step analysis to identify why the code is generating errors or failing to complete the task. This involves checking for syntax errors, logical flaws, and any other issues that might hinder execution.
         3. Detailed Explanation: Offer a clear and comprehensive explanation for each identified issue, detailing why these issues are occurring and how they are impacting the code's functionality.
         And the code you write should also follow the following criteria:
@@ -63,17 +62,17 @@ prompt = {
         '_LINUX_SYSTEM_SKILL_CREATE_PROMPT' : '''
         You are helpful assistant to assist in writing Python tool code for tasks completed on Linux operating systems. Your expertise lies in creating Python classes that perform specific tasks, adhering to a predefined format and structure.
         Your goal is to generate Python tool code in the form of a class. The code should be structured to perform a user-specified task on a Linux operating system. The class must be easy to use and understand, with clear instructions and comments.
-
         You should only respond with the python code in the format as described below:
         1. Code Structure: Begin with the necessary import statement: from jarvis.action.base_action import BaseAction. Then, define the class using the class name which is the same as the task name provided by the user.
-        2. Parameter Handling: In the __init__ method, only initialize self._description with a brief description of the class's purpose, detailing what task it accomplishes.
-        3. Code used to accomplish the task: Note that you should avoid using bash for the current task if you can, and prioritize using some of python's basic libraries for the current task. If the task involves Linux bash operations, instruct the use of the subprocess library, particularly the run method, to execute these operations. All core code used to accomplish the task should be encapsulated within the __call__ method of the class.
-        4. Detailed Comments: Provide comprehensive comments throughout the code. This includes describing the purpose of the class, and the function of parameters, especially in the __call__ method. 
+        2. Initialization Code: Initialization Code: In the __init__ method of the class, only "self._description" is initialized. This attribute succinctly summarizes the main function and purpose of the class. 
+        3. Code used to accomplish the Task: Note that you should avoid using bash for the current task if you can, and prioritize using some of python's basic libraries for the current task. If the task involves Linux bash operations, instruct the use of the subprocess library, particularly the run method, to execute these operations. All core code used to accomplish the task should be encapsulated within the __call__ method of the class.
+        4. Parameters of __call__ method: The parameter design of __call__ methods should be comprehensive and generic enough to apply to different goals in all the same task scenarios. The goals of the __call__ method must be abstracted into parameters that can be passed in by the user, and the goals of the specific task must not be hard-coded into the method. 
+        5. Detailed Comments: Provide comprehensive comments throughout the code. This includes describing the purpose of the class, and the function of parameters, especially in the __call__ method. 
         And the code you write should also follow the following criteria:
         1. The class must start with from jarvis.action.base_action import BaseAction.In addition you need to import all the third-party libraries used in your code.
         2. The class name should be the same as the user's task name.
-        3. In the __init__ method, only self._description should be initialized.
-        4. The __call__ method must allow flexible arguments (*args, **kwargs) for different user requirements. The __call__ method should not hardcode specific task details, but rather, it should abstract them into parameters that can be passed in by the user. For example, if the class is meant to download and play music, the method should take parameters like the download link, destination folder, and file name, instead of having these details fixed in the code. Please ensure that the class is structured to easily accommodate different types of tasks, with a clear and flexible parameter design in the __call__ method. In addition, the parameter design should be comprehensive and versatile enough to be applicable to almost all similar tasks.
+        3. In the __init__ method, only self._description should be initialized. And self._description must be general enough to encapsulate the functionality of the current class. For example, if the current task is to change the name of the file named test in the folder called document to test1, then the content of this attribute should be written as: Rename the specified file within a designated folder to a new, predetermined filename.
+        4. The __call__ method must allow flexible arguments (*args, **kwargs) for different user requirements. The __call__ method should not hardcode specific task details, but rather, it should abstract them into parameters that can be passed in by the user. For example, if the class is meant to download and play music, the method should take parameters like the download link, destination folder, and file name, instead of having these details fixed in the code. Please ensure that the class is structured to easily accommodate different types of tasks, with a clear and flexible parameter design in the __call__ method. In addition, the parameter design should be comprehensive and versatile enough to be applicable to handling different targets under all the same task scenarios.
         5. For tasks involving Linux bash commands, use the subprocess library to execute these commands within the Python class.
         6. The code should include detailed comments explaining the purpose of the class, and the role of each parameter.
         7. If a file or folder creation operation is involved, the name of the file or folder should contain only English, numbers and underscores.
@@ -84,6 +83,7 @@ prompt = {
         12. If you need to access the user's working directory, you should make the user's working directory a parameter that can be passed to the __call__ method. If the user provides a value for the working directory as a parameter, then use the path provided by the user as the working directory path. Otherwise, you can obtain it using methods like os.getcwd().
         13. You only need to write the class, don't instantiate it and call the __call__ method. If you want to write an example of how to use the class, be sure to put the example in the comments.
         14. The description of parameters in the __call__ method must follow a standardized format: Args: [description of input parameters], Returns: [description of the method's return value].
+        15. In the __call__ method, you need to print the task execution completion message if the task execution completes.
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information. 
         ''',
         '_LINUX_USER_SKILL_CREATE_PROMPT' : '''
@@ -98,14 +98,15 @@ prompt = {
         # Task judge prompt in linux
         '_LINUX_SYSTEM_TASK_JUDGE_PROMPT' : '''
         You are an AI program expert to verify Python code against a user's task requirements.
-        Your goal is to determine if the provided Python code accomplishes the user's specified task based on the feedback information.
+        Your goal is to determine if the provided Python code accomplishes the user's specified task based on the feedback information, And score the code based on the degree of generalizability of the code.
         You should only respond with the JSON result in the format as described below:
         1. Analyze the provided code: Examine the user's Python code to understand its functionality and structure.
         2. Compare the code with the task description: Align the objectives stated in the user's task description with the capabilities of the code.
-        3. Evaluate the feedback information: Review the user's feedback, including the output of the code and any file changes or directory states, to gauge the code's effectiveness.
-        4. Formulate a reasoning process: Synthesize the analysis, comparison, and evaluation to create a logical reasoning process about the code's effectiveness in achieving the task.
-        5. Assess the Task Completion Degree: Determine the level of task accomplishment based on the reasoning process, assigning an integer score between 1 and 10 to reflect the extent to which the code fulfills the user's task.
-        6. Output Format: You should only return a JSON with no extra content. The JSON should contain two keys: one is called 'reasoning', with its value being a string that represents your reasoning process; the other is called 'score', which is a number between 1 and 10, representing the completion degree of the current task.
+        3. Evaluate the feedback information: Review the user's feedback, Includes the output of the code and the working catalog information provided to measure the effectiveness of the code.
+        4. Formulate a reasoning process: Comprehensive code analysis and feedback evaluation, create a logical reasoning process regarding the effectiveness of the code in accomplishing the task and the generalizability of the code. The generality of the code can be analyzed in terms of the flexibility of the parameters in the code, the handling of errors and exceptions, the clarity of the comments, the efficiency of the code, and the security perspective.
+        5. Evaluating Task Completion: Determine if the task is complete based on the reasoning process, expressed as a Boolean value, with 'True' meaning the task is complete and 'False' meaning the task is not complete.
+        6. Evaluating the code's generality: based on the analysis of the code's generality by the reasoning process, the code's generality is scored by assigning an integer score between 1 and 10 to reflect the code's generality, with a score of 1-5 indicating that the code is not sufficiently generalized, and that it may be possible to write the task objective directly into the code instead of passing it in as a parameter. a score of 6-8 indicates that the code is capable of accomplishing the task for different objectives of the same task, except that in the security, clarity of comments, performance, or error and exception handling, and a score of 8 or more indicates that the code meets the requirements for generalization in almost all dimensions.
+        7. Output Format: You should only return a JSON with no extra content. The JSON should contain three keys: the first is called 'reasoning', with its value being a string that represents your reasoning process. the second is called 'judge', Its value is 'True' or 'False', True indicates that the code completes the current task, False indicates that it does not.The last is called 'score', which is a number between 1 and 10, representing a rating of the code's generalizability. 
         And you should also follow the following criteria:
         1. Ensure accurate understanding of the Python code.
         2. Relate the code functionality to the user's task.
@@ -113,7 +114,7 @@ prompt = {
         4. Provide clear, logical reasoning.
         5. You need to aware that the code I provided does not generate errors, I am just uncertain whether it effectively accomplishes the intended task.
         6. If the task involves file creation, information regarding the current working directory and all its subdirectories and files may assist you in determining whether the file has been successfully created.
-        Now you will be provided with the following information, please give the result JSON according to these information:
+        7. If the Code Output contains information indicating that the task has been completed, the task can be considered completed.        Now you will be provided with the following information, please give the result JSON according to these information:
         ''',
         '_LINUX_USER_TASK_JUDGE_PROMPT' : '''
         User's information are as follows:

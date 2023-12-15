@@ -25,11 +25,12 @@ response = '''
 Thought: In order to solve this task, first search the txt text in the document file in the working directory. If the text contains the word "agent", put the path of the text into agent.txt and wrap it in a new line. The second step is put the retrieved files into the folder named agent, the path of the retrieved files is placed in the txt file named agent, Each line is the path of a file.
 
 Actions: 
-1. <action>retrieve_document</action> <description>search the txt text in the folder call document in the working directory. If the text contains the word "agent", put the full path of the text into agent.txt and wrap it in a new line.</description>
 2. <action>organize_document</action> <description>put the retrieved files into the folder named agent, the path of the retrieved files is placed in the txt file named agent.txt, Each line is the path of a file.</description>
 Check local action_lib, the required action code is in the library, according to the function description in the code, combined with the information provided by the user, You can instantiate classes for different tasks.
 
 '''
+# 1. <action>retrieve_document</action> <description>search the txt text in the folder call document in the working directory. If the text contains the word "agent", put the full path of the text into agent.txt and wrap it in a new line.</description>
+
 
 # Get actions and corresponding descriptions
 actions = retrieve_agent.extract_information(response, begin_str='<action>', end_str='</action>')
@@ -39,11 +40,11 @@ task_descriptions = retrieve_agent.extract_information(response, begin_str='<des
 for action, description in zip(actions, task_descriptions):
     # Create python tool class code
     code = execute_agent.generate_action(action, description)
-    print(code)
+    # print(code)
 
     # Execute python tool class code
     state = execute_agent.execute_action(code, description)
-    print(state)
+    # print(state)
 
     # Check whether the code runs correctly, if not, amend the code
     need_mend = False
@@ -63,10 +64,11 @@ for action, description in zip(actions, task_descriptions):
         trial_times += 1
         print("current amend times: {}".format(trial_times))
         new_code = execute_agent.amend_action(current_code, description, state, critique)
+        critique = ''
         current_code = new_code
         # Run the current code and check for errors
         state = execute_agent.execute_action(current_code, description)
-        print(state)
+        # print(state)
         # Recheck
         if state.error == None:
             critique, score = execute_agent.judge_action(current_code, description, state)
@@ -81,7 +83,6 @@ for action, description in zip(actions, task_descriptions):
     # If the task still cannot be completed, an error message will be reported.
     if need_mend == True:
         print("I can't Do this Task!!")
-        break
     else: # The task is completed, save the code, args_description, action_description in lib
         execute_agent.store_action(action, current_code)
 
