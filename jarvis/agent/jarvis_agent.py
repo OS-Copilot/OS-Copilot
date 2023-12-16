@@ -1,4 +1,6 @@
 from jarvis.agent.base_agent import BaseAgent
+from jarvis.core.action_node import ActionNode
+from collections import defaultdict, deque
 from jarvis.environment.py_env import PythonEnv
 from jarvis.core.llms import OpenAI
 from jarvis.core.action_manager import ActionManager
@@ -106,33 +108,36 @@ class PlanningModule(BaseAgent):
         self.action_lib = action_lib
         self.system_version = system_version
         self.prompt = prompt
-        # 动作图信息和动作拓扑排序
-        self.action_graph = []
+        # 动作节点，动作图信息和动作拓扑排序
+        self.action_node = {}
+        self.action_graph = defaultdict(list)
         self.action_list = []
 
     def decompose_task(self, task):
         # 实现任务拆解逻辑
-        self.user_prompt = USER_PROMPT.format(
-            task=task
-        )
-        self.messages.append({'role': 'user',
-                              'content': self.user_prompt})
-        response = self.llm.chat(self.messages)
-        response_text = response['content']
-        # TODO: 解析出子任务
-        return response_text
+        action_list = self.get_action_list
+        files_and_folders = self.environment.list_working_dir()
+        response = self.decompose_task_format_message(task, action_list, self.environment.working_dir, files_and_folders)
+        decompose_json = self.extract_json_from_string(response)
+        # 构建动作图和动作拓扑排序
+        self.create_action_graph(decompose_json)
+        self.topological_sort()
+        for _, node in self.action_node.items():
+            print(node)
 
     def replan_task(self, reasoning, ):
         # 重新计划新的任务
         pass
 
     # Send decompse task prompt to LLM and get task list 
-    def decompose_task_format_message(self, task, tool_list):
+    def decompose_task_format_message(self, task, action_list, working_dir, files_and_folders):
         sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_DECOMPOSE_PROMPT']
         user_prompt = self.prompt['_LINUX_USER_TASK_DECOMPOSE_PROMPT'].format(
             system_version=self.system_version,
             task=task,
-            tool_list = tool_list
+            action_list = action_list,
+            working_dir = working_dir,
+            files_and_folders = files_and_folders
         )
         self.message = [
             {"role": "system", "content": sys_prompt},
@@ -140,23 +145,55 @@ class PlanningModule(BaseAgent):
         ]
         return self.llm.chat(self.message)
 
-    # Extract information from text
-    def extract_information(self, message, begin_str='[BEGIN]', end_str='[END]'):
-        result = []
-        _begin = message.find(begin_str)
-        _end = message.find(end_str)
-        while not (_begin == -1 or _end == -1):
-            result.append(message[_begin + len(begin_str):_end].strip())
-            message = message[_end + len(end_str):]
-            _begin = message.find(begin_str)
-            _end = message.find(end_str)
-        return result  
-
     # Get action list, including action names and descriptions
     def get_action_list(self):
         action_dict = self.action_lib.descriptions
         action_list = json.dumps(action_dict)
         return action_list
+    
+    # Creates a action graph from a list of dependencies.
+    def create_action_graph(self, json):
+        # generate execte graph
+        for task_name, task_info in json.items():
+            self.action_node[task_name] = ActionNode(task_name, task_info['description'])
+            self.action_graph[task_name] = task_info['dependencies']
+    
+    # generate graph topological sort
+    def topological_sort(self):
+        graph = defaultdict(list)
+        for node, dependencies in self.action_graph.items():
+            graph.setdefault(node, [])
+            for dependent in dependencies:
+                graph[dependent].append(node)
+
+        in_degree = {node: 0 for node in graph}      
+        print(in_degree)  
+        # Count in-degree for each node
+        for node in graph:
+            for dependent in graph[node]:
+                in_degree[dependent] += 1
+
+        # Initialize queue with nodes having in-degree 0
+        queue = deque([node for node in in_degree if in_degree[node] == 0])
+
+        # List to store the order of execution
+
+        while queue:
+            # Get one node with in-degree 0
+            current = queue.popleft()
+            self.action_list.append(current)
+
+            # Decrease in-degree for all nodes dependent on current
+            for dependent in graph[current]:
+                in_degree[dependent] -= 1
+                if in_degree[dependent] == 0:
+                    queue.append(dependent)
+
+        # Check if topological sort is possible (i.e., no cycle)
+        if len(self.action_list) == len(graph):
+            print("topological sort is possible")
+        else:
+            return "Cycle detected in the graph, topological sort not possible."
 
 
 
@@ -311,11 +348,10 @@ class ExecutionModule(BaseAgent):
             {"role": "user", "content": user_prompt},
         ]
         response =self.llm.chat(self.message)
-        judge_json = '{' + '\n' + self.extract_information(response, '{', '}')[0] + '\n' + '}'    
+        judge_json = self.extract_json_from_string(response)  
         print("************************<judge_json>**************************")
         print(judge_json)
         print("************************</judge_json>*************************")           
-        judge_json = json.loads(judge_json)
         return judge_json    
 
     # Send error analysis prompt to LLM and get JSON response
@@ -333,11 +369,10 @@ class ExecutionModule(BaseAgent):
             {"role": "user", "content": user_prompt},
         ]
         response =self.llm.chat(self.message)
-        analysis_json = '{' + '\n' + self.extract_information(response, '{', '}')[0] + '\n' + '}'    
-        print("************************<judge_json>**************************")
+        analysis_json = self.extract_json_from_string(response)      
+        print("************************<analysis_json>**************************")
         print(analysis_json)
-        print("************************</judge_json>*************************")           
-        analysis_json = json.loads(analysis_json)
+        print("************************</analysis_json>*************************")           
         return analysis_json  
 
     # Extract python code from response
@@ -377,18 +412,6 @@ class ExecutionModule(BaseAgent):
         action_match = re.search(init_pattern, class_code, re.DOTALL)
         action_description = action_match.group(1).strip() if action_match else None
         return action_description
-         
-    # Extract information from text
-    def extract_information(self, message, begin_str='[BEGIN]', end_str='[END]'):
-        result = []
-        _begin = message.find(begin_str)
-        _end = message.find(end_str)
-        while not (_begin == -1 or _end == -1):
-            result.append(message[_begin + len(begin_str):_end].strip())
-            message = message[_end + len(end_str):]
-            _begin = message.find(begin_str)
-            _end = message.find(end_str)
-        return result    
     
     # save str content to the specified path 
     def save_str_to_path(self, content, path):

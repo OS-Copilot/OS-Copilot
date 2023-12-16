@@ -9,6 +9,7 @@ target: Classify files in a specified folder.
 
 # path of action lib
 action_lib_path = "../jarvis/action_lib"
+working_dir_path = "../working_dir"
 # args_description_path = action_lib_path + "/args_description"
 # action_description_path = action_lib_path + "/action_description"
 # code_path = action_lib_path + "/code"

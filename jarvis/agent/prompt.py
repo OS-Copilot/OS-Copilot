@@ -66,13 +66,13 @@ prompt = {
         1. Code Structure: Begin with the necessary import statement: from jarvis.action.base_action import BaseAction. Then, define the class using the class name which is the same as the task name provided by the user.
         2. Initialization Code: Initialization Code: In the __init__ method of the class, only "self._description" is initialized. This attribute succinctly summarizes the main function and purpose of the class. 
         3. Code used to accomplish the Task: Note that you should avoid using bash for the current task if you can, and prioritize using some of python's basic libraries for the current task. If the task involves Linux bash operations, instruct the use of the subprocess library, particularly the run method, to execute these operations. All core code used to accomplish the task should be encapsulated within the __call__ method of the class.
-        4. Parameters of __call__ method: The parameter design of __call__ methods should be comprehensive and generic enough to apply to different goals in all the same task scenarios. The goals of the __call__ method must be abstracted into parameters that can be passed in by the user, and the goals of the specific task must not be hard-coded into the method. 
+        4. Parameters of __call__ method: The parameter design of __call__ methods should be comprehensive and generic enough to apply to different goals in all the same task scenarios. The parameters of the __call__ method are obtained by parsing and abstracting the task description, and the goals of the specific task can not be hard-coded into the method. 
         5. Detailed Comments: Provide comprehensive comments throughout the code. This includes describing the purpose of the class, and the function of parameters, especially in the __call__ method. 
         And the code you write should also follow the following criteria:
         1. The class must start with from jarvis.action.base_action import BaseAction.In addition you need to import all the third-party libraries used in your code.
         2. The class name should be the same as the user's task name.
         3. In the __init__ method, only self._description should be initialized. And self._description must be general enough to encapsulate the functionality of the current class. For example, if the current task is to change the name of the file named test in the folder called document to test1, then the content of this attribute should be written as: Rename the specified file within a designated folder to a new, predetermined filename.
-        4. The __call__ method must allow flexible arguments (*args, **kwargs) for different user requirements. The __call__ method should not hardcode specific task details, but rather, it should abstract them into parameters that can be passed in by the user. For example, if the class is meant to download and play music, the method should take parameters like the download link, destination folder, and file name, instead of having these details fixed in the code. Please ensure that the class is structured to easily accommodate different types of tasks, with a clear and flexible parameter design in the __call__ method. In addition, the parameter design should be comprehensive and versatile enough to be applicable to handling different targets under all the same task scenarios.
+        4. The __call__ method must allow flexible arguments (*args, **kwargs) for different user requirements. The __call__ method can not hardcode specific task details, but rather, it should abstract them into parameters that can be passed in by the user, these parameters can be obtained by parsing and abstracting the task description. For example, if the class is meant to download and play music, the __call__ method should take parameters like the download link, destination folder, and file name, instead of having these details fixed in the code. Please ensure that the class is structured to easily accommodate different types of tasks, with a clear and flexible parameter design in the __call__ method. In addition, the parameter design should be comprehensive and versatile enough to be applicable to handling different targets under all the same task scenarios.
         5. For tasks involving Linux bash commands, use the subprocess library to execute these commands within the Python class.
         6. The code should include detailed comments explaining the purpose of the class, and the role of each parameter.
         7. If a file or folder creation operation is involved, the name of the file or folder should contain only English, numbers and underscores.
@@ -84,6 +84,7 @@ prompt = {
         13. You only need to write the class, don't instantiate it and call the __call__ method. If you want to write an example of how to use the class, be sure to put the example in the comments.
         14. The description of parameters in the __call__ method must follow a standardized format: Args: [description of input parameters], Returns: [description of the method's return value].
         15. In the __call__ method, you need to print the task execution completion message if the task execution completes.
+        16. Please note that the code you generate is mainly used under the Linux operating system, so it often involves system-level operations such as reading and writing files. You need to write a certain fault-tolerant mechanism to handle potential problems that may arise during these operations, such as Problems such as file non-existence and insufficient permissions. 
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information. 
         ''',
         '_LINUX_USER_SKILL_CREATE_PROMPT' : '''
@@ -105,8 +106,8 @@ prompt = {
         3. Evaluate the feedback information: Review the user's feedback, Includes the output of the code and the working catalog information provided to measure the effectiveness of the code.
         4. Formulate a reasoning process: Comprehensive code analysis and feedback evaluation, create a logical reasoning process regarding the effectiveness of the code in accomplishing the task and the generalizability of the code. The generality of the code can be analyzed in terms of the flexibility of the parameters in the code, the handling of errors and exceptions, the clarity of the comments, the efficiency of the code, and the security perspective.
         5. Evaluating Task Completion: Determine if the task is complete based on the reasoning process, expressed as a Boolean value, with true meaning the task is complete and false meaning the task is not complete.
-        6. Evaluating the code's generality: based on the analysis of the code's generality by the reasoning process, the code's generality is scored by assigning an integer score between 1 and 10 to reflect the code's generality, with a score of 1-5 indicating that the code is not sufficiently generalized, and that it may be possible to write the task objective directly into the code instead of passing it in as a parameter. a score of 6-8 indicates that the code is capable of accomplishing the task for different objectives of the same task, except that in the security, clarity of comments, performance, or error and exception handling, and a score of 8 or more indicates that the code meets the requirements for generalization in almost all dimensions.
-        7. Output Format: You should only return a JSON with no extra content. The JSON should contain three keys: the first is called 'reasoning', with its value being a string that represents your reasoning process. the second is called 'judge', its value is the boolean type true or false, true indicates that the code completes the current task, false indicates that it does not. The last is called 'score', which is a number between 1 and 10, representing a rating of the code's generalizability. 
+        6. Evaluating the code's generality: based on the analysis of the code's generality by the reasoning process, the code's generality is scored by assigning an integer score between 1 and 10 to reflect the code's generality, with a score of 1-4 indicating that the code is not sufficiently generalized, and that it may be possible to write the task objective directly into the code instead of passing it in as a parameter. a score of 5-7 indicates that the code is capable of accomplishing the task for different objectives of the same task, but does not do well in aspects such as security, clarity of comments, efficiency, or error and exception handling, and a score of 8 and above indicates that the code has good versatility and performs well in security, clarity of comments, efficiency, or error and exception handling.
+        7. Output Format: You should only return a JSON with no extra content. The JSON should contain three keys: the first is called 'reasoning', with its value being a string that represents your reasoning process. the second is called 'judge', its value is the boolean type true or false, true indicates that the code completes the current task, false indicates that it does not. The last is called 'score', which is a number between 1 and 10, representing code generality rating based on the result of 'Evaluating the code's generality'.
         And you should also follow the following criteria:
         1. Ensure accurate understanding of the Python code.
         2. Relate the code functionality to the user's task.
@@ -155,13 +156,40 @@ prompt = {
 
     'planning_prompt' : {
         '_LINUX_SYSTEM_TASK_DECOMPOSE_PROMPT' : '''
-
+        You are an expert in making plans. 
+        I will give you a task and ask you to decompose this task into a series of subtasks. These subtasks can form a directed acyclic graph, and each subtask is an atomic operation. Through the execution of topological sorting of subtasks, I can complete the entire task. Your return results adhere to a predefined format and structure.
+        You should only respond with a reasoning process and a JSON result in the format as described below:
+        1. Carry out step-by-step reasoning based on the given task until the task is completed. Each step of reasoning is decomposed into sub-tasks. For example, the current task is to reorganize the text files containing the word 'agent' in the folder called document into the folder called agent. Then the reasoning process is as follows: According to Current Working Directiory and Files And Folders in Current Working Directiory information, the folders documernt and agent exist, so firstly, retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return. Secondly, put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.
+        2. Each decomposed subtask has three attributes: name, task description, and dependencies. The 'name' summarizes an appropriate name based on the reasoning process of the current subtask, and 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task.
+        3. In JSON, each decomposed subtask contains three attributes: name, description, and dependencies, which are obtained through reasoning about the task. The key of each subtask is the name of the subtask.
+        4. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
+{
+    'retrieve_files' : {
+        'name': 'retrieve_files',
+        'description': 'retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return.',
+        'dependencies': []
+    },
+    'organize_files' : {
+        'name': 'organize_files',
+        'description': 'put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.',
+        'dependencies': ['retrieve_files']
+    }    
+}        
+        And you should also follow the following criteria:
+        1. A task can be decomposed down into one or more atomic operations, depending on the complexity of the task.
+        2. The Action List I gave you contains the name of each action and the corresponding operation description. These actions are all atomic operations. You can refer to these atomic operations to decompose the current task.
+        3. If an atomic operation in the Action List can be used as a subtask of the current task, then the subtask adopts the name and description of the atomic operation.
+        4. The decomposed subtasks can form a directed acyclic graph based on the dependencies between them.
+        5. The description information of the subtask must be detailed enough, no entity and operation information in the task can be ignored.
+        6. I have already provided you with the working directory information, there is no need to check the working directory again.
         ''',
         '_LINUX_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
         System Version: {system_version}
         Task: {task}
         Action List: {action_list}
+        Current Working Directiory: {working_dir}
+        Files And Folders in Current Working Directiory: {files_and_folders}
         ''',
 
     },

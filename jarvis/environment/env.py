@@ -25,6 +25,40 @@ class Env:
 
         self.env_state: Union[EnvState, None] = None
 
+    def list_working_dir(self):
+        """
+        Lists files and directories in the given directory with details similar to 'ls' command in Linux.
+        """
+        directory = self.working_dir
+        # Check if the directory exists
+        if not os.path.exists(directory):
+            return f"Directory '{directory}' does not exist."
+
+        # List files and directories
+        files_and_dirs = os.listdir(directory)
+
+        # Create a list to store the details
+        details = []
+
+        for name in files_and_dirs:
+            # Get the full path
+            full_path = os.path.join(directory, name)
+
+            # Get file or directory size
+            size = os.path.getsize(full_path)
+
+            # Check if it's a file or directory
+            if os.path.isdir(full_path):
+                type = 'Directory'
+            else:
+                type = 'File'
+
+            details.append(f"{name}\t {size} bytes\t {type}")
+
+        return "\n".join(details)
+        
+
+
     def step(self, _command) -> EnvState:
         raise NotImplementedError
 
