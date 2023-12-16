@@ -122,12 +122,28 @@ class PlanningModule(BaseAgent):
         # 构建动作图和动作拓扑排序
         self.create_action_graph(decompose_json)
         self.topological_sort()
-        for _, node in self.action_node.items():
-            print(node)
+        # for _, node in self.action_node.items():
+        #     print(node)
 
     def replan_task(self, reasoning, ):
         # 重新计划新的任务
         pass
+
+    def add_task(self, new_action):
+        # 将新的动作加入到动作图中
+        self.create_action_graph(new_action)
+        # 更新拓扑排序
+        self.topological_sort()
+
+
+
+    def update_action(self, action, code=None, return_val=None, status=False):
+        # 更新动作节点信息
+        if code:
+            self.action_node[action].code = code
+        if return_val:
+            self.action_node[action].return_val = return_val
+        self.action_node[action].status = status
 
     # Send decompse task prompt to LLM and get task list 
     def decompose_task_format_message(self, task, action_list, working_dir, files_and_folders):
@@ -162,12 +178,15 @@ class PlanningModule(BaseAgent):
     def topological_sort(self):
         graph = defaultdict(list)
         for node, dependencies in self.action_graph.items():
-            graph.setdefault(node, [])
-            for dependent in dependencies:
-                graph[dependent].append(node)
+            # If the current node has not been executed, put it in the dependency graph.
+            if not self.action_node[node].status:
+                graph.setdefault(node, [])
+                for dependent in dependencies:
+                    # If the dependencies of the current node have not been executed, put them in the dependency graph.
+                    if not self.action_node[dependent].status:
+                        graph[dependent].append(node)
 
         in_degree = {node: 0 for node in graph}      
-        print(in_degree)  
         # Count in-degree for each node
         for node in graph:
             for dependent in graph[node]:
