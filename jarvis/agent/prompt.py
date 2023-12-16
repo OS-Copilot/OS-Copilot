@@ -163,18 +163,18 @@ prompt = {
         2. Each decomposed subtask has three attributes: name, task description, and dependencies. The 'name' summarizes an appropriate name based on the reasoning process of the current subtask, and 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task.
         3. In JSON, each decomposed subtask contains three attributes: name, description, and dependencies, which are obtained through reasoning about the task. The key of each subtask is the name of the subtask.
         4. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
-{
-    'retrieve_files' : {
-        'name': 'retrieve_files',
-        'description': 'retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return.',
-        'dependencies': []
-    },
-    'organize_files' : {
-        'name': 'organize_files',
-        'description': 'put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.',
-        'dependencies': ['retrieve_files']
-    }    
-}        
+        {
+            'retrieve_files' : {
+                'name': 'retrieve_files',
+                'description': 'retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return.',
+                'dependencies': []
+            },
+            'organize_files' : {
+                'name': 'organize_files',
+                'description': 'put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.',
+                'dependencies': ['retrieve_files']
+            }    
+        }        
         And you should also follow the following criteria:
         1. A task can be decomposed down into one or more atomic operations, depending on the complexity of the task.
         2. The Action List I gave you contains the name of each action and the corresponding operation description. These actions are all atomic operations. You can refer to these atomic operations to decompose the current task.
