@@ -104,9 +104,9 @@ prompt = {
         2. Compare the code with the task description: Align the objectives stated in the user's task description with the capabilities of the code.
         3. Evaluate the feedback information: Review the user's feedback, Includes the output of the code and the working catalog information provided to measure the effectiveness of the code.
         4. Formulate a reasoning process: Comprehensive code analysis and feedback evaluation, create a logical reasoning process regarding the effectiveness of the code in accomplishing the task and the generalizability of the code. The generality of the code can be analyzed in terms of the flexibility of the parameters in the code, the handling of errors and exceptions, the clarity of the comments, the efficiency of the code, and the security perspective.
-        5. Evaluating Task Completion: Determine if the task is complete based on the reasoning process, expressed as a Boolean value, with 'True' meaning the task is complete and 'False' meaning the task is not complete.
+        5. Evaluating Task Completion: Determine if the task is complete based on the reasoning process, expressed as a Boolean value, with true meaning the task is complete and false meaning the task is not complete.
         6. Evaluating the code's generality: based on the analysis of the code's generality by the reasoning process, the code's generality is scored by assigning an integer score between 1 and 10 to reflect the code's generality, with a score of 1-5 indicating that the code is not sufficiently generalized, and that it may be possible to write the task objective directly into the code instead of passing it in as a parameter. a score of 6-8 indicates that the code is capable of accomplishing the task for different objectives of the same task, except that in the security, clarity of comments, performance, or error and exception handling, and a score of 8 or more indicates that the code meets the requirements for generalization in almost all dimensions.
-        7. Output Format: You should only return a JSON with no extra content. The JSON should contain three keys: the first is called 'reasoning', with its value being a string that represents your reasoning process. the second is called 'judge', Its value is 'True' or 'False', True indicates that the code completes the current task, False indicates that it does not.The last is called 'score', which is a number between 1 and 10, representing a rating of the code's generalizability. 
+        7. Output Format: You should only return a JSON with no extra content. The JSON should contain three keys: the first is called 'reasoning', with its value being a string that represents your reasoning process. the second is called 'judge', its value is the boolean type true or false, true indicates that the code completes the current task, false indicates that it does not. The last is called 'score', which is a number between 1 and 10, representing a rating of the code's generalizability. 
         And you should also follow the following criteria:
         1. Ensure accurate understanding of the Python code.
         2. Relate the code functionality to the user's task.
@@ -114,7 +114,8 @@ prompt = {
         4. Provide clear, logical reasoning.
         5. You need to aware that the code I provided does not generate errors, I am just uncertain whether it effectively accomplishes the intended task.
         6. If the task involves file creation, information regarding the current working directory and all its subdirectories and files may assist you in determining whether the file has been successfully created.
-        7. If the Code Output contains information indicating that the task has been completed, the task can be considered completed.        Now you will be provided with the following information, please give the result JSON according to these information:
+        7. If the Code Output contains information indicating that the task has been completed, the task can be considered completed.        
+        Now you will be provided with the following information, please give the result JSON according to these information:
         ''',
         '_LINUX_USER_TASK_JUDGE_PROMPT' : '''
         User's information are as follows:

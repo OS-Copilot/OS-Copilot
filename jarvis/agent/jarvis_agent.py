@@ -216,8 +216,9 @@ class ExecutionModule(BaseAgent):
         # 实现动作判断逻辑，判断动作是否完成当前任务，返回判断的JSON结果
         judge_json = self.task_judge_format_message(code, task_description, state.result, state.pwd, state.ls)
         reasoning = judge_json['reasoning']
+        judge = judge_json['judge']
         score = judge_json['score']
-        return reasoning, score
+        return reasoning, judge, score
 
     def amend_action(self, current_code, task_description, state, critique):
         # 实现动作修复逻辑，对于未完成任务或者有错误的代码进行修复，返回修复后的代码

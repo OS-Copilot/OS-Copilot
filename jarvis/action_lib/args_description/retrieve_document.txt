@@ -1,9 +1,0 @@
-Search for text files in the specified folder that contain the given keyword and log their full paths to a file.
-
-        Args:
-            keyword (str): The keyword to search for within text files. Defaults to "agent".
-            folder_name (str): The name of the folder to search within. Defaults to "document".
-            working_dir (str): The working directory where the folder is located. If not provided, uses the current working directory.
-
-        Returns:
-            None: This method does not return anything but writes the paths of matching files to 'agent.txt'.

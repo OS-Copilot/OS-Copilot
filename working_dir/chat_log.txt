@@ -1057,3 +1057,145 @@ Since the code is functioning as expected and the issue lies with the file paths
   "score": 1
 }
 ```
+2023-12-16 17:02:44,910 - INFO - Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2023-12-16 17:03:09,282 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2023-12-16 17:03:09,310 - INFO - ```python
+from jarvis.action.base_action import BaseAction
+import os
+import subprocess
+
+class retrieve_document(BaseAction):
+    def __init__(self):
+        self._description = "Search for .txt files containing a specific keyword within a designated folder and log their paths."
+
+    def __call__(self, keyword="agent", folder_name="document", working_dir=None, *args, **kwargs):
+        """
+        Search for text files in the specified folder that contain the given keyword and write their paths to a file.
+
+        Args:
+            keyword (str): The keyword to search for within text files. Defaults to "agent".
+            folder_name (str): The name of the folder to search within. Defaults to "document".
+            working_dir (str): The working directory where the folder is located. If not provided, uses the current working directory.
+
+        Returns:
+            None: This method does not return anything but writes the paths of matching files to 'agent.txt'.
+        """
+        # Set the working directory to the user-provided path or the current working directory
+        if working_dir is None:
+            working_dir = os.getcwd()
+        
+        # Change to the specified working directory
+        os.chdir(working_dir)
+        
+        # Path to the folder where the search will be performed
+        search_path = os.path.join(working_dir, folder_name)
+        
+        # Filename for the output file
+        output_file = 'agent.txt'
+        
+        # Open the output file in write mode
+        with open(output_file, 'w') as output:
+            # Walk through the directory
+            for root, dirs, files in os.walk(search_path):
+                for file in files:
+                    # Check if the file is a .txt file
+                    if file.endswith('.txt'):
+                        file_path = os.path.join(root, file)
+                        # Open and read the file to search for the keyword
+                        with open(file_path, 'r') as f:
+                            contents = f.read()
+                            # If the keyword is found, write the file path to the output file
+                            if keyword in contents:
+                                output.write(file_path + '\n')
+        
+        print("Task execution complete. Matching file paths have been written to 'agent.txt'.")
+
+# Example of how to use the class:
+# Note: This example should not be executed as part of the class definition.
+# It is provided here for illustrative purposes only.
+
+# retriever = retrieve_document()
+# retriever(keyword="agent", folder_name="document", working_dir="/home/heroding/桌面/Jarvis/working_dir")
+```
+
+Please note that the example provided in the comments is for illustrative purposes and should not be executed as part of the class definition. The class `retrieve_document` is designed to be compatible with the system environment, version, and language as specified by the user.
+2023-12-16 17:03:12,757 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2023-12-16 17:03:12,758 - INFO - <invoke>retrieve_document()(keyword="agent", folder_name="document", working_dir="/home/heroding/桌面/Jarvis/working_dir")</invoke>
+<fake-params>None</fake-params>
+2023-12-16 17:03:26,983 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2023-12-16 17:03:27,000 - INFO - ```json
+{
+  "reasoning": "The provided code defines a class 'retrieve_document' that inherits from 'BaseAction'. The '__call__' method of this class is designed to search for .txt files containing a specific keyword within a designated folder and log their paths to a file named 'agent.txt'. The code sets the working directory, searches the specified folder for .txt files, reads their contents, and if the keyword is found, writes the file paths to 'agent.txt'. The code output indicates that the task has been completed as described, and the presence of 'agent.txt' in the working directory confirms that the output file has been created. The code is fairly generalizable as it allows for different keywords, folder names, and working directories to be specified. However, it could be improved by handling potential exceptions such as permission errors when accessing files or directories, and by making the output filename a parameter instead of hardcoding it to 'agent.txt'.",
+  "judge": true,
+  "score": 7
+}
+```
+2023-12-16 17:04:01,820 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2023-12-16 17:04:01,867 - INFO - ```python
+from jarvis.action.base_action import BaseAction
+import os
+import shutil
+import subprocess
+
+class organize_document(BaseAction):
+    def __init__(self):
+        self._description = "Put the retrieved files into the folder named 'agent', with paths listed in 'agent.txt'."
+
+    def __call__(self, *args, **kwargs):
+        """
+        Organize files by moving them into a specified folder named 'agent'. The source paths of the files
+        are read from a file named 'agent.txt', where each line contains the path to a file.
+
+        Args:
+            working_dir (str): The working directory where 'agent.txt' is located and where 'agent' folder will be created.
+            agent_txt_path (str, optional): The path to 'agent.txt'. If not provided, it defaults to 'agent.txt' in the working_dir.
+
+        Returns:
+            None: The method moves files and does not return any value.
+
+        """
+        # Retrieve the working directory and agent.txt path from kwargs, with defaults
+        working_dir = kwargs.get('working_dir', '/home/heroding/桌面/Jarvis/working_dir')
+        agent_txt_path = kwargs.get('agent_txt_path', os.path.join(working_dir, 'agent.txt'))
+
+        # Change the current working directory to the specified path
+        os.chdir(working_dir)
+
+        # Create the 'agent' folder if it does not exist
+        agent_folder_path = os.path.join(working_dir, 'agent')
+        if not os.path.exists(agent_folder_path):
+            os.makedirs(agent_folder_path)
+
+        # Read file paths from agent.txt and move each file to the 'agent' folder
+        with open(agent_txt_path, 'r') as file_paths:
+            for file_path in file_paths:
+                file_path = file_path.strip()  # Remove any leading/trailing whitespace
+                if os.path.isfile(file_path):
+                    # Move the file to the 'agent' folder
+                    shutil.move(file_path, agent_folder_path)
+                else:
+                    print(f"File not found: {file_path}")
+
+        print("Task execution complete: Files have been organized into the 'agent' folder.")
+
+# Example of how to use the class (this should be in the comments and not executed):
+# To use the organize_document class, you would do something like this:
+#
+# organizer = organize_document()
+# organizer(working_dir='/home/heroding/桌面/Jarvis/working_dir')
+# 
+# This would move all files listed in '/home/heroding/桌面/Jarvis/working_dir/agent.txt' into the 'agent' folder.
+```
+
+Please note that the example usage is provided in the comments and should not be executed as part of the class definition. The class is designed to be compatible with the system environment, version, and language specified by the user.
+2023-12-16 17:04:04,324 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2023-12-16 17:04:04,326 - INFO - <invoke>organize_document()(working_dir='/home/heroding/桌面/Jarvis/working_dir')</invoke>
+<fake-params>None</fake-params>
+2023-12-16 17:04:17,088 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2023-12-16 17:04:17,100 - INFO - ```json
+{
+  "reasoning": "The provided code defines a class 'organize_document' that inherits from 'BaseAction'. The '__call__' method of this class is designed to move files listed in 'agent.txt' into a folder named 'agent'. The code reads the file paths from 'agent.txt', checks if each file exists, and then moves it to the 'agent' folder. The code output indicates that the task has been completed successfully, and the working directory contents show the presence of 'agent' and 'agent.txt', suggesting that the files have been moved as intended. However, the code lacks error handling for potential issues such as permission errors during file operations, and it does not provide feedback on the number of files moved or any that could not be found. The code is somewhat generalizable as it allows for different working directories and 'agent.txt' paths, but it is specifically tailored to the task of moving files to a folder named 'agent' and reading from a file named 'agent.txt'.",
+  "judge": true,
+  "score": 6
+}
+```
