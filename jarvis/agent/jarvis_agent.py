@@ -141,10 +141,10 @@ class PlanningModule(BaseAgent):
     def update_action(self, action, code=None, return_val=None, status=False):
         # 更新动作节点信息
         if code:
-            self.action_node[action].code = code
+            self.action_node[action]._code = code
         if return_val:
-            self.action_node[action].return_val = return_val
-        self.action_node[action].status = status
+            self.action_node[action]._return_val = return_val
+        self.action_node[action]._status = status
 
     # Send decompse task prompt to LLM and get task list 
     def task_decompose_format_message(self, task, action_list, files_and_folders):
@@ -196,7 +196,7 @@ class PlanningModule(BaseAgent):
     
     # Creates a action graph from a list of dependencies.
     def add_new_action(self, new_task_json, current_task):
-        # generate execte graph
+        # update execte graph
         for task_name, task_info in new_task_json.items():
             self.action_node[task_name] = ActionNode(task_name, task_info['description'])
             self.action_graph[task_name] = task_info['dependencies']
@@ -260,9 +260,12 @@ class RetrievalModule(BaseAgent):
         self.action_lib = action_lib
         self.prompt = prompt
 
-    def search_action(self, subtask):
+    def search_action(self, query):
         # 实现检索动作逻辑
-        pass
+        retrieve_actions = self.action_lib.retrieve_actions(query)
+        # TODO: Add a filtering mechanism
+        return retrieve_actions
+    
 
 
 class ExecutionModule(BaseAgent):

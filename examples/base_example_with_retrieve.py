@@ -2,41 +2,39 @@ from jarvis.agent.openai_agent import OpenAIAgent
 from jarvis.agent.jarvis_agent import JarvisAgent
 
 '''
-Made By DZC & WZM
-target: Classify files in a specified folder.
+Made By DZC
 '''
 
 # path of action lib
 action_lib_path = "../jarvis/action_lib"
-# args_description_path = action_lib_path + "/args_description"
-# action_description_path = action_lib_path + "/action_description"
-# code_path = action_lib_path + "/code"
-# vectordb_path = action_lib_path + "/vectordb"
-
-# use to look up existed skill code and extract information
-retrieve_agent = OpenAIAgent(config_path="./config.json", action_lib_dir=action_lib_path)
-# use to create new skills
 jarvis_agent = JarvisAgent(config_path="./config.json", action_lib_dir=action_lib_path)
+planning_agent = jarvis_agent.planner
+retrieve_agent = jarvis_agent.retriever
 execute_agent = jarvis_agent.executor
 
 # We assume that the response result comes from the task planning agent.
-response = '''
-Thought: XXX
-Actions: 
-1. <action>XXX</action> <description>XXX</description>
-2. <action>XXX</action> <description>XXX</description>
-Check local action_lib, the required action code is in the library, according to the function description in the code, combined with the information provided by the user, You can instantiate classes for different tasks.
-
+task = '''
+Open the result.txt file in the folder called myfold. 
 '''
+# decompose task
+planning_agent.decompose_task(task)
 
-# Get actions and corresponding descriptions
-actions = retrieve_agent.extract_information(response, begin_str='<action>', end_str='</action>')
-task_descriptions = retrieve_agent.extract_information(response, begin_str='<description>', end_str='</description>')
+# retrieve existing tools
+for action_name, action_node in planning_agent.action_node.items():
+    action_description = action_node.description
+    retrieve_code = retrieve_agent.search_action(action_description)
+    if retrieve_code:
+        code = retrieve_code[0]
+        planning_agent.update_action(action_name, code, None)
 
-# Loop all the actions
-for action, description in zip(actions, task_descriptions):
-    # Create python tool class code
-    code = execute_agent.generate_action(action, description)
+while planning_agent.execute_list:
+    action = planning_agent.execute_list[0]
+    action_node = planning_agent.action_node[action]
+    description = action_node.description
+    code = action_node.code
+    if not code:
+        # Create python tool class code
+        code = execute_agent.generate_action(action, description)
     # Execute python tool class code
     state = execute_agent.execute_action(code, description)
     # Check whether the code runs correctly, if not, amend the code
@@ -51,7 +49,12 @@ for action, description in zip(actions, task_descriptions):
             print("critique: {}".format(critique))
             need_mend = True
     else:
-        need_mend = True    
+        #  Determine whether it is caused by an error outside the code
+        reasoning, type = execute_agent.analysis_action(code, description, state)
+        if type == 'replan':
+            planning_agent.replan_task(reasoning, action)
+            continue
+        need_mend = True   
     # The code failed to complete its task, fix the code
     current_code = code
     while (trial_times < execute_agent.max_iter and need_mend == True):
@@ -80,4 +83,7 @@ for action, description in zip(actions, task_descriptions):
     else: # The task is completed, if code is save the code, args_description, action_description in lib
         if score >= 8:
             execute_agent.store_action(action, current_code)
+        print("Current task execution completed!!!")
+        planning_agent.update_action(action, current_code, state.result, True)
+        planning_agent.execute_list.remove(action)
 

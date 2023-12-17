@@ -63,6 +63,11 @@ class ActionManager:
     @property
     def action_names(self):
         return self.actions.keys()
+    
+    # 查看某个动作的代码
+    def action_code(self, action_name):
+        code = self.actions[action_name]['code']
+        return code    
 
     # 添加新的任务代码
     def add_new_action(self, info):
@@ -183,5 +188,6 @@ if __name__ == '__main__':
     # print(res[0])
 
     # 删除
-    actionManager.delete_action("retrieve_document")
+    # actionManager.delete_action("retrieve_document")
     # actionManager.delete_action("zip_files")
+    # print(actionManager.action_code('zip_files'))

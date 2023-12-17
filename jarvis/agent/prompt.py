@@ -85,6 +85,7 @@ prompt = {
         14. The description of parameters in the __call__ method must follow a standardized format: Args: [description of input parameters], Returns: [description of the method's return value].
         15. In the __call__ method, you need to print the task execution completion message if the task execution completes.
         16. Please note that the code you generate is mainly used under the Linux operating system, so it often involves system-level operations such as reading and writing files. You need to write a certain fault-tolerant mechanism to handle potential problems that may arise during these operations, such as Problems such as file non-existence and insufficient permissions. 
+        17. If the result of the code needs to return the parameter, print out the parameter information to be returned directly.
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information. 
         ''',
         '_LINUX_USER_SKILL_CREATE_PROMPT' : '''
@@ -142,7 +143,7 @@ prompt = {
         3. Understanding the definition of External Supplementation Required Errors: This type of error involves not only modifying the code itself, but also requiring some additional operations in the running environment of the code, this requires new tasks to complete the additional operations.
         4. Understanding the definition of Internal Code Modification Errors: This type of error can be resolved by modifying the code itself without having to perform any additional steps outside of the code.
         5. Provide clear, logical reasoning.
-        6. The value of type can only be 'planning' or 'amend'.
+        6. The value of type can only be 'replan' or 'amend'.
         ''',
         '_LINUX_USER_ERROR_ANALYSIS_PROMPT' : '''
         User's information are as follows:
@@ -178,7 +179,7 @@ prompt = {
         And you should also follow the following criteria:
         1. A task can be decomposed down into one or more atomic operations, depending on the complexity of the task.
         2. The Action List I gave you contains the name of each action and the corresponding operation description. These actions are all atomic operations. You can refer to these atomic operations to decompose the current task.
-        3. If an atomic operation in the Action List can be used as a subtask of the current task, then the subtask adopts the name and description of the atomic operation.
+        3. If an atomic action in the Action List can be used to process the currently decomposed sub-task, then the name of the decomposed sub-task should be directly adopted from the name of that atomic action.
         4. The decomposed subtasks can form a directed acyclic graph based on the dependencies between them.
         5. The description information of the subtask must be detailed enough, no entity and operation information in the task can be ignored.
         6. I have already provided you with the working directory information, there is no need to check the working directory again.
@@ -195,7 +196,7 @@ prompt = {
 
         '_LINUX_SYSTEM_TASK_REPLAN_PROMPT' : '''
         You are an expert at designing new tasks based on the results of your reasoning.
-        When I was executing the task: {task_description}, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.        
+        When I was executing the task {current_task}: {task_description}, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.        
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Design new tasks based on the reasoning process of current task errors. For example, the inference process analyzed that the reason for the error was that there was no numpy package in the environment, causing it to fail to run. Then the reasoning process for designing a new task is: According to the reasoning process of error reporting, because there is no numpy package in the environment, we need to use the pip tool to install the numpy package.
         2. Each new task has three attributes: name, task description, and dependencies. The 'name' abstracts an appropriate name based on the reasoning process of the current subtask, and 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task.
@@ -212,7 +213,7 @@ prompt = {
         And you should also follow the following criteria:
         1. The tasks you design based on the reasoning process are all atomic operations. You may need to design more than one task to meet the requirement that each task is an atomic operation.
         2. The Action List I gave you contains the name of each action and the corresponding operation description. These actions are all atomic operations. You can refer to these atomic operations to design new task.
-        3. If an atomic operation in the Action List can be used as a new task, then the task adopts the name and description of the atomic operation.
+        3. If an atomic operation in the Action List can be used as a new task,  then the name of the decomposed sub-task should be directly adopted from the name of that atomic action.
         4. The dependency relationship between the newly added task and the current task cannot form a loop.
         5. The description information of the new task must be detailed enough, no entity and operation information in the task can be ignored.
         6. I have already provided you with the working directory information, there is no need to check the working directory again.
