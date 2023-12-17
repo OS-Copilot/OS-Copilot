@@ -160,7 +160,7 @@ prompt = {
         I will give you a task and ask you to decompose this task into a series of subtasks. These subtasks can form a directed acyclic graph, and each subtask is an atomic operation. Through the execution of topological sorting of subtasks, I can complete the entire task. Your return results adhere to a predefined format and structure.
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Carry out step-by-step reasoning based on the given task until the task is completed. Each step of reasoning is decomposed into sub-tasks. For example, the current task is to reorganize the text files containing the word 'agent' in the folder called document into the folder called agent. Then the reasoning process is as follows: According to Current Working Directiory and Files And Folders in Current Working Directiory information, the folders documernt and agent exist, so firstly, retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return. Secondly, put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.
-        2. Each decomposed subtask has three attributes: name, task description, and dependencies. The 'name' summarizes an appropriate name based on the reasoning process of the current subtask, and 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task.
+        2. Each decomposed subtask has three attributes: name, task description, and dependencies. The 'name' abstracts an appropriate name based on the reasoning process of the current subtask, and 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task.
         3. In JSON, each decomposed subtask contains three attributes: name, description, and dependencies, which are obtained through reasoning about the task. The key of each subtask is the name of the subtask.
         4. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
         {
@@ -182,6 +182,7 @@ prompt = {
         4. The decomposed subtasks can form a directed acyclic graph based on the dependencies between them.
         5. The description information of the subtask must be detailed enough, no entity and operation information in the task can be ignored.
         6. I have already provided you with the working directory information, there is no need to check the working directory again.
+        7. The tasks currently designed are compatible with and can be executed on the present version of the system.
         ''',
         '_LINUX_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
@@ -192,6 +193,39 @@ prompt = {
         Files And Folders in Current Working Directiory: {files_and_folders}
         ''',
 
+        '_LINUX_SYSTEM_TASK_REPLAN_PROMPT' : '''
+        You are an expert at designing new tasks based on the results of your reasoning.
+        When I was executing the task: {task_description}, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.        
+        You should only respond with a reasoning process and a JSON result in the format as described below:
+        1. Design new tasks based on the reasoning process of current task errors. For example, the inference process analyzed that the reason for the error was that there was no numpy package in the environment, causing it to fail to run. Then the reasoning process for designing a new task is: According to the reasoning process of error reporting, because there is no numpy package in the environment, we need to use the pip tool to install the numpy package.
+        2. Each new task has three attributes: name, task description, and dependencies. The 'name' abstracts an appropriate name based on the reasoning process of the current subtask, and 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task.
+        3. In JSON, each new task contains three attributes: name, description, and dependencies, which are obtained through reasoning about the task. The key of each task is the name of the task.
+        4. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
+        {
+            'install_package' : {
+                'name': 'install_package',
+                'description': 'Use pip to install the numpy package that is missing in the environment.',
+                'dependencies': []
+            }
+        }
+
+        And you should also follow the following criteria:
+        1. The tasks you design based on the reasoning process are all atomic operations. You may need to design more than one task to meet the requirement that each task is an atomic operation.
+        2. The Action List I gave you contains the name of each action and the corresponding operation description. These actions are all atomic operations. You can refer to these atomic operations to design new task.
+        3. If an atomic operation in the Action List can be used as a new task, then the task adopts the name and description of the atomic operation.
+        4. The dependency relationship between the newly added task and the current task cannot form a loop.
+        5. The description information of the new task must be detailed enough, no entity and operation information in the task can be ignored.
+        6. I have already provided you with the working directory information, there is no need to check the working directory again.
+        7. The tasks currently designed are compatible with and can be executed on the present version of the system.
+        ''',
+        '_LINUX_USER_TASK_REPLAN_PROMPT' : '''
+        User's information are as follows:
+        System Version: {system_version}
+        reasoning: {reasoning}
+        Action List: {action_list}
+        Current Working Directiory: {working_dir}
+        Files And Folders in Current Working Directiory: {files_and_folders}
+        ''',
     },
 
     'retrieve_prompt' : {

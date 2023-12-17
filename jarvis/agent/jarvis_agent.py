@@ -111,31 +111,32 @@ class PlanningModule(BaseAgent):
         # 动作节点，动作图信息和动作拓扑排序
         self.action_node = {}
         self.action_graph = defaultdict(list)
-        self.action_list = []
+        self.execute_list = []
 
+    # Implement task disassembly logic
     def decompose_task(self, task):
-        # 实现任务拆解逻辑
-        action_list = self.get_action_list
+        action_list = self.get_action_list()
         files_and_folders = self.environment.list_working_dir()
-        response = self.decompose_task_format_message(task, action_list, self.environment.working_dir, files_and_folders)
+        response = self.task_decompose_format_message(task, action_list, files_and_folders)
         decompose_json = self.extract_json_from_string(response)
-        # 构建动作图和动作拓扑排序
+        # Building action graph and topological ordering of actions
         self.create_action_graph(decompose_json)
         self.topological_sort()
-        # for _, node in self.action_node.items():
-        #     print(node)
 
-    def replan_task(self, reasoning, ):
-        # 重新计划新的任务
-        pass
-
-    def add_task(self, new_action):
-        # 将新的动作加入到动作图中
-        self.create_action_graph(new_action)
-        # 更新拓扑排序
+    # replan new task to origin action graph 
+    def replan_task(self, reasoning, current_task):
+        # current_task information
+        current_action = self.action_node[current_task]
+        current_task_description = current_action.description
+        action_list = self.get_action_list()
+        files_and_folders = self.environment.list_working_dir()
+        response = self.task_replan_format_message(reasoning, current_task, current_task_description, action_list, files_and_folders)
+        new_action = self.extract_json_from_string(response)
+        # add new action to action graph
+        self.add_new_action(new_action, current_task)
+        # update topological sort
         self.topological_sort()
-
-
+        
 
     def update_action(self, action, code=None, return_val=None, status=False):
         # 更新动作节点信息
@@ -146,13 +147,32 @@ class PlanningModule(BaseAgent):
         self.action_node[action].status = status
 
     # Send decompse task prompt to LLM and get task list 
-    def decompose_task_format_message(self, task, action_list, working_dir, files_and_folders):
+    def task_decompose_format_message(self, task, action_list, files_and_folders):
         sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_DECOMPOSE_PROMPT']
         user_prompt = self.prompt['_LINUX_USER_TASK_DECOMPOSE_PROMPT'].format(
             system_version=self.system_version,
             task=task,
             action_list = action_list,
-            working_dir = working_dir,
+            working_dir = self.environment.working_dir,
+            files_and_folders = files_and_folders
+        )
+        self.message = [
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_prompt},
+        ]
+        return self.llm.chat(self.message)
+    
+    # Send replan task prompt to LLM and get task list 
+    def task_replan_format_message(self, reasoning, current_task, current_task_description, action_list, files_and_folders):
+        sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_REPLAN_PROMPT'].format(
+            current_task = current_task,
+            current_task_description = current_task_description
+        )
+        user_prompt = self.prompt['_LINUX_USER_TASK_REPLAN_PROMPT'].format(
+            system_version=self.system_version,
+            reasoing = reasoning,
+            action_list = action_list,
+            working_dir = self.environment.working_dir,
             files_and_folders = files_and_folders
         )
         self.message = [
@@ -168,14 +188,25 @@ class PlanningModule(BaseAgent):
         return action_list
     
     # Creates a action graph from a list of dependencies.
-    def create_action_graph(self, json):
+    def create_action_graph(self, decompose_json):
         # generate execte graph
-        for task_name, task_info in json.items():
+        for task_name, task_info in decompose_json.items():
             self.action_node[task_name] = ActionNode(task_name, task_info['description'])
             self.action_graph[task_name] = task_info['dependencies']
     
+    # Creates a action graph from a list of dependencies.
+    def add_new_action(self, new_task_json, current_task):
+        # generate execte graph
+        for task_name, task_info in new_task_json.items():
+            self.action_node[task_name] = ActionNode(task_name, task_info['description'])
+            self.action_graph[task_name] = task_info['dependencies']
+        last_new_task = list(new_task_json.keys())[-1]
+        self.action_graph[current_task].append(last_new_task)
+
     # generate graph topological sort
     def topological_sort(self):
+        # init execute list
+        self.execute_list = []
         graph = defaultdict(list)
         for node, dependencies in self.action_graph.items():
             # If the current node has not been executed, put it in the dependency graph.
@@ -200,7 +231,7 @@ class PlanningModule(BaseAgent):
         while queue:
             # Get one node with in-degree 0
             current = queue.popleft()
-            self.action_list.append(current)
+            self.execute_list.append(current)
 
             # Decrease in-degree for all nodes dependent on current
             for dependent in graph[current]:
@@ -209,7 +240,7 @@ class PlanningModule(BaseAgent):
                     queue.append(dependent)
 
         # Check if topological sort is possible (i.e., no cycle)
-        if len(self.action_list) == len(graph):
+        if len(self.execute_list) == len(graph):
             print("topological sort is possible")
         else:
             return "Cycle detected in the graph, topological sort not possible."
