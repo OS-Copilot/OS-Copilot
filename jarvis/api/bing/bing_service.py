@@ -30,3 +30,4 @@ async def load_page(item: PageItem):
     if not page_loaded:
         raise HTTPException(status_code=500, detail=page_detail)
     return {"page_content": page_detail}
+
