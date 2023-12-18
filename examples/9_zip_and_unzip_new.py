@@ -9,7 +9,6 @@ target: Classify files in a specified folder.
 
 # path of action lib
 action_lib_path = "../jarvis/action_lib"
-working_dir_path = "../working_dir"
 # args_description_path = action_lib_path + "/args_description"
 # action_description_path = action_lib_path + "/action_description"
 # code_path = action_lib_path + "/code"
@@ -26,12 +25,11 @@ response = '''
 Thought: In order to solve this task, first search the txt text in the document file in the working directory. If the text contains the word "agent", put the path of the text into agent.txt and wrap it in a new line. The second step is put the retrieved files into the folder named agent, the path of the retrieved files is placed in the txt file named agent, Each line is the path of a file.
 
 Actions: 
-1. <action>retrieve_document</action> <description>search the txt text in the folder call document in the working directory. If the text contains the word "agent", put the full path of the text into agent.txt and wrap it in a new line.</description>
-2. <action>organize_document</action> <description>put the retrieved files into the folder named agent, the path of the retrieved files is placed in the txt file named agent.txt, Each line is the path of a file.</description>
+1. <action>zip_files</action> <description>Zip all the files in the folder called document and name the zip file as agent. </description>
+2. <action>unzip_files</action> <description>Unzip agent.zip to the folder called myfold. </description>
 Check local action_lib, the required action code is in the library, according to the function description in the code, combined with the information provided by the user, You can instantiate classes for different tasks.
 
 '''
-
 
 # Get actions and corresponding descriptions
 actions = retrieve_agent.extract_information(response, begin_str='<action>', end_str='</action>')
@@ -41,17 +39,20 @@ task_descriptions = retrieve_agent.extract_information(response, begin_str='<des
 for action, description in zip(actions, task_descriptions):
     # Create python tool class code
     code = execute_agent.generate_action(action, description)
+    # print(code)
+
     # Execute python tool class code
     state = execute_agent.execute_action(code, description)
+    # print(state)
+
     # Check whether the code runs correctly, if not, amend the code
     need_mend = False
     trial_times = 0
     critique = ''
-    score = 0
     # If no error is reported, check whether the task is completed
     if state.error == None:
-        critique, judge, score = execute_agent.judge_action(code, description, state)
-        if not judge:
+        critique, score = execute_agent.judge_action(code, description, state)
+        if score <= 8:
             print("critique: {}".format(critique))
             need_mend = True
     else:
@@ -69,9 +70,9 @@ for action, description in zip(actions, task_descriptions):
         # print(state)
         # Recheck
         if state.error == None:
-            critique, judge, score = execute_agent.judge_action(current_code, description, state)
+            critique, score = execute_agent.judge_action(current_code, description, state)
             # The task execution is completed and the loop exits
-            if judge:
+            if score > 8:
                 need_mend = False
                 break
             # print("critique: {}".format(critique))
@@ -81,6 +82,6 @@ for action, description in zip(actions, task_descriptions):
     # If the task still cannot be completed, an error message will be reported.
     if need_mend == True:
         print("I can't Do this Task!!")
-    else: # The task is completed, if code is save the code, args_description, action_description in lib
-        if score >= 8:
-            execute_agent.store_action(action, current_code)
+    else: # The task is completed, save the code, args_description, action_description in lib
+        execute_agent.store_action(action, current_code)
+

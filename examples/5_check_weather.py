@@ -1,7 +1,7 @@
 from jarvis.agent.openai_agent import OpenAIAgent
-from jarvis.enviroment.old_env import BaseEnviroment
-from jarvis.enviroment.py_env import PythonEnv
-from jarvis.enviroment.bash_env import BashEnv
+from jarvis.environment.old_env import BaseEnviroment
+from jarvis.environment.py_env import PythonEnv
+from jarvis.environment.bash_env import BashEnv
 import time
 '''
 Made By WZM

@@ -6,18 +6,18 @@ from general import ConfigManager
 app = FastAPI()
 
 # Import your services
-from api.python.interpreter import router as python_router
-from api.arxiv.arxiv import router as arxiv_router
-from api.bing.bing_service import router as bing_router
-from api.calculator.calculator import router as calculator_router
-from api.chemical.chemical import router as chemical_router
-from api.ppt.ppt import router as ppt_router
-from api.shell.shell import router as shell_router
-from api.database.database import router as db_router
-from api.wolfram_alpha.wolfram_alpha import router as wa_router
-from api.weather.weather import router as weather_router  # 新增这一行
-from api.google_calendar.calendar_service import router as calendar_router
-from api.gmail.gmail import router as gmail_router  # 新增这一行
+from jarvis.api.python.interpreter import router as python_router
+from jarvis.api.arxiv.arxiv import router as arxiv_router
+from jarvis.api.bing.bing_service import router as bing_router
+from jarvis.api.calculator.calculator import router as calculator_router
+from jarvis.api.chemical.chemical import router as chemical_router
+from jarvis.api.ppt.ppt import router as ppt_router
+from jarvis.api.shell.shell import router as shell_router
+from jarvis.api.database.database import router as db_router
+from jarvis.api.wolfram_alpha.wolfram_alpha import router as wa_router
+from jarvis.api.weather.weather import router as weather_router  # 新增这一行
+from jarvis.api.google_calendar.calendar_service import router as calendar_router
+from jarvis.api.gmail.gmail import router as gmail_router  # 新增这一行
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
