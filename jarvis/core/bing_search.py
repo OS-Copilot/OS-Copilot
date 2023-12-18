@@ -44,8 +44,10 @@ class ActionExecuter():
             {"role": "user", "content": task},
         ]
         return self.llm.chat(self.message)
-
-res = ActionExecuter("../../examples/config.json").format_message("assistant api收费标准是什么?","open ai assistant api收费标准")        
+q = '''
+How many studio albums were published by Mercedes Sosa between 2000 and 2009 (included)? You can use the latest 2022 version of english wikipedia.
+'''
+res = ActionExecuter("../../examples/config.json").format_message(q,q)        
 print(res)
  
  
