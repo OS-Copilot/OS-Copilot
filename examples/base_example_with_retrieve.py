@@ -1,4 +1,3 @@
-from jarvis.agent.openai_agent import OpenAIAgent
 from jarvis.agent.jarvis_agent import JarvisAgent
 
 '''
@@ -16,13 +15,17 @@ execute_agent = jarvis_agent.executor
 task = '''
 Open the result.txt file in the folder called myfold. 
 '''
+# relevant action 
+relevant_action_pair = retrieve_agent.retrieve_action_description_pair(task)
 # decompose task
-planning_agent.decompose_task(task)
+planning_agent.decompose_task(task, relevant_action_pair)
 
 # retrieve existing tools
 for action_name, action_node in planning_agent.action_node.items():
     action_description = action_node.description
-    retrieve_code = retrieve_agent.search_action(action_description)
+    retrieve_action = retrieve_agent.retrieve_action_name(action_description)
+    retrieve_code = retrieve_agent.retrieve_action_code(retrieve_action)
+    # filter TODO
     if retrieve_code:
         code = retrieve_code[0]
         planning_agent.update_action(action_name, code, None)
@@ -32,11 +35,12 @@ while planning_agent.execute_list:
     action_node = planning_agent.action_node[action]
     description = action_node.description
     code = action_node.code
+    pre_tasks_info = planning_agent.get_pre_tasks_info(action)
     if not code:
         # Create python tool class code
         code = execute_agent.generate_action(action, description)
     # Execute python tool class code
-    state = execute_agent.execute_action(code, description)
+    state = execute_agent.execute_action(code, description, pre_tasks_info)
     # Check whether the code runs correctly, if not, amend the code
     need_mend = False
     trial_times = 0
@@ -64,7 +68,7 @@ while planning_agent.execute_list:
         critique = ''
         current_code = new_code
         # Run the current code and check for errors
-        state = execute_agent.execute_action(current_code, description)
+        state = execute_agent.execute_action(current_code, description, pre_tasks_info)
         # print(state)
         # Recheck
         if state.error == None:
@@ -80,6 +84,7 @@ while planning_agent.execute_list:
     # If the task still cannot be completed, an error message will be reported.
     if need_mend == True:
         print("I can't Do this Task!!")
+        break
     else: # The task is completed, if code is save the code, args_description, action_description in lib
         if score >= 8:
             execute_agent.store_action(action, current_code)

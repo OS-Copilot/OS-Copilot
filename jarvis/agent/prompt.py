@@ -16,7 +16,11 @@ prompt = {
         1. The __call__ method invocation must be syntactically correct as per Python standards.
         2. Clearly identify any fake or placeholder parameters used in the invocation.
         3. Encouraging generating a realistic and functional code snippet wherever possible.
-        4. If necessary, you can use the working directory provided by the user as a parameter passed into the __call__ method.
+        4. If necessary, you can use the Working Directory provided by the user as a parameter passed into the __call__ method.
+        5. The 'Information of Prerequisite Tasks' from User's information provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
+        6. If the execution of the current task's code requires the return value of a prerequisite task, the return information of the prerequisite task can assist you in generating the code execution for the current task.
+        7. 'Working Directory' in User's information represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
+        8. The code comments include an example of a class invocation. You can refer to this example, but you should not directly copy it. Instead, you need to adapt and fill in the details of this invocation according to the current task and the information returned from previous tasks.
         Now you will be provided with the following information, please generate your response according to these information:
         ''',
         '_LINUX_USER_INVOKE_GENERATE_PROMPT' : '''
@@ -24,6 +28,7 @@ prompt = {
         Class Name: {class_name}
         Task Description: {task_description}
         __call__ Method Parameters: {args_description}
+        Information of Prerequisite Tasks: {pre_tasks_info}
         Working Directory: {working_dir}
         ''',
 
@@ -45,6 +50,7 @@ prompt = {
         7. All modifications must address the specific issues identified in the error analysis.
         8. The solution must enable the code to successfully complete the intended task without errors.
         9. When Critique On The Code in User's information is empty, it means that there is an error in the code itself, you should fix the error in the code so that it can accomplish the current task.
+        10. In User's information, 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
         Now you will be provided with the following information, please give your modified python code according to these information:
         ''',
         '_LINUX_USER_SKILL_AMEND_PROMPT' : '''
@@ -53,7 +59,8 @@ prompt = {
         Task: {task}
         Error Messages: {error}
         Code Output: {code_output}
-        Current Working Directiory: {working_dir}
+        Current Working Directiory: {current_working_dir}
+        Working Directiory: {working_dir}
         Files And Folders in Current Working Directiory: {files_and_folders}
         Critique On The Code: {critique}
         ''',
@@ -85,7 +92,8 @@ prompt = {
         14. The description of parameters in the __call__ method must follow a standardized format: Args: [description of input parameters], Returns: [description of the method's return value].
         15. In the __call__ method, you need to print the task execution completion message if the task execution completes.
         16. Please note that the code you generate is mainly used under the Linux operating system, so it often involves system-level operations such as reading and writing files. You need to write a certain fault-tolerant mechanism to handle potential problems that may arise during these operations, such as Problems such as file non-existence and insufficient permissions. 
-        17. If the result of the code needs to return the parameter, print out the parameter information to be returned directly.
+        17. If the __call__ method needs to return, for example, if it needs to return a list or a value, then let the __call__ method return.
+        18. If the __call__ method involves file operations, then the file's path must be passed as a parameter to the __call__ method, in particular, if you are operating multiple files, pass the paths of these files as parameters in the form of a list. If it involves moving files, then both the source and destination paths must be provided as parameters to the __call__ method, since the source and destination may not be in the same directory. 
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information. 
         ''',
         '_LINUX_USER_SKILL_CREATE_PROMPT' : '''
@@ -116,7 +124,8 @@ prompt = {
         4. Provide clear, logical reasoning.
         5. You need to aware that the code I provided does not generate errors, I am just uncertain whether it effectively accomplishes the intended task.
         6. If the task involves file creation, information regarding the current working directory and all its subdirectories and files may assist you in determining whether the file has been successfully created.
-        7. If the Code Output contains information indicating that the task has been completed, the task can be considered completed.        
+        7. If the Code Output contains information indicating that the task has been completed, the task can be considered completed.    
+        8. In User's information, 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
         Now you will be provided with the following information, please give the result JSON according to these information:
         ''',
         '_LINUX_USER_TASK_JUDGE_PROMPT' : '''
@@ -124,7 +133,8 @@ prompt = {
         Current Code: {current_code}
         Task: {task}
         Code Output: {code_output}
-        Current Working Directiory: {working_dir}
+        Current Working Directiory: {current_working_dir}
+        Working Directory: {working_dir}
         Files And Folders in Current Working Directiory: {files_and_folders}
         ''',
 
@@ -144,13 +154,15 @@ prompt = {
         4. Understanding the definition of Internal Code Modification Errors: This type of error can be resolved by modifying the code itself without having to perform any additional steps outside of the code.
         5. Provide clear, logical reasoning.
         6. The value of type can only be 'replan' or 'amend'.
+        7. In User's information, 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
         ''',
         '_LINUX_USER_ERROR_ANALYSIS_PROMPT' : '''
         User's information are as follows:
         Current Code: {current_code}
         Task: {task}
         Code Error: {code_error}
-        Current Working Directiory: {working_dir}
+        Current Working Directiory: {current_working_dir}
+        Working Directiory: {working_dir}
         Files And Folders in Current Working Directiory: {files_and_folders}
         '''
     },
@@ -184,6 +196,10 @@ prompt = {
         5. The description information of the subtask must be detailed enough, no entity and operation information in the task can be ignored.
         6. I have already provided you with the working directory information, there is no need to check the working directory again.
         7. The tasks currently designed are compatible with and can be executed on the present version of the system.
+        8. The current task may need the return results of its predecessor tasks. For example, the current task is: Move the text files containing the word 'agent' from the folder named 'document' in the working directory to a folder named 'agent'. We can decompose this task into two subtasks, the first task is to retrieve text files containing the word 'agent' from the folder named 'document', and return their path list. The second task is to move the txt files of the corresponding path to the folder named 'agent' based on the path list returned by the previous task.
+        9. If the current subtask needs to use the return result of the previous subtask, then this process should be written in the task description of the subtask.
+        10. Please note that the name of a subtask must be abstract. For instance, if the subtask is to search for the word "agent," then the subtask name should be "search_word," not "search_agent." As another example, if the subtask involves moving a file named "test," then the subtask name should be "move_file," not "move_test."
+        11. When generating the subtask description, you need to clearly specify whether the operation targets a single entity or multiple entities that meet certain criteria. 
         ''',
         '_LINUX_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
@@ -196,7 +212,7 @@ prompt = {
 
         '_LINUX_SYSTEM_TASK_REPLAN_PROMPT' : '''
         You are an expert at designing new tasks based on the results of your reasoning.
-        When I was executing the task {current_task}: {task_description}, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.        
+        When I was executing the task {current_task}: {current_task_description}, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.        
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Design new tasks based on the reasoning process of current task errors. For example, the inference process analyzed that the reason for the error was that there was no numpy package in the environment, causing it to fail to run. Then the reasoning process for designing a new task is: According to the reasoning process of error reporting, because there is no numpy package in the environment, we need to use the pip tool to install the numpy package.
         2. Each new task has three attributes: name, task description, and dependencies. The 'name' abstracts an appropriate name based on the reasoning process of the current subtask, and 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task.
@@ -218,6 +234,7 @@ prompt = {
         5. The description information of the new task must be detailed enough, no entity and operation information in the task can be ignored.
         6. I have already provided you with the working directory information, there is no need to check the working directory again.
         7. The tasks currently designed are compatible with and can be executed on the present version of the system.
+        8. Please note that the name of a task must be abstract. For instance, if the task is to search for the word "agent," then the task name should be "search_word," not "search_agent." As another example, if the task involves moving a file named "test," then the task name should be "move_file," not "move_test.
         ''',
         '_LINUX_USER_TASK_REPLAN_PROMPT' : '''
         User's information are as follows:

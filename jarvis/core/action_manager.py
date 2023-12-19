@@ -16,7 +16,7 @@ class ActionManager:
     def __init__(self
                  , config_path=None
                  , action_lib_dir=None
-                 , retrieval_top_k=1):
+                 , retrieval_top_k=10):
         # actions: 存放描述和代码的映射关系(通过任务名做关联)
         self.actions = {}
         self.action_lib_dir = action_lib_dir
@@ -104,7 +104,24 @@ class ActionManager:
         self.vectordb.persist()
     
     # 检索相关任务代码
-    def retrieve_actions(self, query):
+    # def retrieve_action_code(self, query):
+    #     k = min(self.vectordb._collection.count(), self.retrieval_top_k)
+    #     if k == 0:
+    #         return []
+    #     print(f"\033[33mAction Manager retrieving for {k} Actions\033[0m")
+    #     # 检索top k相关的任务描述
+    #     docs_and_scores = self.vectordb.similarity_search_with_score(query, k=k)
+    #     print(
+    #         f"\033[33mAction Manager retrieved actions: "
+    #         f"{', '.join([doc.metadata['name'] for doc, _ in docs_and_scores])}\033[0m"
+    #     )
+    #     action_code = []
+    #     for doc, _ in docs_and_scores:
+    #         action_code.append(self.actions[doc.metadata["name"]]["code"])
+    #     return action_code
+    
+    # 检索相关任务名称
+    def retrieve_action_name(self, query):
         k = min(self.vectordb._collection.count(), self.retrieval_top_k)
         if k == 0:
             return []
@@ -115,12 +132,26 @@ class ActionManager:
             f"\033[33mAction Manager retrieved actions: "
             f"{', '.join([doc.metadata['name'] for doc, _ in docs_and_scores])}\033[0m"
         )
-        actions = []
+        action_name = []
         for doc, _ in docs_and_scores:
-            actions.append(self.actions[doc.metadata["name"]]["code"])
-        return actions
+            action_name.append(doc.metadata["name"])
+        return action_name
+    
+    # 根据任务名称返回任务描述
+    def retrieve_action_description(self, action_name):
+        action_description = []
+        for name in action_name:
+            action_description.append(self.actions[name]["description"])
+        return action_description    
 
-    # 删除任务代码
+    # 根据任务名称返回任务代码
+    def retrieve_action_code(self, action_name):
+        action_code = []
+        for name in action_name:
+            action_code.append(self.actions[name]["code"])
+        return action_code
+
+    # 删除任务相关信息
     def delete_action(self, action):
         # 从向量数据库中删除任务
         if action in self.actions:
@@ -162,7 +193,7 @@ class ActionManager:
     
 
 if __name__ == '__main__':
-    actionManager = ActionManager(config_path="../../examples/config.json", action_lib_dir="../action_lib", retrieval_top_k=1)
+    actionManager = ActionManager(config_path="../../examples/config.json", action_lib_dir="../action_lib", retrieval_top_k=10)
     # action_list = json.dumps(actionManager.descriptions)
     # print(action_list)
     # sys.path.append('../action_lib/code')
@@ -183,8 +214,8 @@ if __name__ == '__main__':
     #             "code": source_code,
     #             "description": tmp_obj.description
     #         })
-    # # 检索
-    # res = actionManager.retrieve_actions("give me a picture from web")
+    # 检索
+    # res = actionManager.retrieve_action_code("give me a picture from web")
     # print(res[0])
 
     # 删除

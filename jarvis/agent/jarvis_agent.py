@@ -114,36 +114,39 @@ class PlanningModule(BaseAgent):
         self.execute_list = []
 
     # Implement task disassembly logic
-    def decompose_task(self, task):
-        action_list = self.get_action_list()
+    def decompose_task(self, task, relevant_action_list):
         files_and_folders = self.environment.list_working_dir()
-        response = self.task_decompose_format_message(task, action_list, files_and_folders)
+        relevant_action_list = json.dumps(relevant_action_list)
+        response = self.task_decompose_format_message(task, relevant_action_list, files_and_folders)
         decompose_json = self.extract_json_from_string(response)
         # Building action graph and topological ordering of actions
         self.create_action_graph(decompose_json)
         self.topological_sort()
 
     # replan new task to origin action graph 
-    def replan_task(self, reasoning, current_task):
+    def replan_task(self, reasoning, current_task, relevant_action_list):
         # current_task information
         current_action = self.action_node[current_task]
         current_task_description = current_action.description
-        action_list = self.get_action_list()
         files_and_folders = self.environment.list_working_dir()
-        response = self.task_replan_format_message(reasoning, current_task, current_task_description, action_list, files_and_folders)
+        response = self.task_replan_format_message(reasoning, current_task, current_task_description, relevant_action_list, files_and_folders)
         new_action = self.extract_json_from_string(response)
         # add new action to action graph
         self.add_new_action(new_action, current_task)
         # update topological sort
         self.topological_sort()
-        
 
     def update_action(self, action, code=None, return_val=None, status=False):
         # 更新动作节点信息
         if code:
             self.action_node[action]._code = code
         if return_val:
-            self.action_node[action]._return_val = return_val
+            return_val = self.extract_information(return_val, "<return>", "</return>")
+            print("************************<return>**************************")
+            print(return_val)
+            print("************************</return>*************************")  
+            if return_val != 'None':
+                self.action_node[action]._return_val = return_val
         self.action_node[action]._status = status
 
     # Send decompse task prompt to LLM and get task list 
@@ -182,10 +185,13 @@ class PlanningModule(BaseAgent):
         return self.llm.chat(self.message)
 
     # Get action list, including action names and descriptions
-    def get_action_list(self):
+    def get_action_list(self, relevant_action=None):
         action_dict = self.action_lib.descriptions
-        action_list = json.dumps(action_dict)
-        return action_list
+        if not relevant_action:
+            return json.dumps(action_dict)
+        relevant_action_dict = {action : description for action ,description in action_dict.items() if action in relevant_action}
+        relevant_action_list = json.dumps(relevant_action_dict)
+        return relevant_action_list
     
     # Creates a action graph from a list of dependencies.
     def create_action_graph(self, decompose_json):
@@ -244,7 +250,18 @@ class PlanningModule(BaseAgent):
             print("topological sort is possible")
         else:
             return "Cycle detected in the graph, topological sort not possible."
-
+        
+    # Get string information of the prerequisite task for the current task
+    def get_pre_tasks_info(self, current_task):
+        pre_tasks_info = {}
+        for task in self.action_graph[current_task]:
+            task_info = {
+                "description" : self.action_node[task].description,
+                "return_val" : self.action_node[task].return_val
+            }
+            pre_tasks_info[task] = task_info
+        pre_tasks_info = json.dumps(pre_tasks_info)
+        return pre_tasks_info
 
 
 
@@ -260,11 +277,39 @@ class RetrievalModule(BaseAgent):
         self.action_lib = action_lib
         self.prompt = prompt
 
-    def search_action(self, query):
-        # 实现检索动作逻辑
-        retrieve_actions = self.action_lib.retrieve_actions(query)
-        # TODO: Add a filtering mechanism
-        return retrieve_actions
+    def delete_action(self, action):
+        # 删除相关动作内容，包括代码，描述，参数信息等
+        self.action_lib.delete_action(action)
+
+    
+    def retrieve_action_name(self, task):        
+        # 实现检索动作名称逻辑
+        retrieve_action_name = self.action_lib.retrieve_action_name(task)
+        return retrieve_action_name
+
+    def action_code_filter(self, action_code, task):
+        # 实现对检索代码进行过滤
+        pass
+
+
+    def retrieve_action_description(self, action_name):
+        # 实现检索动作描述逻辑
+        retrieve_action_description = self.action_lib.retrieve_action_description(action_name)
+        return retrieve_action_description  
+
+    def retrieve_action_code(self, action_name):
+        # 实现检索动作代码逻辑
+        retrieve_action_code = self.action_lib.retrieve_action_code(action_name)
+        return retrieve_action_code 
+        
+    def retrieve_action_description_pair(self, task):
+        # 检索任务描述对
+        retrieve_action_name = self.retrieve_action_name(task)
+        retrieve_action_description = self.retrieve_action_description(retrieve_action_name)
+        action_description_pair = {}
+        for name, description in zip(retrieve_action_name, retrieve_action_description):
+            action_description_pair[name] = description
+        return action_description_pair
     
 
 
@@ -284,15 +329,17 @@ class ExecutionModule(BaseAgent):
     
     def generate_action(self, task_name, task_description):
         # 生成动作代码逻辑，生成可以完成动作的代码，返回生成的代码
-        create_msg = self.skill_create_format_message(task_name, task_description, self.environment.working_dir)
+        create_msg = self.skill_create_format_message(task_name, task_description)
         code = self.extract_python_code(create_msg)
         return code
 
-    def execute_action(self, code, task_description):
+    def execute_action(self, code, task_description, pre_tasks_info):
         # 实现动作执行逻辑，实例化动作类并执行，返回执行完毕的状态
-        invoke_msg = self.invoke_generate_format_message(code, task_description, self.environment.working_dir)
+        invoke_msg = self.invoke_generate_format_message(code, task_description, pre_tasks_info)
         invoke = self.extract_information(invoke_msg, begin_str='<invoke>', end_str='</invoke>')[0]
-        code = code + '\n' + invoke
+        # print result info
+        info = "\n" + '''print("<return>")''' + "\n" + "print(result)" +  "\n" + '''print("</return>")'''
+        code = code + '\nresult=' + invoke + info
         print("************************<code>**************************")
         print(code)
         print("************************</code>*************************")  
@@ -338,12 +385,12 @@ class ExecutionModule(BaseAgent):
         self.save_str_to_path(args_description, args_description_file_path)
 
     # Send skill create message to LLM
-    def skill_create_format_message(self, task_name, task_description, working_dir):
+    def skill_create_format_message(self, task_name, task_description):
         sys_prompt = self.prompt['_LINUX_SYSTEM_SKILL_CREATE_PROMPT']
         user_prompt = self.prompt['_LINUX_USER_SKILL_CREATE_PROMPT'].format(
             system_version=self.system_version,
             task_description=task_description,
-            working_dir=working_dir,
+            working_dir= self.environment.working_dir,
             task_name=task_name
         )
         self.message = [
@@ -353,14 +400,15 @@ class ExecutionModule(BaseAgent):
         return self.llm.chat(self.message)
 
     # Send invoke generate message to LLM
-    def invoke_generate_format_message(self, class_code, task_description, working_dir):
+    def invoke_generate_format_message(self, class_code, task_description, pre_tasks_info):
         class_name, args_description = self.extract_class_name_and_args_description(class_code)
         sys_prompt = self.prompt['_LINUX_SYSTEM_INVOKE_GENERATE_PROMPT']
         user_prompt = self.prompt['_LINUX_USER_INVOKE_GENERATE_PROMPT'].format(
             class_name = class_name,
             task_description = task_description,
             args_description = args_description,
-            working_dir = working_dir
+            pre_tasks_info = pre_tasks_info,
+            working_dir = self.environment.working_dir
         )
         self.message = [
             {"role": "system", "content": sys_prompt},
@@ -369,14 +417,15 @@ class ExecutionModule(BaseAgent):
         return self.llm.chat(self.message)        
     
     # Send skill amend message to LLM
-    def skill_amend_format_message(self, original_code, task, error, code_output, working_dir, files_and_folders, critique):
+    def skill_amend_format_message(self, original_code, task, error, code_output, current_working_dir, files_and_folders, critique):
         sys_prompt = self.prompt['_LINUX_SYSTEM_SKILL_AMEND_PROMPT']
         user_prompt = self.prompt['_LINUX_USER_SKILL_AMEND_PROMPT'].format(
             original_code = original_code,
             task = task,
             error = error,
             code_output = code_output,
-            working_dir = working_dir,
+            current_working_dir = current_working_dir,
+            working_dir= self.environment.working_dir,
             files_and_folders = files_and_folders,
             critique = critique
         )
@@ -387,13 +436,14 @@ class ExecutionModule(BaseAgent):
         return self.llm.chat(self.message)    
     
     # Send task judge prompt to LLM and get JSON response
-    def task_judge_format_message(self, current_code, task, code_output, working_dir, files_and_folders):
+    def task_judge_format_message(self, current_code, task, code_output, current_working_dir, files_and_folders):
         sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_JUDGE_PROMPT']
         user_prompt = self.prompt['_LINUX_USER_TASK_JUDGE_PROMPT'].format(
             current_code=current_code,
             task=task,
             code_output=code_output,
-            working_dir=working_dir,
+            current_working_dir=current_working_dir,
+            working_dir= self.environment.working_dir,
             files_and_folders= files_and_folders
         )
         self.message = [
@@ -408,13 +458,14 @@ class ExecutionModule(BaseAgent):
         return judge_json    
 
     # Send error analysis prompt to LLM and get JSON response
-    def error_analysis_format_message(self, current_code, task, code_error, working_dir, files_and_folders):
+    def error_analysis_format_message(self, current_code, task, code_error, current_working_dir, files_and_folders):
         sys_prompt = self.prompt['_LINUX_SYSTEM_ERROR_ANALYSIS_PROMPT']
         user_prompt = self.prompt['_LINUX_USER_ERROR_ANALYSIS_PROMPT'].format(
             current_code=current_code,
             task=task,
             code_error=code_error,
-            working_dir=working_dir,
+            current_working_dir=current_working_dir,
+            working_dir= self.environment.working_dir,
             files_and_folders= files_and_folders
         )
         self.message = [
