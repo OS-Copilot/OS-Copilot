@@ -13,14 +13,10 @@ import sys
 '''
 
 class ActionManager:
-    def __init__(self
-                 , config_path=None
-                 , action_lib_dir=None
-                 , retrieval_top_k=10):
+    def __init__(self, config_path=None, action_lib_dir=None):
         # actions: 存放描述和代码的映射关系(通过任务名做关联)
         self.actions = {}
         self.action_lib_dir = action_lib_dir
-        self.retrieval_top_k = retrieval_top_k
         with open(config_path) as f:
             config = json.load(f)
         with open(f"{self.action_lib_dir}/actions.json") as f2:
@@ -65,7 +61,7 @@ class ActionManager:
         return self.actions.keys()
     
     # 查看某个动作的代码
-    def action_code(self, action_name):
+    def get_action_code(self, action_name):
         code = self.actions[action_name]['code']
         return code    
 
@@ -121,7 +117,7 @@ class ActionManager:
     #     return action_code
     
     # 检索相关任务名称
-    def retrieve_action_name(self, query):
+    def retrieve_action_name(self, query, k=10):
         k = min(self.vectordb._collection.count(), self.retrieval_top_k)
         if k == 0:
             return []

@@ -114,10 +114,10 @@ class PlanningModule(BaseAgent):
         self.execute_list = []
 
     # Implement task disassembly logic
-    def decompose_task(self, task, relevant_action_list):
+    def decompose_task(self, task, action_description_pair):
         files_and_folders = self.environment.list_working_dir()
-        relevant_action_list = json.dumps(relevant_action_list)
-        response = self.task_decompose_format_message(task, relevant_action_list, files_and_folders)
+        action_description_pair = json.dumps(action_description_pair)
+        response = self.task_decompose_format_message(task, action_description_pair, files_and_folders)
         decompose_json = self.extract_json_from_string(response)
         # Building action graph and topological ordering of actions
         self.create_action_graph(decompose_json)
@@ -281,16 +281,19 @@ class RetrievalModule(BaseAgent):
         # 删除相关动作内容，包括代码，描述，参数信息等
         self.action_lib.delete_action(action)
 
-    
-    def retrieve_action_name(self, task):        
+    def retrieve_action_name(self, task, k=10):        
         # 实现检索动作名称逻辑
-        retrieve_action_name = self.action_lib.retrieve_action_name(task)
+        retrieve_action_name = self.action_lib.retrieve_action_name(task, k)
         return retrieve_action_name
 
-    def action_code_filter(self, action_code, task):
+    def action_code_filter(self, action_code_pair, task):
         # 实现对检索代码进行过滤
-        pass
-
+        response = self.action_code_filter_format_message(action_code_pair, task)
+        action_name = self.extract_information(response, '<action>', '</action>')
+        code = ''
+        if action_name:
+            code = self.action_lib.get_action_code(action_name)
+        return code
 
     def retrieve_action_description(self, action_name):
         # 实现检索动作描述逻辑
@@ -301,16 +304,35 @@ class RetrievalModule(BaseAgent):
         # 实现检索动作代码逻辑
         retrieve_action_code = self.action_lib.retrieve_action_code(action_name)
         return retrieve_action_code 
+    
+    def retrieve_action_code_pair(self, retrieve_action_name):
+        # 检索任务代码对
+        retrieve_action_code = self.retrieve_action_code(retrieve_action_name)
+        action_code_pair = {}
+        for name, description in zip(retrieve_action_name, retrieve_action_code):
+            action_code_pair[name] = description
+        return action_code_pair        
         
-    def retrieve_action_description_pair(self, task):
+    def retrieve_action_description_pair(self, retrieve_action_name):
         # 检索任务描述对
-        retrieve_action_name = self.retrieve_action_name(task)
         retrieve_action_description = self.retrieve_action_description(retrieve_action_name)
         action_description_pair = {}
         for name, description in zip(retrieve_action_name, retrieve_action_description):
             action_description_pair[name] = description
         return action_description_pair
     
+    def action_code_filter_format_message(self, action_code_pair, task_description):
+        sys_prompt = self.prompt['_LINUX_ACTION_CODE_FILTER_PROMPT']
+        user_prompt = self.prompt['_LINUX_ACTION_CODE_FILTER_PROMPT'].format(
+            system_version=self.system_version,
+            task_description=task_description,
+            action_code_pair=action_code_pair
+        )
+        self.message = [
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_prompt},
+        ]
+        return self.llm.chat(self.message)    
 
 
 class ExecutionModule(BaseAgent):

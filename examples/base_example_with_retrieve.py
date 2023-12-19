@@ -13,23 +13,24 @@ execute_agent = jarvis_agent.executor
 
 # We assume that the response result comes from the task planning agent.
 task = '''
-Open the result.txt file in the folder called myfold. 
+Move the text files containing the word 'agent' from the folder named 'document' to the path '/home/heroding/桌面/Jarvis/working_dir/agent'.
 '''
 # relevant action 
-relevant_action_pair = retrieve_agent.retrieve_action_description_pair(task)
+retrieve_action_name = retrieve_agent.retrieve_action_name(task)
+retrieve_action_description_pair = retrieve_agent.retrieve_action_description_pair(retrieve_action_name)
 # decompose task
-planning_agent.decompose_task(task, relevant_action_pair)
+planning_agent.decompose_task(task, retrieve_action_description_pair)
 
 # retrieve existing tools
 for action_name, action_node in planning_agent.action_node.items():
     action_description = action_node.description
-    retrieve_action = retrieve_agent.retrieve_action_name(action_description)
-    retrieve_code = retrieve_agent.retrieve_action_code(retrieve_action)
-    # filter TODO
-    if retrieve_code:
-        code = retrieve_code[0]
+    retrieve_action = retrieve_agent.retrieve_action_name(action_description, 3)
+    retrieve_action_code_pair = retrieve_agent.retrieve_action_code_pair(retrieve_action)
+    code = retrieve_agent.action_code_filter(retrieve_action_code_pair, action_description)
+    if code:
         planning_agent.update_action(action_name, code, None)
 
+# iter each subtask
 while planning_agent.execute_list:
     action = planning_agent.execute_list[0]
     action_node = planning_agent.action_node[action]

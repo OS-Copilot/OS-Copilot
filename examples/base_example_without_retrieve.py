@@ -13,7 +13,7 @@ execute_agent = jarvis_agent.executor
 
 # We assume that the response result comes from the task planning agent.
 task = '''
-Move the text files containing the word 'agent' from the folder named 'document' to the path  '/home/heroding/桌面/Jarvis/working_dir/agent'.
+Move the text files containing the word 'agent' from the folder named 'document' to the path '/home/heroding/桌面/Jarvis/working_dir/agent'.
 '''
 
 
