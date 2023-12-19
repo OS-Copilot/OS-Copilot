@@ -118,7 +118,7 @@ class ActionManager:
     
     # 检索相关任务名称
     def retrieve_action_name(self, query, k=10):
-        k = min(self.vectordb._collection.count(), self.retrieval_top_k)
+        k = min(self.vectordb._collection.count(), k)
         if k == 0:
             return []
         print(f"\033[33mAction Manager retrieving for {k} Actions\033[0m")

@@ -88,11 +88,11 @@ prompt = {
         10. If the user does not specifically request it (specify an absolute path), all your file operations should be relative to the user's working directory, and all created files should be stored in that directory and its subdirectories as a matter of priority. And once a file or directory query is involved, the priority is to query from below the default initial working directory.
         11. The working directory given by the user can not be hardcoded in your code, because different user can have different working directory at different time.
         12. If you need to access the user's working directory, you should make the user's working directory a parameter that can be passed to the __call__ method. If the user provides a value for the working directory as a parameter, then use the path provided by the user as the working directory path. Otherwise, you can obtain it using methods like os.getcwd().
-        13. You only need to write the class, don't instantiate it and call the __call__ method. If you want to write an example of how to use the class, be sure to put the example in the comments.
+        13. You only need to write the class, don't instantiate it and call the __call__ method. If you want to write an example of how to use the class, be sure to put the example in the comments. 
         14. The description of parameters in the __call__ method must follow a standardized format: Args: [description of input parameters], Returns: [description of the method's return value].
         15. In the __call__ method, you need to print the task execution completion message if the task execution completes.
         16. Please note that the code you generate is mainly used under the Linux operating system, so it often involves system-level operations such as reading and writing files. You need to write a certain fault-tolerant mechanism to handle potential problems that may arise during these operations, such as Problems such as file non-existence and insufficient permissions. 
-        17. If the __call__ method needs to return, for example, if it needs to return a list or a value, then let the __call__ method return.
+        17. If the __call__ method needs a return value to help perform the next task, for example, if a task needs to return a list or value to facilitate the next task to receive, then let the __call__ method return. Otherwise, there is no need to return
         18. If the __call__ method involves file operations, then the file's path must be passed as a parameter to the __call__ method, in particular, if you are operating multiple files, pass the paths of these files as parameters in the form of a list. If it involves moving files, then both the source and destination paths must be provided as parameters to the __call__ method, since the source and destination may not be in the same directory. 
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information. 
         ''',
@@ -126,6 +126,7 @@ prompt = {
         6. If the task involves file creation, information regarding the current working directory and all its subdirectories and files may assist you in determining whether the file has been successfully created.
         7. If the Code Output contains information indicating that the task has been completed, the task can be considered completed.    
         8. In User's information, 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
+        9. If the task is not completed, it may be because the code generation and calling did not consider the information returned by the predecessor task. This information may be used as input parameters of the __call__ method.
         Now you will be provided with the following information, please give the result JSON according to these information:
         ''',
         '_LINUX_USER_TASK_JUDGE_PROMPT' : '''
@@ -168,9 +169,10 @@ prompt = {
     },
 
     'planning_prompt' : {
+        # Task decompose prompt in linux 
         '_LINUX_SYSTEM_TASK_DECOMPOSE_PROMPT' : '''
         You are an expert in making plans. 
-        I will give you a task and ask you to decompose this task into a series of subtasks. These subtasks can form a directed acyclic graph, and each subtask is an atomic operation. Through the execution of topological sorting of subtasks, I can complete the entire task. Your return results adhere to a predefined format and structure.
+        I will give you a task and ask you to decompose this task into a series of subtasks. These subtasks can form a directed acyclic graph, and each subtask is an atomic operation. Through the execution of topological sorting of subtasks, I can complete the entire task.
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Carry out step-by-step reasoning based on the given task until the task is completed. Each step of reasoning is decomposed into sub-tasks. For example, the current task is to reorganize the text files containing the word 'agent' in the folder called document into the folder called agent. Then the reasoning process is as follows: According to Current Working Directiory and Files And Folders in Current Working Directiory information, the folders documernt and agent exist, so firstly, retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return. Secondly, put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.
         2. Each decomposed subtask has three attributes: name, task description, and dependencies. The 'name' abstracts an appropriate name based on the reasoning process of the current subtask, and 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task.
@@ -194,7 +196,7 @@ prompt = {
         3. If an atomic action in the Action List can be used to process the currently decomposed sub-task, then the name of the decomposed sub-task should be directly adopted from the name of that atomic action.
         4. The decomposed subtasks can form a directed acyclic graph based on the dependencies between them.
         5. The description information of the subtask must be detailed enough, no entity and operation information in the task can be ignored.
-        6. I have already provided you with the working directory information, there is no need to check the working directory again.
+        6. 'Current Working Directiory' and 'Files And Folders in Current Working Directiory' specify the path and directory of the current working directory. These information may help you understand and generate tasks.
         7. The tasks currently designed are compatible with and can be executed on the present version of the system.
         8. The current task may need the return results of its predecessor tasks. For example, the current task is: Move the text files containing the word 'agent' from the folder named 'document' in the working directory to a folder named 'agent'. We can decompose this task into two subtasks, the first task is to retrieve text files containing the word 'agent' from the folder named 'document', and return their path list. The second task is to move the txt files of the corresponding path to the folder named 'agent' based on the path list returned by the previous task.
         9. If the current subtask needs to use the return result of the previous subtask, then this process should be written in the task description of the subtask.
@@ -210,9 +212,10 @@ prompt = {
         Files And Folders in Current Working Directiory: {files_and_folders}
         ''',
 
+        # Task replan prompt in linux
         '_LINUX_SYSTEM_TASK_REPLAN_PROMPT' : '''
         You are an expert at designing new tasks based on the results of your reasoning.
-        When I was executing the task {current_task}: {current_task_description}, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.        
+        When I was executing the task {current_task}: {current_task_description}, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.     
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Design new tasks based on the reasoning process of current task errors. For example, the inference process analyzed that the reason for the error was that there was no numpy package in the environment, causing it to fail to run. Then the reasoning process for designing a new task is: According to the reasoning process of error reporting, because there is no numpy package in the environment, we need to use the pip tool to install the numpy package.
         2. Each new task has three attributes: name, task description, and dependencies. The 'name' abstracts an appropriate name based on the reasoning process of the current subtask, and 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task.
@@ -232,7 +235,7 @@ prompt = {
         3. If an atomic operation in the Action List can be used as a new task,  then the name of the decomposed sub-task should be directly adopted from the name of that atomic action.
         4. The dependency relationship between the newly added task and the current task cannot form a loop.
         5. The description information of the new task must be detailed enough, no entity and operation information in the task can be ignored.
-        6. I have already provided you with the working directory information, there is no need to check the working directory again.
+        6. 'Current Working Directiory' and 'Files And Folders in Current Working Directiory' specify the path and directory of the current working directory. These information may help you understand and generate tasks.
         7. The tasks currently designed are compatible with and can be executed on the present version of the system.
         8. Please note that the name of a task must be abstract. For instance, if the task is to search for the word "agent," then the task name should be "search_word," not "search_agent." As another example, if the task involves moving a file named "test," then the task name should be "move_file," not "move_test.
         ''',
@@ -247,6 +250,22 @@ prompt = {
     },
 
     'retrieve_prompt' : {
-
+        # action code filter prompt
+        '_LINUX_SYSTEM_ACTION_CODE_FILTER_PROMPT' : '''
+        You are an expert in analyzing python code.
+        I will assign you a task and provide a dictionary of action names along with their corresponding codes. Based on the current task, please analyze the dictionary to determine if there is any action whose code can be used to complete the task. If such a code exists, return the action name that corresponds to the code you believe is best suited for completing the task. If no appropriate code exists, return an empty string.
+        You should only respond with the format as described below:
+        1. First, understand the requirements of the task. Next, read the code for each action, understanding their functions and methods. Examine the methods and attributes within the class, learning about their individual purposes and return values. Finally, by combining the task with the parameters of each action class's __call__ method, determine whether the content of the task can serve as an argument for the __call__ method, thereby arriving at an analysis result.
+        2. Based on the above analysis results, determine whether there is code corresponding to the action that can complete the current task. If so, return the action name corresponding to the code you think is the most appropriate. If not, return an empty string.
+        3. Output Format: The final output should include one part: the name of the selected action or empty string, which must be enclosed in <action></action> tags.    
+        And you should also follow the following criteria:
+        1. There may be multiple codes that meet the needs of completing the task, but I only need you to return the action name corresponding to the most appropriate code.
+        2. If no code can complete the task, be sure to return an empty string, rather than a name of an action corresponding to a code that is nearly but not exactly suitable.
+        ''',
+        '_LINUX_USER_ACTION_CODE_FILTER_PROMPT' : '''
+        User's information are as follows:
+        Action Code Pair: {action_code_pair}
+        Task: {task_description}
+        ''',        
     }
 }

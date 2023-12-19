@@ -289,7 +289,7 @@ class RetrievalModule(BaseAgent):
     def action_code_filter(self, action_code_pair, task):
         # 实现对检索代码进行过滤
         response = self.action_code_filter_format_message(action_code_pair, task)
-        action_name = self.extract_information(response, '<action>', '</action>')
+        action_name = self.extract_information(response, '<action>', '</action>')[0]
         code = ''
         if action_name:
             code = self.action_lib.get_action_code(action_name)
@@ -322,9 +322,8 @@ class RetrievalModule(BaseAgent):
         return action_description_pair
     
     def action_code_filter_format_message(self, action_code_pair, task_description):
-        sys_prompt = self.prompt['_LINUX_ACTION_CODE_FILTER_PROMPT']
-        user_prompt = self.prompt['_LINUX_ACTION_CODE_FILTER_PROMPT'].format(
-            system_version=self.system_version,
+        sys_prompt = self.prompt['_LINUX_SYSTEM_ACTION_CODE_FILTER_PROMPT']
+        user_prompt = self.prompt['_LINUX_USER_ACTION_CODE_FILTER_PROMPT'].format(
             task_description=task_description,
             action_code_pair=action_code_pair
         )
