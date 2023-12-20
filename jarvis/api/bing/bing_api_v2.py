@@ -3,6 +3,7 @@ from langchain.utilities import BingSearchAPIWrapper
 from bs4 import BeautifulSoup
 from typing import Tuple
 from enum import Enum
+from web_loader import WebPageLoader
 import os
 
 os.environ["BING_SUBSCRIPTION_KEY"] = "885e62a126554fb390af88ae31d2c8ff"
@@ -15,6 +16,7 @@ RESULT_TARGET_PAGE_PER_TEXT_COUNT = 500
 class BingAPIV2:
     def __init__(self) -> None:
         self.search_engine = BingSearchAPIWrapper()
+        self.web_loader = WebPageLoader()
 
     def search(self, key_words: str,top_k: int = 5, max_retry: int = 3):
             # return search.results(query,top_k)
@@ -29,33 +31,13 @@ class BingAPIV2:
                 continue
         raise RuntimeError("Failed to access Bing Search API.")
 
-    def load_page(self, url: str, max_retry: int = 3) -> Tuple[bool, str]:
-        for _ in range(max_retry):
-            try:
-                res = requests.get(url, timeout=15)
-                if res.status_code == 200:
-                    res.raise_for_status()
-                else:
-                    raise RuntimeError("Failed to load page, code {}".format(res.status_code))
-            except Exception:
-                res = None
-                continue
-            res.encoding = res.apparent_encoding
-            content = res.text
-            break
-        if res is None:
-            return False, "Timeout for loading this page, Please try to load another one or search again."
-        try:
-            soup = BeautifulSoup(content, 'html.parser')
-            paragraphs = soup.find_all('p')
-            page_detail = ""
-            for p in paragraphs:
-                text = p.get_text().strip()
-                page_detail += text
-            return True, page_detail
-        except Exception:
-            return False, "Timeout for loading this page, Please try to load another one or search again."
-    def summarize_loaded_page():
+    def load_page(self, url: str) -> str:
+        page_data = self.web_loader.load_data(url)
+        page_content_str = ""
+        if(page_data["data"][0] != None and page_data["data"][0]["content"] != None):
+            page_content_str = page_data["data"][0]["content"]
+        return page_content_str
+    def summarize_loaded_page(self,page_str):
         pass
-    def attended_loaded_page():
+    def attended_loaded_page(self,page_str,query_str):
         pass
