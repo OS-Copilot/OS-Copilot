@@ -31,3 +31,14 @@ async def load_page(item: PageItem):
         raise HTTPException(status_code=500, detail=page_detail)
     return {"page_content": page_detail}
 
+@router.get("/test")
+async def load_page(q):
+    return {"show":q}
+
+@router.get("/tools/bing/searchv2")
+async def bing_search(item: QueryItem):
+    try:
+        search_results = bing_api.search(item.query)
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return search_results

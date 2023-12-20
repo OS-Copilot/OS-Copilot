@@ -1,3 +1,1 @@
-text = re.sub(r'\s+', ' ', text )
-# 去除空行
-text = re.sub(r'\n\s*\n', '\n', text)
+http://192.168.1.100:8079/test?q=1
