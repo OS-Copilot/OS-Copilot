@@ -19,4 +19,4 @@ tools = load_tools(["bing-search"], llm=llm)
 agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)  
   
 # Now let's test it out!  
-agent.run("")
+agent.run("介绍一下gpt-4.5-turbo")
