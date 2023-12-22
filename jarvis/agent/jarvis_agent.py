@@ -136,7 +136,7 @@ class PlanningModule(BaseAgent):
         # update topological sort
         self.topological_sort()
 
-    def update_action(self, action, code=None, return_val=None, status=False):
+    def update_action(self, action, code='', return_val='', relevant_action='', status=False):
         # 更新动作节点信息
         if code:
             self.action_node[action]._code = code
@@ -147,6 +147,8 @@ class PlanningModule(BaseAgent):
             print("************************</return>*************************")  
             if return_val != 'None':
                 self.action_node[action]._return_val = return_val
+        if relevant_action:
+            self.action_node[action]._relevant_action = relevant_action
         self.action_node[action]._status = status
 
     # Send decompse task prompt to LLM and get task list 

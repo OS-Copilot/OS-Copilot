@@ -2,8 +2,9 @@ class ActionNode:
     def __init__(self, name, description):
         self._name = name
         self._description = description
-        self._code = None
-        self._return_val = None
+        self._code = ''
+        self._return_val = ''
+        self._relevant_action = ''
         self._status = False
 
     @property
@@ -21,6 +22,10 @@ class ActionNode:
     @property
     def return_val(self):
         return self._return_val
+   
+    @property
+    def relevant_action(self):
+        return self._relevant_action
     
     @property
     def status(self):

@@ -27,8 +27,7 @@ for action_name, action_node in planning_agent.action_node.items():
     retrieve_action = retrieve_agent.retrieve_action_name(action_description, 3)
     retrieve_action_code_pair = retrieve_agent.retrieve_action_code_pair(retrieve_action)
     code = retrieve_agent.action_code_filter(retrieve_action_code_pair, action_description)
-    if code:
-        planning_agent.update_action(action_name, code, None)
+    planning_agent.update_action(action_name, code, retrieve_action_code_pair)
 
 # iter each subtask
 while planning_agent.execute_list:
@@ -87,9 +86,9 @@ while planning_agent.execute_list:
         print("I can't Do this Task!!")
         break
     else: # The task is completed, if code is save the code, args_description, action_description in lib
-        if score >= 8:
+        if score >= 8 and not action_node.code:
             execute_agent.store_action(action, current_code)
         print("Current task execution completed!!!")
-        planning_agent.update_action(action, current_code, state.result, True)
+        planning_agent.update_action(action, current_code, state.result, status=True)
         planning_agent.execute_list.remove(action)
 

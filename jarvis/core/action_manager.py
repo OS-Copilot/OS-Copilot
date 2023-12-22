@@ -124,6 +124,7 @@ class ActionManager:
         print(f"\033[33mAction Manager retrieving for {k} Actions\033[0m")
         # 检索top k相关的任务描述
         docs_and_scores = self.vectordb.similarity_search_with_score(query, k=k)
+        print(docs_and_scores)
         print(
             f"\033[33mAction Manager retrieved actions: "
             f"{', '.join([doc.metadata['name'] for doc, _ in docs_and_scores])}\033[0m"
@@ -189,7 +190,7 @@ class ActionManager:
     
 
 if __name__ == '__main__':
-    actionManager = ActionManager(config_path="../../examples/config.json", action_lib_dir="../action_lib", retrieval_top_k=10)
+    actionManager = ActionManager(config_path="../../examples/config.json", action_lib_dir="../action_lib")
     # action_list = json.dumps(actionManager.descriptions)
     # print(action_list)
     # sys.path.append('../action_lib/code')
@@ -211,8 +212,8 @@ if __name__ == '__main__':
     #             "description": tmp_obj.description
     #         })
     # 检索
-    # res = actionManager.retrieve_action_code("give me a picture from web")
-    # print(res[0])
+    res = actionManager.retrieve_action_name("Open the specified text file in the specified folder using the default text viewer on Ubuntu.")
+    print(res[0])
 
     # 删除
     # actionManager.delete_action("retrieve_document")
