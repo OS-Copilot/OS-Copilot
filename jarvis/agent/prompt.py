@@ -212,7 +212,7 @@ prompt = {
         12. When decomposing subtasks, avoid including redundant information. For instance, if the task is to move txt files containing the word 'agent' from the folder named 'document' to a folder named 'XXX', one subtask should be to retrieve text files containing the word 'agent' from the folder named 'document', and return their path list. Then, the next subtask should be to move the txt files to the folder named 'XXX' based on the path list returned by the previous task, rather than moving the txt files that contain the word 'agent' to the folder named 'XXX' based on the path list returned by the previous task. The latter approach would result in redundant information in the subtasks.
         13. User's information provided you with a Tool List that includes the names of each tool and their corresponding descriptions. These tools are designed for interacting with external data sources, like the Internet. 
         14. When decomposing subtasks, you need to pay attention to whether the current subtask involves obtaining data from external data sources (such as the Internet), such as finding cat pictures on the Internet, retrieving information on a certain web page, etc., then you need to select the relevant tool from the Tool List.
-        15. If the current subtask is a tool task, the task description should include name and description about using the specific tool. 
+        15. If the current subtask is a tool task, the task description should include the name of the specific tool. 
         ''',
         '_LINUX_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
