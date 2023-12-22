@@ -17,11 +17,11 @@ router = APIRouter()
 bing_api = BingAPI('885e62a126554fb390af88ae31d2c8ff')
 bing_api_v2 = BingAPIV2()
 
-class QueryItem(BaseModel):
-    query: str
+# class QueryItem(BaseModel):
+#     query: str
 
-class PageItem(BaseModel):
-    url: str
+# class PageItem(BaseModel):
+#     url: str
 
 class QueryItemV2(BaseModel):
     query: str
@@ -30,23 +30,23 @@ class PageItemV2(BaseModel):
     url: str
     query: Optional[str] = Field(None)
 
-@router.get("/tools/bing/search")
-async def bing_search(item: QueryItem):
-    try:
-        search_results = bing_api.search(item.query)
-    except RuntimeError as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    return search_results
+# @router.get("/tools/bing/search")
+# async def bing_search(item: QueryItem):
+#     try:
+#         search_results = bing_api.search(item.query)
+#     except RuntimeError as e:
+#         raise HTTPException(status_code=500, detail=str(e))
+#     return search_results
 
-@router.get("/tools/bing/load_page")
-async def load_page(item: PageItem):
-    try:
-        page_loaded, page_detail = bing_api.load_page(item.url)
-    except RuntimeError as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    if not page_loaded:
-        raise HTTPException(status_code=500, detail=page_detail)
-    return {"page_content": page_detail}
+# @router.get("/tools/bing/load_page")
+# async def load_page(item: PageItem):
+#     try:
+#         page_loaded, page_detail = bing_api.load_page(item.url)
+#     except RuntimeError as e:
+#         raise HTTPException(status_code=500, detail=str(e))
+#     if not page_loaded:
+#         raise HTTPException(status_code=500, detail=page_detail)
+#     return {"page_content": page_detail}
 
 @router.get("/tools/bing/searchv2")
 async def bing_search_v2(item: QueryItemV2):
