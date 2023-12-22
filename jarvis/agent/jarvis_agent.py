@@ -136,7 +136,7 @@ class PlanningModule(BaseAgent):
         # update topological sort
         self.topological_sort()
 
-    def update_action(self, action, code='', return_val='', relevant_action='', status=False):
+    def update_action(self, action, code='', return_val='', relevant_action=None, status=False):
         # 更新动作节点信息
         if code:
             self.action_node[action]._code = code
@@ -290,6 +290,7 @@ class RetrievalModule(BaseAgent):
 
     def action_code_filter(self, action_code_pair, task):
         # 实现对检索代码进行过滤
+        action_code_pair = json.dumps(action_code_pair)
         response = self.action_code_filter_format_message(action_code_pair, task)
         action_name = self.extract_information(response, '<action>', '</action>')[0]
         code = ''

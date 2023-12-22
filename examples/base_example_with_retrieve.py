@@ -15,6 +15,7 @@ execute_agent = jarvis_agent.executor
 task = '''
 Move the text files containing the word 'agent' from the folder named 'document' to the path '/home/heroding/桌面/Jarvis/working_dir/agent'.
 '''
+
 # relevant action 
 retrieve_action_name = retrieve_agent.retrieve_action_name(task)
 retrieve_action_description_pair = retrieve_agent.retrieve_action_description_pair(retrieve_action_name)
@@ -27,7 +28,7 @@ for action_name, action_node in planning_agent.action_node.items():
     retrieve_action = retrieve_agent.retrieve_action_name(action_description, 3)
     retrieve_action_code_pair = retrieve_agent.retrieve_action_code_pair(retrieve_action)
     code = retrieve_agent.action_code_filter(retrieve_action_code_pair, action_description)
-    planning_agent.update_action(action_name, code, retrieve_action_code_pair)
+    planning_agent.update_action(action_name, code, relevant_action=retrieve_action_code_pair)
 
 # iter each subtask
 while planning_agent.execute_list:

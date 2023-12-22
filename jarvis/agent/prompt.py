@@ -166,6 +166,8 @@ prompt = {
         Working Directiory: {working_dir}
         Files And Folders in Current Working Directiory: {files_and_folders}
         '''
+        
+        ''
     },
 
     'planning_prompt' : {

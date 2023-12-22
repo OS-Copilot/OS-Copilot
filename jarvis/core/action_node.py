@@ -4,7 +4,7 @@ class ActionNode:
         self._description = description
         self._code = ''
         self._return_val = ''
-        self._relevant_action = ''
+        self._relevant_action = {}
         self._status = False
 
     @property
@@ -32,7 +32,7 @@ class ActionNode:
         return self._status  
     
     def __str__(self):
-        return f"name: {self.name} \n description: {self.description} \n code: {self.code} \n return: {self.return_val} \n status: {self.status}"
+        return f"name: {self.name} \n description: {self.description} \n code: {self.code} \n return: {self.return_val} \n status: {self.relevant_action} \n status: {self.status}"
 
 
 if __name__ == '__main__':
