@@ -7,7 +7,7 @@
   "paths": {
     "/tools/python": {
       "post": {
-        "summary": "Execute Python",
+        "summary": "python interpreter, can run python code",
         "operationId": "execute_python_tools_python_post",
         "requestBody": {
           "content": {
@@ -43,7 +43,7 @@
     },
     "/tools/calculator": {
       "post": {
-        "summary": "Evaluate",
+        "summary": "math calculator,can be used to perform simple quadratic operations ",
         "operationId": "evaluate_tools_calculator_post",
         "requestBody": {
           "content": {
@@ -79,7 +79,7 @@
     },
     "/tools/arxiv": {
       "get": {
-        "summary": "Get Arxiv Article Information",
+        "summary": "tool to get Arxiv Article Information",
         "description": "Run Arxiv search and get the article meta information.",
         "operationId": "get_arxiv_article_information_tools_arxiv_get",
         "requestBody": {
@@ -188,7 +188,7 @@
     },
     "/tools/shell": {
       "post": {
-        "summary": "Execute Shell Command",
+        "summary": "Can be used to run some bash commands",
         "operationId": "execute_shell_command_tools_shell_post",
         "requestBody": {
           "content": {
@@ -226,7 +226,7 @@
     },
     "/tools/ppt/create_file": {
       "post": {
-        "summary": "Create File",
+        "summary": "can be used to create ppt",
         "operationId": "create_file_tools_ppt_create_file_post",
         "requestBody": {
           "content": {
@@ -262,7 +262,7 @@
     },
     "/tools/ppt/get_image": {
       "post": {
-        "summary": "Get Image",
+        "summary": "can be used to get an image from ppt",
         "operationId": "get_image_tools_ppt_get_image_post",
         "requestBody": {
           "content": {
@@ -298,7 +298,7 @@
     },
     "/tools/ppt/add_first_page": {
       "post": {
-        "summary": "Add First Page",
+        "summary": "Add First Page to the ppt",
         "operationId": "add_first_page_tools_ppt_add_first_page_post",
         "requestBody": {
           "content": {
@@ -334,7 +334,7 @@
     },
     "/tools/ppt/add_text_page": {
       "post": {
-        "summary": "Add Text Page",
+        "summary": "Add Text Page to the ppt",
         "operationId": "add_text_page_tools_ppt_add_text_page_post",
         "requestBody": {
           "content": {
@@ -370,7 +370,7 @@
     },
     "/tools/ppt/add_text_image_page": {
       "post": {
-        "summary": "Add Text Image Page",
+        "summary": "Add Text Image Page to the ppt",
         "operationId": "add_text_image_page_tools_ppt_add_text_image_page_post",
         "requestBody": {
           "content": {
@@ -406,7 +406,7 @@
     },
     "/tools/ppt/submit_file": {
       "get": {
-        "summary": "Submit File",
+        "summary": "Submit ppt File",
         "operationId": "submit_file_tools_ppt_submit_file_get",
         "responses": {
           "200": {
@@ -422,7 +422,7 @@
     },
     "/tools/database": {
       "post": {
-        "summary": "Execute Sqlite",
+        "summary": "Execute Sqlite script for the travel datebase in the server",
         "operationId": "execute_sqlite_tools_database_post",
         "requestBody": {
           "content": {
@@ -458,7 +458,7 @@
     },
     "/tools/wolframalpha": {
       "post": {
-        "summary": "Wolframalpha Query",
+        "summary": "Do Wolframalpha Query to perform complex mathematical calculations such as linear algebra, calculus and probability statistics ",
         "operationId": "wolframalpha_query_tools_wolframalpha_post",
         "requestBody": {
           "content": {
@@ -540,7 +540,7 @@
     },
     "/calendar/insert_event": {
       "post": {
-        "summary": "Insert Event",
+        "summary": "Insert Event to the Calendar",
         "operationId": "insert_event_calendar_insert_event_post",
         "requestBody": {
           "content": {
@@ -576,7 +576,7 @@
     },
     "/gmail/send": {
       "post": {
-        "summary": "Send Test Email",
+        "summary": "Send google Email",
         "operationId": "send_test_email_gmail_send_post",
         "requestBody": {
           "content": {
@@ -612,7 +612,7 @@
     },
     "/gmail/list": {
       "get": {
-        "summary": "List Recent Emails",
+        "summary": "List Recent Emails from gmail",
         "operationId": "list_recent_emails_gmail_list_get",
         "responses": {
           "200": {
