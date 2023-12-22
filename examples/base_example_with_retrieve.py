@@ -12,8 +12,12 @@ retrieve_agent = jarvis_agent.retriever
 execute_agent = jarvis_agent.executor
 
 # We assume that the response result comes from the task planning agent.
+# task = '''
+# Move the text files containing the word 'agent' from the folder named 'document' to the path '/home/heroding/桌面/Jarvis/working_dir/agent'.
+# '''
+
 task = '''
-Move the text files containing the word 'agent' from the folder named 'document' to the path '/home/heroding/桌面/Jarvis/working_dir/agent'.
+What is the final numeric output from the Python code named f918266a-b3e0-4914-865d-4faa564f1aef in working_dir?
 '''
 
 # relevant action 
@@ -57,7 +61,9 @@ while planning_agent.execute_list:
         #  Determine whether it is caused by an error outside the code
         reasoning, type = execute_agent.analysis_action(code, description, state)
         if type == 'replan':
-            planning_agent.replan_task(reasoning, action)
+            relevant_action_name = retrieve_agent.retrieve_action_name(reasoning)
+            relevant_action_description_pair = retrieve_agent.retrieve_action_description_pair(relevant_action_name)
+            planning_agent.replan_task(reasoning, action )
             continue
         need_mend = True   
     # The code failed to complete its task, fix the code

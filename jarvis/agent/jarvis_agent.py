@@ -124,12 +124,13 @@ class PlanningModule(BaseAgent):
         self.topological_sort()
 
     # replan new task to origin action graph 
-    def replan_task(self, reasoning, current_task, relevant_action_list):
+    def replan_task(self, reasoning, current_task, relevant_action_description_pair):
         # current_task information
         current_action = self.action_node[current_task]
         current_task_description = current_action.description
+        relevant_action_description_pair = json.dumps(relevant_action_description_pair)
         files_and_folders = self.environment.list_working_dir()
-        response = self.task_replan_format_message(reasoning, current_task, current_task_description, relevant_action_list, files_and_folders)
+        response = self.task_replan_format_message(reasoning, current_task, current_task_description, relevant_action_description_pair, files_and_folders)
         new_action = self.extract_json_from_string(response)
         # add new action to action graph
         self.add_new_action(new_action, current_task)
