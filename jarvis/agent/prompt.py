@@ -179,35 +179,40 @@ prompt = {
         I will give you a task and ask you to decompose this task into a series of subtasks. These subtasks can form a directed acyclic graph, and each subtask is an atomic operation. Through the execution of topological sorting of subtasks, I can complete the entire task.
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Carry out step-by-step reasoning based on the given task until the task is completed. Each step of reasoning is decomposed into sub-tasks. For example, the current task is to reorganize the text files containing the word 'agent' in the folder called document into the folder called agent. Then the reasoning process is as follows: According to Current Working Directiory and Files And Folders in Current Working Directiory information, the folders documernt and agent exist, so firstly, retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return. Secondly, put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.
-        2. Each decomposed subtask has three attributes: name, task description, and dependencies. The 'name' abstracts an appropriate name based on the reasoning process of the current subtask, and 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task.
-        3. In JSON, each decomposed subtask contains three attributes: name, description, and dependencies, which are obtained through reasoning about the task. The key of each subtask is the name of the subtask.
-        4. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
+        2. There are two types of subtasks, one is a task that requires the use of tools to access external data sources to obtain information, such as retrieving information from the Internet, this type of task is called a tool task, and the other is a task that does not require the use of tools, which is called General tasks.
+        3. Each decomposed subtask has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a general task or a tool task, If it is a general task, its value is 'general', if it is a tool task, it is 'tool'.
+        4. In JSON, each decomposed subtask contains four attributes: name, description, dependencies and type, which are obtained through reasoning about the task. The key of each subtask is the 'name' attribute of the subtask.
+        5. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
         {
             'retrieve_files' : {
                 'name': 'retrieve_files',
                 'description': 'retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return.',
-                'dependencies': []
+                'dependencies': [],
+                'type' : 'general'
             },
             'organize_files' : {
                 'name': 'organize_files',
                 'description': 'put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.',
-                'dependencies': ['retrieve_files']
+                'dependencies': ['retrieve_files'],
+                'type': 'general'
             }    
         }        
         And you should also follow the following criteria:
         1. A task can be decomposed down into one or more atomic operations, depending on the complexity of the task.
         2. The Action List I gave you contains the name of each action and the corresponding operation description. These actions are all atomic operations. You can refer to these atomic operations to decompose the current task.
-        3. If an atomic action in the Action List can be used to process the currently decomposed sub-task, then the name of the decomposed sub-task should be directly adopted from the name of that atomic action.
+        3. If the current sub-task is a general task, and can be addressed using an atomic action from the Action List, then the name of the decomposed sub-task should be directly adopted from the name of that atomic action.
         4. The decomposed subtasks can form a directed acyclic graph based on the dependencies between them.
         5. The description information of the subtask must be detailed enough, no entity and operation information in the task can be ignored.
         6. 'Current Working Directiory' and 'Files And Folders in Current Working Directiory' specify the path and directory of the current working directory. These information may help you understand and generate tasks.
         7. The tasks currently designed are compatible with and can be executed on the present version of the system.
         8. The current task may need the return results of its predecessor tasks. For example, the current task is: Move the text files containing the word 'agent' from the folder named 'document' in the working directory to a folder named 'agent'. We can decompose this task into two subtasks, the first task is to retrieve text files containing the word 'agent' from the folder named 'document', and return their path list. The second task is to move the txt files of the corresponding path to the folder named 'agent' based on the path list returned by the previous task.
         9. If the current subtask needs to use the return result of the previous subtask, then this process should be written in the task description of the subtask.
-        10. Please note that the name of a subtask must be abstract. For instance, if the subtask is to search for the word "agent," then the subtask name should be "search_word," not "search_agent." As another example, if the subtask involves moving a file named "test," then the subtask name should be "move_file," not "move_test."
+        10. Please note that the name of a general subtask must be abstract. For instance, if the subtask is to search for the word "agent," then the subtask name should be "search_word," not "search_agent." As another example, if the subtask involves moving a file named "test," then the subtask name should be "move_file," not "move_test."
         11. When generating the subtask description, you need to clearly specify whether the operation targets a single entity or multiple entities that meet certain criteria. 
         12. When decomposing subtasks, avoid including redundant information. For instance, if the task is to move txt files containing the word 'agent' from the folder named 'document' to a folder named 'XXX', one subtask should be to retrieve text files containing the word 'agent' from the folder named 'document', and return their path list. Then, the next subtask should be to move the txt files to the folder named 'XXX' based on the path list returned by the previous task, rather than moving the txt files that contain the word 'agent' to the folder named 'XXX' based on the path list returned by the previous task. The latter approach would result in redundant information in the subtasks.
-        13. 
+        13. User's information provided you with a Tool List that includes the names of each tool and their corresponding descriptions. These tools are designed for interacting with external data sources, like the Internet. 
+        14. When decomposing subtasks, you need to pay attention to whether the current subtask involves obtaining data from external data sources (such as the Internet), such as finding cat pictures on the Internet, retrieving information on a certain web page, etc., then you need to select the relevant tool from the Tool List.
+        15. If the current subtask is a tool task, the task description should include name and description about using the specific tool. 
         ''',
         '_LINUX_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:

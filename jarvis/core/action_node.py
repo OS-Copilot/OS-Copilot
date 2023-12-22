@@ -1,11 +1,12 @@
 class ActionNode:
-    def __init__(self, name, description):
+    def __init__(self, name, description, type):
         self._name = name
         self._description = description
         self._code = ''
         self._return_val = ''
         self._relevant_action = {}
         self._status = False
+        self._type = type
 
     @property
     def name(self):
@@ -31,8 +32,12 @@ class ActionNode:
     def status(self):
         return self._status  
     
+    @property
+    def type(self):
+        return self._type 
+    
     def __str__(self):
-        return f"name: {self.name} \n description: {self.description} \n code: {self.code} \n return: {self.return_val} \n status: {self.relevant_action} \n status: {self.status}"
+        return f"name: {self.name} \n description: {self.description} \n code: {self.code} \n return: {self.return_val} \n relevant_action: {self.relevant_action} \n status: {self.status} \n type: {self.type}"
 
 
 if __name__ == '__main__':

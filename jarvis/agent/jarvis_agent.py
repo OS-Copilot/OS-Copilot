@@ -5,8 +5,8 @@ from jarvis.environment.py_env import PythonEnv
 from jarvis.core.llms import OpenAI
 from jarvis.core.action_manager import ActionManager
 from jarvis.action.get_os_version import get_os_version, check_os_version
-from jarvis.core.llms import OpenAI
 from jarvis.agent.prompt import prompt
+from jarvis.core.utils import get_open_api_description_pair
 import re
 import json
 
@@ -154,11 +154,13 @@ class PlanningModule(BaseAgent):
 
     # Send decompse task prompt to LLM and get task list 
     def task_decompose_format_message(self, task, action_list, files_and_folders):
+        tool_list = get_open_api_description_pair()
         sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_DECOMPOSE_PROMPT']
         user_prompt = self.prompt['_LINUX_USER_TASK_DECOMPOSE_PROMPT'].format(
             system_version=self.system_version,
             task=task,
             action_list = action_list,
+            tool_list = tool_list,
             working_dir = self.environment.working_dir,
             files_and_folders = files_and_folders
         )
@@ -200,14 +202,14 @@ class PlanningModule(BaseAgent):
     def create_action_graph(self, decompose_json):
         # generate execte graph
         for task_name, task_info in decompose_json.items():
-            self.action_node[task_name] = ActionNode(task_name, task_info['description'])
+            self.action_node[task_name] = ActionNode(task_name, task_info['description'], task_info['type'])
             self.action_graph[task_name] = task_info['dependencies']
     
     # Creates a action graph from a list of dependencies.
     def add_new_action(self, new_task_json, current_task):
         # update execte graph
         for task_name, task_info in new_task_json.items():
-            self.action_node[task_name] = ActionNode(task_name, task_info['description'])
+            self.action_node[task_name] = ActionNode(task_name, task_info['description'], task_info['type'])
             self.action_graph[task_name] = task_info['dependencies']
         last_new_task = list(new_task_json.keys())[-1]
         self.action_graph[current_task].append(last_new_task)

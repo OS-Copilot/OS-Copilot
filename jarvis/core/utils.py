@@ -177,8 +177,10 @@ def cosine_similarity(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))\
     
 
-def get_open_api_description_pair(json_path="openapi.json"):
-    with open(json_path, 'r') as file:
+def get_open_api_description_pair():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    open_api_path = os.path.join(script_dir, 'openapi.json')
+    with open(open_api_path, 'r') as file:
         open_api_json = json.load(file)
     open_api_dict = open_api_json['paths']
     open_api_description_pair = {}
@@ -189,7 +191,6 @@ def get_open_api_description_pair(json_path="openapi.json"):
             open_api_description_pair[name] = value['get']['summary']
     return open_api_description_pair
 
-print(get_open_api_description_pair())
     
 # prompt =  '''
 #         You are an expert in making plans. 
