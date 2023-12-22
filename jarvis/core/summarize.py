@@ -3,8 +3,10 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains.mapreduce import MapReduceChain
 from langchain.prompts import PromptTemplate
 from langchain.chains.summarize import load_summarize_chain
- 
+from embedchain import App
 import json
+elon_bot = App()
+elon_bot.add("https://en.wikipedia.org/wiki/Elon_Musk")
 with open("../../examples/config.json") as f:
     config = json.load(f) 
 llm = OpenAI(
@@ -14,7 +16,7 @@ llm = OpenAI(
     # model_name="gpt-3.5-turbo-1106"
     )
  
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=30)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 with open('./test.txt') as f:
     state_of_the_union = f.read()
 texts = text_splitter.create_documents([state_of_the_union])

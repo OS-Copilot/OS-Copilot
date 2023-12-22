@@ -9,7 +9,7 @@ with open("../../examples/config.json") as f:
     config = json.load(f)
 with open('./test.txt') as f:
     state_of_the_union = f.read()
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 texts = text_splitter.create_documents([state_of_the_union])
 
 embeddings = OpenAIEmbeddings(
@@ -18,6 +18,6 @@ embeddings = OpenAIEmbeddings(
 )
 docsearch = Chroma.from_documents(texts, embeddings)
 query = "请总结https://zhuanlan.zhihu.com/p/541484549这个网页主要讲了什么"
-docs = docsearch.similarity_search(query, k=5)
+docs = docsearch.similarity_search(query, k=3)
 res = '...'.join([doc.page_content for doc in docs])
 print(res)

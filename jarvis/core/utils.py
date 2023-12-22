@@ -8,6 +8,15 @@ import re
 import string
 from typing import Any
 import tqdm
+import re
+import tiktoken
+
+def num_tokens_from_string(string: str) -> int:
+    """Returns the number of tokens in a text string."""
+    encoding = tiktoken.encoding_for_model('gpt-4-1106-preview')
+    num_tokens = len(encoding.encode(string))
+    return num_tokens
+
 
 
 def parse_content(content, type="html.parser"):

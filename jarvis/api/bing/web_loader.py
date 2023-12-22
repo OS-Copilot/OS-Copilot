@@ -1,6 +1,6 @@
 import hashlib
 import logging
-
+import re
 import requests
 
 try:
@@ -12,7 +12,38 @@ except ImportError:
 
 
 
-from jarvis.core.utils import clean_string
+def clean_string(text):
+    """
+    This function takes in a string and performs a series of text cleaning operations.
+
+    Args:
+        text (str): The text to be cleaned. This is expected to be a string.
+
+    Returns:
+        cleaned_text (str): The cleaned text after all the cleaning operations
+        have been performed.
+    """
+    # Replacement of newline characters:
+    text = text.replace("\n", " ")
+
+    # Stripping and reducing multiple spaces to single:
+    cleaned_text = re.sub(r"\s+", " ", text.strip())
+
+    # Removing backslashes:
+    cleaned_text = cleaned_text.replace("\\", "")
+
+    # Replacing hash characters:
+    cleaned_text = cleaned_text.replace("#", " ")
+
+    # Eliminating consecutive non-alphanumeric characters:
+    # This regex identifies consecutive non-alphanumeric characters (i.e., not
+    # a word character [a-zA-Z0-9_] and not a whitespace) in the string
+    # and replaces each group of such characters with a single occurrence of
+    # that character.
+    # For example, "!!! hello !!!" would become "! hello !".
+    cleaned_text = re.sub(r"([^\w\s])\1*", r"\1", cleaned_text)
+
+    return cleaned_text
 
 
 
@@ -23,23 +54,35 @@ class WebPageLoader:
     def load_data(self, url):
         """Load data from a web page using a shared requests session."""
         headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML like Gecko) Chrome/52.0.2743.116 Safari/537.36'}
-        response = self._session.get(url,headers=headers, timeout=30)
-        response.raise_for_status()
-        data = response.content
-        content = self._get_clean_content(data, url)
+        web_data = {}
+        try:
+            response = self._session.get(url,headers=headers, timeout=30)
+            response.raise_for_status()
+            data = response.content
+            content = self._get_clean_content(data, url)
 
-        meta_data = {"url": url}
+            meta_data = {"url": url}
 
-        doc_id = hashlib.sha256((content + url).encode()).hexdigest()
-        return {
+            doc_id = hashlib.sha256((content + url).encode()).hexdigest()
+            web_data = {
             "doc_id": doc_id,
             "data": [
-                {
-                    "content": content,
-                    "meta_data": meta_data,
-                }
-            ],
-        }
+                    {
+                        "content": content,
+                        "meta_data": meta_data,
+                    }
+                ],
+            }
+        except Exception:
+            web_data = {
+                "data": [
+                        {
+                            "content": "",
+                            "meta_data": "",
+                        }
+                    ],
+            }
+        return web_data
 
     def _get_clean_content(self, html, url) -> str:
         soup = BeautifulSoup(html, "html.parser")
