@@ -94,6 +94,8 @@ prompt = {
         16. Please note that the code you generate is mainly used under the Linux operating system, so it often involves system-level operations such as reading and writing files. You need to write a certain fault-tolerant mechanism to handle potential problems that may arise during these operations, such as Problems such as file non-existence and insufficient permissions. 
         17. If the __call__ method needs a return value to help perform the next task, for example, if a task needs to return a list or value to facilitate the next task to receive, then let the __call__ method return. Otherwise, there is no need to return
         18. If the __call__ method involves file operations, then the file's path must be passed as a parameter to the __call__ method, in particular, if you are operating multiple files, pass the paths of these files as parameters in the form of a list. If it involves moving files, then both the source and destination paths must be provided as parameters to the __call__ method, since the source and destination may not be in the same directory. 
+        19. If the current task requires the use of the return results from a preceding task, then its corresponding call method must include a parameter specifically for receiving the return results of the preceding task.
+        20. 
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information. 
         ''',
         '_LINUX_USER_SKILL_CREATE_PROMPT' : '''
@@ -204,6 +206,7 @@ prompt = {
         9. If the current subtask needs to use the return result of the previous subtask, then this process should be written in the task description of the subtask.
         10. Please note that the name of a subtask must be abstract. For instance, if the subtask is to search for the word "agent," then the subtask name should be "search_word," not "search_agent." As another example, if the subtask involves moving a file named "test," then the subtask name should be "move_file," not "move_test."
         11. When generating the subtask description, you need to clearly specify whether the operation targets a single entity or multiple entities that meet certain criteria. 
+        12. When decomposing subtasks, avoid including redundant information. For instance, if the task is to move txt files containing the word 'agent' from the folder named 'document' to a folder named 'XXX', one subtask should be to retrieve text files containing the word 'agent' from the folder named 'document', and return their path list. Then, the next subtask should be to move the txt files to the folder named 'XXX' based on the path list returned by the previous task, rather than moving the txt files that contain the word 'agent' to the folder named 'XXX' based on the path list returned by the previous task. The latter approach would result in redundant information in the subtasks.
         ''',
         '_LINUX_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
