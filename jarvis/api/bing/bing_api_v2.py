@@ -3,7 +3,7 @@ from langchain.utilities import BingSearchAPIWrapper
 from bs4 import BeautifulSoup
 from typing import Tuple
 from enum import Enum
-from web_loader import WebPageLoader
+from .web_loader import WebPageLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
@@ -64,4 +64,6 @@ class BingAPIV2:
         relatedChunks = chunSearch.similarity_search(query_str, k=3)
         attended_content = '...'.join([chunk.page_content for chunk in relatedChunks])
         return attended_content
+
+
     
