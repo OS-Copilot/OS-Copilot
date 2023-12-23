@@ -1,4 +1,5 @@
 from jarvis.core.llms import OpenAI
+from jarvis.environment.py_env import PythonEnv
 import json
 '''
 让大模型根据目标工具的API文档做网络请求，获取到响应数据并返回
@@ -38,6 +39,7 @@ class ToolAgent():
         super().__init__()
         self.llm = OpenAI(config_path)
         self.open_api_doc = {}
+        self.environment = PythonEnv()
         with open(open_api_doc_path) as f:
             self.open_api_doc = json.load(f) 
         # self.mac_systom_prompts = 
@@ -91,7 +93,19 @@ class ToolAgent():
         elif '```' in python_code:
             python_code = response.split('```')[1].split('```')[0]
         return python_code
+    def execute_code(self,code):
+        state = self.environment.step(code)
+        api_result = None;
+        if(state.error != None and state.error != ""):
+            api_result = state.error
+        else:
+            api_result = state.result
+        return api_result
+
         
-agent = ToolAgent("../../examples/config.json","../core/openapi.json")
-res = agent.generate_call_api_code("use /tools/bing/searchv2 tool to search How many studio albums were published by Mercedes Sosa between 2000 and 2009 (included)? You can use the latest 2022 version of english wikipedia.","/tools/bing/searchv2")
-print(res)
+# agent = ToolAgent("../../examples/config.json","../core/openapi.json")
+# code_text = agent.generate_call_api_code("use /tools/bing/searchv2 tool to search How many studio albums were published by Mercedes Sosa between 2000 and 2009 (included)? You can use the latest 2022 version of english wikipedia.","/tools/bing/searchv2")
+# code = agent.extract_python_code(code_text)
+# print(code)
+# api_res = agent.execute_code(code)
+# print(api_res)

@@ -3,7 +3,7 @@ class ToolRequestUtil:
     def __init__(self):
         self.session = requests.session()
         self.headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML like Gecko) Chrome/52.0.2743.116 Safari/537.36'}
-        self.base_url = "http://10.241.41.203:8079"
+        self.base_url = "http://192.168.1.102:8079"
     def request(self , api_path , method , params=None , content_type=None):
         """
         :param api_path: the path of the api
