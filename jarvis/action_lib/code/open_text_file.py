@@ -1,33 +1,34 @@
+
 from jarvis.action.base_action import BaseAction
 import subprocess
 import os
 
 class open_text_file(BaseAction):
     def __init__(self):
-        self._description = "Open the specified text file in the specified folder using the default text viewer on Ubuntu."
+        self._description = "Open the specified text file using the default text viewer on the system."
 
-    def __call__(self, folder_name, file_name, working_directory=None):
+    def __call__(self, file_path, *args, **kwargs):
         """
-        Open the specified text file in the specified folder using the default text viewer on Ubuntu.
+        Open the specified text file using the default text viewer on the system.
 
         Args:
-        folder_name (str): The name of the folder containing the text file.
-        file_name (str): The name of the text file to be opened.
-        working_directory (str, optional): The working directory where the folder is located. If not provided, the current working directory will be used.
+        file_path (str): The absolute path of the text file to be opened.
 
         Returns:
         None
         """
-        # If the working directory is provided, use it. Otherwise, use the current working directory.
-        if working_directory:
-            os.chdir(working_directory)
-
-        # Construct the file path
-        file_path = os.path.join(folder_name, file_name)
+        # Ensure the file exists before attempting to open it
+        if not os.path.isfile(file_path):
+            print(f"The file {file_path} does not exist.")
+            return
 
         # Open the text file using the default text viewer on Ubuntu
-        subprocess.run(['xdg-open', file_path])
+        try:
+            subprocess.run(['xdg-open', file_path])
+            print(f"Opened the file {file_path} successfully.")
+        except Exception as e:
+            print(f"An error occurred while trying to open the file: {e}")
 
 # Example of how to use the class:
 # open_file_task = open_text_file()
-# open_file_task(folder_name='myfold', file_name='result.txt', working_directory='/home/heroding/桌面/Jarvis/working_dir')
+# open_file_task(file_path='/home/heroding/桌面/Jarvis/working_dir/test.txt')

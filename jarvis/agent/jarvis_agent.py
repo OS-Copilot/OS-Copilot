@@ -349,23 +349,29 @@ class ExecutionModule(BaseAgent):
         super().__init__()
         # 模型，环境，数据库
         self.llm = llm
-        self.tool = ToolAgent()
+        # self.tool = ToolAgent()
         self.environment = environment
         self.action_lib = action_lib
         self.system_version = system_version
         self.prompt = prompt
         self.max_iter = max_iter
     
-    def generate_action(self, task_name, task_description):
-        # 生成动作代码逻辑，生成可以完成动作的代码，返回生成的代码
-        create_msg = self.skill_create_format_message(task_name, task_description)
+    def generate_action(self, task_name, task_description, pre_tasks_info, relevant_code):
+        # 生成动作代码逻辑，生成可以完成动作的代码和其调用
+        relevant_code = json.dumps(relevant_code)
+        create_msg = self.skill_create_and_invoke_format_message(task_name, task_description, pre_tasks_info, relevant_code)
         code = self.extract_python_code(create_msg)
-        return code
+        invoke = self.extract_information(create_msg, begin_str='<invoke>', end_str='</invoke>')[0]
+        return code, invoke
 
-    def execute_action(self, code, task_description, pre_tasks_info):
+    # def generate_action(self, task_name, task_description):
+    #     # 生成动作代码逻辑，生成可以完成动作的代码，返回生成的代码
+    #     create_msg = self.skill_create_format_message(task_name, task_description)
+    #     code = self.extract_python_code(create_msg)
+    #     return code
+
+    def execute_action(self, code, invoke):
         # 实现动作执行逻辑，实例化动作类并执行，返回执行完毕的状态
-        invoke_msg = self.invoke_generate_format_message(code, task_description, pre_tasks_info)
-        invoke = self.extract_information(invoke_msg, begin_str='<invoke>', end_str='</invoke>')[0]
         # print result info
         info = "\n" + '''print("<return>")''' + "\n" + "print(result)" +  "\n" + '''print("</return>")'''
         code = code + '\nresult=' + invoke + info
@@ -378,6 +384,22 @@ class ExecutionModule(BaseAgent):
         print("************************</state>*************************") 
         return state
 
+    # def execute_action(self, code, task_description, pre_tasks_info):
+    #     # 实现动作执行逻辑，实例化动作类并执行，返回执行完毕的状态
+    #     invoke_msg = self.invoke_generate_format_message(code, task_description, pre_tasks_info)
+    #     invoke = self.extract_information(invoke_msg, begin_str='<invoke>', end_str='</invoke>')[0]
+    #     # print result info
+    #     info = "\n" + '''print("<return>")''' + "\n" + "print(result)" +  "\n" + '''print("</return>")'''
+    #     code = code + '\nresult=' + invoke + info
+    #     print("************************<code>**************************")
+    #     print(code)
+    #     print("************************</code>*************************")  
+    #     state = self.environment.step(code)
+    #     print("************************<state>**************************")
+    #     print(state)
+    #     print("************************</state>*************************") 
+    #     return state
+
     def judge_action(self, code, task_description, state):
         # 实现动作判断逻辑，判断动作是否完成当前任务，返回判断的JSON结果
         judge_json = self.task_judge_format_message(code, task_description, state.result, state.pwd, state.ls)
@@ -386,11 +408,18 @@ class ExecutionModule(BaseAgent):
         score = judge_json['score']
         return reasoning, judge, score
 
-    def amend_action(self, current_code, task_description, state, critique):
-        # 实现动作修复逻辑，对于未完成任务或者有错误的代码进行修复，返回修复后的代码
-        amend_msg = self.skill_amend_format_message(current_code, task_description, state.error, state.result, state.pwd, state.ls, critique)
+    def amend_action(self, current_code, task_description, state, critique, pre_tasks_info):
+        # 实现动作修复逻辑，对于未完成任务或者有错误的代码进行修复，返回修复后的代码和调用
+        amend_msg = self.skill_amend_and_invoke_format_message(current_code, task_description, state.error, state.result, state.pwd, state.ls, critique, pre_tasks_info)
         new_code = self.extract_python_code(amend_msg)
-        return new_code
+        invoke = self.extract_information(amend_msg, begin_str='<invoke>', end_str='</invoke>')[0]
+        return new_code, invoke
+
+    # def amend_action(self, current_code, task_description, state, critique):
+    #     # 实现动作修复逻辑，对于未完成任务或者有错误的代码进行修复，返回修复后的代码
+    #     amend_msg = self.skill_amend_format_message(current_code, task_description, state.error, state.result, state.pwd, state.ls, critique)
+    #     new_code = self.extract_python_code(amend_msg)
+    #     return new_code
 
     def analysis_action(self, code, task_description, state):
         # 实现对代码错误的分析，如果是需要新的操作的环境错误，转到planning模块，否则交给amend_action，返回JSON
@@ -400,18 +429,40 @@ class ExecutionModule(BaseAgent):
         return reasoning, type
         
     def store_action(self, action, code):
-        # 实现动作存储逻辑，对新的动作进行存储
-        #  获取描述信息
-        args_description = self.extract_args_description(code)
-        action_description = self.extract_action_description(code)
-        # 保存动作名称、代码，描述到JSON中
-        action_info = self.save_action_info_to_json(action, code, action_description)
-        # 保存代码，描述到数据库和JSON文件中
-        self.action_lib.add_new_action(action_info)
-        # 参数描述保存路径
-        args_description_file_path = self.action_lib.action_lib_dir + '/args_description/' + action + '.txt'      
-        # 保存参数
-        self.save_str_to_path(args_description, args_description_file_path)
+        # 如果没有该工具
+        if not self.action_lib.exist_action(action):
+            # 实现动作存储逻辑，对新的动作进行存储
+            #  获取描述信息
+            args_description = self.extract_args_description(code)
+            action_description = self.extract_action_description(code)
+            # 保存动作名称、代码，描述到JSON中
+            action_info = self.save_action_info_to_json(action, code, action_description)
+            # 保存代码，描述到数据库和JSON文件中
+            self.action_lib.add_new_action(action_info)
+            # 参数描述保存路径
+            args_description_file_path = self.action_lib.action_lib_dir + '/args_description/' + action + '.txt'      
+            # 保存参数
+            self.save_str_to_path(args_description, args_description_file_path)
+        else:
+            print("action already exists!")
+
+
+    # Send skill generate and invoke message to LLM
+    def skill_create_and_invoke_format_message(self, task_name, task_description, pre_tasks_info, relevant_code):
+        sys_prompt = self.prompt['_SYSTEM_SKILL_CREATE_AND_INVOKE_PROMPT']
+        user_prompt = self.prompt['_USER_SKILL_CREATE_AND_INVOKE_PROMPT'].format(
+            system_version=self.system_version,
+            task_description=task_description,
+            working_dir= self.environment.working_dir,
+            task_name=task_name,
+            pre_tasks_info=pre_tasks_info,
+            relevant_code=relevant_code
+        )
+        self.message = [
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_prompt},
+        ]
+        return self.llm.chat(self.message)
 
     # Send skill create message to LLM
     def skill_create_format_message(self, task_name, task_description):
@@ -444,7 +495,27 @@ class ExecutionModule(BaseAgent):
             {"role": "user", "content": user_prompt},
         ]
         return self.llm.chat(self.message)        
-    
+
+    # Send skill amend message to LLM
+    def skill_amend_and_invoke_format_message(self, original_code, task, error, code_output, current_working_dir, files_and_folders, critique, pre_tasks_info):
+        sys_prompt = self.prompt['_SYSTEM_SKILL_AMEND_AND_INVOKE_PROMPT']
+        user_prompt = self.prompt['_USER_SKILL_AMEND_AND_INVOKE_PROMPT'].format(
+            original_code = original_code,
+            task = task,
+            error = error,
+            code_output = code_output,
+            current_working_dir = current_working_dir,
+            working_dir= self.environment.working_dir,
+            files_and_folders = files_and_folders,
+            critique = critique,
+            pre_tasks_info = pre_tasks_info
+        )
+        self.message = [
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_prompt},
+        ]
+        return self.llm.chat(self.message)   
+
     # Send skill amend message to LLM
     def skill_amend_format_message(self, original_code, task, error, code_output, current_working_dir, files_and_folders, critique):
         sys_prompt = self.prompt['_SYSTEM_SKILL_AMEND_PROMPT']

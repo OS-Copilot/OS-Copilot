@@ -1,0 +1,7 @@
+Open the specified text file using the default text viewer on the system.
+
+        Args:
+        file_path (str): The absolute path of the text file to be opened.
+
+        Returns:
+        None

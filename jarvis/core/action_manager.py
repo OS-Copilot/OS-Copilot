@@ -115,7 +115,13 @@ class ActionManager:
     #     for doc, _ in docs_and_scores:
     #         action_code.append(self.actions[doc.metadata["name"]]["code"])
     #     return action_code
-    
+    # 检查是否有相关工具
+    def exist_action(self, action):
+        if action in self.action_names:
+            return True
+        return False
+
+
     # 检索相关任务名称
     def retrieve_action_name(self, query, k=10):
         k = min(self.vectordb._collection.count(), k)

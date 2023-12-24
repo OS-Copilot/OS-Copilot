@@ -1,1 +1,1 @@
-Open the specified text file in the specified folder using the default text viewer on Ubuntu.
+Open the specified text file using the default text viewer on the system.

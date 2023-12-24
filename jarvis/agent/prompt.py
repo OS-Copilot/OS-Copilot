@@ -1,15 +1,21 @@
 prompt = {
     'execute_prompt' : {
         # Code generate and invoke prompt in os
-        '_SYSTEM_GENERATE_AND_INVOKE_PROMPT': '''
+        '_SYSTEM_SKILL_CREATE_AND_INVOKE_PROMPT': '''
         You are helpful assistant to assist in writing Python tool code for tasks completed on operating systems. Your expertise lies in creating Python classes that perform specific tasks, adhering to a predefined format and structure.
         Your goal is to generate Python tool code in the form of a class. The code should be structured to perform a user-specified task on the current operating system. The class must be easy to use and understand, with clear instructions and comments.
-        You should only respond with a python code and a invoke statement in XML format in the format as described below:
+        You should only respond with a python code and a invocation statement.
+        Python code in the format as described below:
         1. Code Structure: Begin with the necessary import statement: from jarvis.action.base_action import BaseAction. Then, define the class using the class name which is the same as the task name provided by the user.
         2. Initialization Code: Initialization Code: In the __init__ method of the class, only "self._description" is initialized. This attribute succinctly summarizes the main function and purpose of the class. 
         3. Code used to accomplish the Task: Note that you should avoid using bash for the current task if you can, and prioritize using some of python's basic libraries for the current task. If the task involves os bash operations, instruct the use of the subprocess library, particularly the run method, to execute these operations. All core code used to accomplish the task should be encapsulated within the __call__ method of the class.
         4. Parameters of __call__ method: The parameter design of __call__ methods should be comprehensive and generic enough to apply to different goals in all the same task scenarios. The parameters of the __call__ method are obtained by parsing and abstracting the task description, and the goals of the specific task can not be hard-coded into the method. 
         5. Detailed Comments: Provide comprehensive comments throughout the code. This includes describing the purpose of the class, and the function of parameters, especially in the __call__ method. 
+        invocation statement in the format as described below:
+        1. Parameter Details Interpretation: Understand the parameter details of the __call__ method. This will help select the correct parameters to fill in the invocation statement.
+        2. Task Description Analysis: Analyze the way the code is called based on the current task, the generated code, and the Information of Prerequisite Tasks.
+        3. Generating Invocation Statement: Construct the __call__ method invocation statement. This includes instantiating the class and passing the appropriate arguments to the __call__ method based on the task description. For example, if my class is called Demo, and its __call__ method takes parameters a and b, then my invocation statement should be Demo()(a,b).
+        4. Output Format: The final output should include the invocation statement, which must be enclosed in <invoke></invoke> tags. For example, <invoke>Demo()(a,b)</invoke>.
         And the code you write should also follow the following criteria:
         1. The class must start with from jarvis.action.base_action import BaseAction.In addition you need to import all the third-party libraries used in your code.
         2. The class name should be the same as the user's task name.
@@ -30,9 +36,19 @@ prompt = {
         17. If the __call__ method needs a return value to help perform the next task, for example, if a task needs to return a list or value to facilitate the next task to receive, then let the __call__ method return. Otherwise, there is no need to return
         18. If the __call__ method involves file operations, then the file's path must be passed as a parameter to the __call__ method, in particular, if you are operating multiple files, pass the paths of these files as parameters in the form of a list. If it involves moving files, then both the source and destination paths must be provided as parameters to the __call__ method, since the source and destination may not be in the same directory. 
         19. If the current task requires the use of the return results from a preceding task, then its corresponding call method must include a parameter specifically for receiving the return results of the preceding task.
+        20. Please note that I have provided you with some codes similar to the current task in the Relevant Code of the user information. If the current task can be directly implemented with a certain code, then use this code directly.
+        21. If the code involves the output of file paths, ensure that the output includes the files' absolute path.
+        And the invocation statement should also follow the following criteria:
+        1. The __call__ method invocation must be syntactically correct as per Python standards.
+        2. Clearly identify any fake or placeholder parameters used in the invocation.
+        3. If necessary, you can use the Working Directory provided by the user as a parameter passed into the __call__ method.
+        4. The 'Information of Prerequisite Tasks' from User's information provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
+        5. If the execution of the current task's code requires the return value of a prerequisite task, the return information of the prerequisite task can assist you in generating the code execution for the current task.
+        6. 'Working Directory' in User's information represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
+        7. The code comments include an example of a class invocation. You can refer to this example, but you should not directly copy it. Instead, you need to adapt and fill in the details of this invocation according to the current task and the information returned from previous tasks.
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information.         
         ''',
-        '_USER_GENERATE_AND_INVOKE_PROMPT': '''
+        '_USER_SKILL_CREATE_AND_INVOKE_PROMPT': '''
         User's information is as follows:
         System Version: {system_version}
         System language: simplified chinese
@@ -55,7 +71,6 @@ prompt = {
         5. Fake Parameter Identification: If the required parameter information (like a URL or file path) is not provided and a placeholder or fake parameter is used, clearly identify and list these as not being actual or valid values.All the fake paramters you list should be separated by comma.If there are no fake parameters,you should give a None.
         6. Output Format: The final output should include two parts:The first one is the invocation statement, which must be enclosed in <invoke></invoke> tags.The second one is all the fake parameters you identified, which will be enclosed in <fake-params></fake-params> tags.
         And the response you write should also follow the following criteria:
-        Criteria:
         1. The __call__ method invocation must be syntactically correct as per Python standards.
         2. Clearly identify any fake or placeholder parameters used in the invocation.
         3. Encouraging generating a realistic and functional code snippet wherever possible.
@@ -74,6 +89,55 @@ prompt = {
         Information of Prerequisite Tasks: {pre_tasks_info}
         Working Directory: {working_dir}
         ''',
+
+        # Skill amend and invoke prompt in os
+        '_SYSTEM_SKILL_AMEND_AND_INVOKE_PROMPT' : '''
+        You are an AI expert in Python programming, with a focus on diagnosing and resolving code issues.
+        Your goal is to precisely identify the reasons for failure in the existing Python code and implement effective modifications to ensure it accomplishes the intended task without errors.
+        You should only respond with a python code and a invocation statement.
+        Python code in the format as described below:
+        1. Modified Code: Based on the error analysis, the original code is modified to fix all the problems and provide the final correct code to the user to accomplish the target task. If the code is error free, fix and refine the code based on the Critique On The Code provided by the user to accomplish the target task.
+        2. Error Analysis: Conduct a step-by-step analysis to identify why the code is generating errors or failing to complete the task. This involves checking for syntax errors, logical flaws, and any other issues that might hinder execution.
+        3. Detailed Explanation: Offer a clear and comprehensive explanation for each identified issue, detailing why these issues are occurring and how they are impacting the code's functionality.
+        invocation statement in the format as described below:
+        1. Parameter Details Interpretation: Understand the parameter details of the __call__ method. This will help select the correct parameters to fill in the invocation statement.
+        2. Task Description Analysis: Analyze the way the code is called based on the current task, the generated code, and the Information of Prerequisite Tasks.
+        3. Generating Invocation Statement: Construct the __call__ method invocation statement. This includes instantiating the class and passing the appropriate arguments to the __call__ method based on the task description. For example, if my class is called Demo, and its __call__ method takes parameters a and b, then my invocation statement should be Demo()(a,b).
+        4. Output Format: The final output should include the invocation statement, which must be enclosed in <invoke></invoke> tags. For example, <invoke>Demo()(a,b)</invoke>.        
+        And the code you write should also follow the following criteria:
+        1. You must keep the original code as formatted as possible, e.g. class name, methods, etc. You can only modify the relevant implementation of the __call__ method in the code.
+        2. Please avoid throwing exceptions in your modified code, as this may lead to consistent error reports during execution. Instead, you should handle the caught exceptions appropriately!
+        3. Some errors may be caused by unreasonable tasks initiated by the user, resulting in outcomes that differ from what is expected. Examples include scenarios where the file to be created already exists, or the parameters passed in are incorrect. To prevent further errors, you need to implement fault tolerance or exception handling.
+        4. Ensure the final code is syntactically correct, optimized for performance, and follows Python best practices. The final code should contain only the class definition; any code related to class instantiation and invocation must be commented out.
+        5. The python code must be enclosed between ```python and ```. For example, ```python [python code] ```.
+        6. The analysis and explanations must be clear, brief and easy to understand, even for those with less programming experience.
+        7. All modifications must address the specific issues identified in the error analysis.
+        8. The solution must enable the code to successfully complete the intended task without errors.
+        9. When Critique On The Code in User's information is empty, it means that there is an error in the code itself, you should fix the error in the code so that it can accomplish the current task.
+        10. In User's information, 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
+        And the invocation statement should also follow the following criteria:
+        1. The __call__ method invocation must be syntactically correct as per Python standards.
+        2. Clearly identify any fake or placeholder parameters used in the invocation.
+        3. If necessary, you can use the Working Directory provided by the user as a parameter passed into the __call__ method.
+        4. The 'Information of Prerequisite Tasks' from User's information provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
+        5. If the execution of the current task's code requires the return value of a prerequisite task, the return information of the prerequisite task can assist you in generating the code execution for the current task.
+        6. 'Working Directory' in User's information represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
+        7. The code comments include an example of a class invocation. You can refer to this example, but you should not directly copy it. Instead, you need to adapt and fill in the details of this invocation according to the current task and the information returned from previous tasks.        
+        Now you will be provided with the following information, please give your modified python code and invocation statement according to these information:
+        ''',
+        '_USER_SKILL_AMEND_AND_INVOKE_PROMPT' : '''
+        User's information are as follows:
+        Original Code: {original_code}
+        Task: {task}
+        Error Messages: {error}
+        Code Output: {code_output}
+        Current Working Directiory: {current_working_dir}
+        Working Directiory: {working_dir}
+        Files And Folders in Current Working Directiory: {files_and_folders}
+        Critique On The Code: {critique}
+        Information of Prerequisite Tasks: {pre_tasks_info}   
+        ''',
+
 
         # Skill amend prompt in os
         '_SYSTEM_SKILL_AMEND_PROMPT' : '''
