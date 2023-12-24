@@ -156,8 +156,8 @@ class PlanningModule(BaseAgent):
     # Send decompse task prompt to LLM and get task list 
     def task_decompose_format_message(self, task, action_list, files_and_folders):
         tool_list = get_open_api_description_pair()
-        sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_DECOMPOSE_PROMPT']
-        user_prompt = self.prompt['_LINUX_USER_TASK_DECOMPOSE_PROMPT'].format(
+        sys_prompt = self.prompt['_SYSTEM_TASK_DECOMPOSE_PROMPT']
+        user_prompt = self.prompt['_USER_TASK_DECOMPOSE_PROMPT'].format(
             system_version=self.system_version,
             task=task,
             action_list = action_list,
@@ -173,11 +173,11 @@ class PlanningModule(BaseAgent):
     
     # Send replan task prompt to LLM and get task list 
     def task_replan_format_message(self, reasoning, current_task, current_task_description, action_list, files_and_folders):
-        sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_REPLAN_PROMPT'].format(
+        sys_prompt = self.prompt['_SYSTEM_TASK_REPLAN_PROMPT'].format(
             current_task = current_task,
             current_task_description = current_task_description
         )
-        user_prompt = self.prompt['_LINUX_USER_TASK_REPLAN_PROMPT'].format(
+        user_prompt = self.prompt['_USER_TASK_REPLAN_PROMPT'].format(
             system_version=self.system_version,
             reasoing = reasoning,
             action_list = action_list,
@@ -329,8 +329,8 @@ class RetrievalModule(BaseAgent):
         return action_description_pair
     
     def action_code_filter_format_message(self, action_code_pair, task_description):
-        sys_prompt = self.prompt['_LINUX_SYSTEM_ACTION_CODE_FILTER_PROMPT']
-        user_prompt = self.prompt['_LINUX_USER_ACTION_CODE_FILTER_PROMPT'].format(
+        sys_prompt = self.prompt['_SYSTEM_ACTION_CODE_FILTER_PROMPT']
+        user_prompt = self.prompt['_USER_ACTION_CODE_FILTER_PROMPT'].format(
             task_description=task_description,
             action_code_pair=action_code_pair
         )
@@ -349,7 +349,7 @@ class ExecutionModule(BaseAgent):
         super().__init__()
         # 模型，环境，数据库
         self.llm = llm
-        self.tool = ToolAgent(config_path=self.con)
+        self.tool = ToolAgent()
         self.environment = environment
         self.action_lib = action_lib
         self.system_version = system_version
@@ -415,8 +415,8 @@ class ExecutionModule(BaseAgent):
 
     # Send skill create message to LLM
     def skill_create_format_message(self, task_name, task_description):
-        sys_prompt = self.prompt['_LINUX_SYSTEM_SKILL_CREATE_PROMPT']
-        user_prompt = self.prompt['_LINUX_USER_SKILL_CREATE_PROMPT'].format(
+        sys_prompt = self.prompt['_SYSTEM_SKILL_CREATE_PROMPT']
+        user_prompt = self.prompt['_USER_SKILL_CREATE_PROMPT'].format(
             system_version=self.system_version,
             task_description=task_description,
             working_dir= self.environment.working_dir,
@@ -431,8 +431,8 @@ class ExecutionModule(BaseAgent):
     # Send invoke generate message to LLM
     def invoke_generate_format_message(self, class_code, task_description, pre_tasks_info):
         class_name, args_description = self.extract_class_name_and_args_description(class_code)
-        sys_prompt = self.prompt['_LINUX_SYSTEM_INVOKE_GENERATE_PROMPT']
-        user_prompt = self.prompt['_LINUX_USER_INVOKE_GENERATE_PROMPT'].format(
+        sys_prompt = self.prompt['_SYSTEM_INVOKE_GENERATE_PROMPT']
+        user_prompt = self.prompt['_USER_INVOKE_GENERATE_PROMPT'].format(
             class_name = class_name,
             task_description = task_description,
             args_description = args_description,
@@ -447,8 +447,8 @@ class ExecutionModule(BaseAgent):
     
     # Send skill amend message to LLM
     def skill_amend_format_message(self, original_code, task, error, code_output, current_working_dir, files_and_folders, critique):
-        sys_prompt = self.prompt['_LINUX_SYSTEM_SKILL_AMEND_PROMPT']
-        user_prompt = self.prompt['_LINUX_USER_SKILL_AMEND_PROMPT'].format(
+        sys_prompt = self.prompt['_SYSTEM_SKILL_AMEND_PROMPT']
+        user_prompt = self.prompt['_USER_SKILL_AMEND_PROMPT'].format(
             original_code = original_code,
             task = task,
             error = error,
@@ -466,8 +466,8 @@ class ExecutionModule(BaseAgent):
     
     # Send task judge prompt to LLM and get JSON response
     def task_judge_format_message(self, current_code, task, code_output, current_working_dir, files_and_folders):
-        sys_prompt = self.prompt['_LINUX_SYSTEM_TASK_JUDGE_PROMPT']
-        user_prompt = self.prompt['_LINUX_USER_TASK_JUDGE_PROMPT'].format(
+        sys_prompt = self.prompt['_SYSTEM_TASK_JUDGE_PROMPT']
+        user_prompt = self.prompt['_USER_TASK_JUDGE_PROMPT'].format(
             current_code=current_code,
             task=task,
             code_output=code_output,
@@ -488,8 +488,8 @@ class ExecutionModule(BaseAgent):
 
     # Send error analysis prompt to LLM and get JSON response
     def error_analysis_format_message(self, current_code, task, code_error, current_working_dir, files_and_folders):
-        sys_prompt = self.prompt['_LINUX_SYSTEM_ERROR_ANALYSIS_PROMPT']
-        user_prompt = self.prompt['_LINUX_USER_ERROR_ANALYSIS_PROMPT'].format(
+        sys_prompt = self.prompt['_SYSTEM_ERROR_ANALYSIS_PROMPT']
+        user_prompt = self.prompt['_USER_ERROR_ANALYSIS_PROMPT'].format(
             current_code=current_code,
             task=task,
             code_error=code_error,
@@ -561,6 +561,49 @@ class ExecutionModule(BaseAgent):
             "description": description
         }
         return info
+    
+    def generate_call_api_code(self, tool_sub_task,tool_api_path,context="No context provided."):
+        self.sys_prompt = self.prompt['_SYSTEM_TOOL_USAGE_PROMPT'].format(
+            openapi_doc = json.dumps(self.generate_openapi_doc(tool_api_path)),
+            tool_sub_task = tool_sub_task,
+            context = context
+        )
+        self.user_prompt = self.prompt['_USER_TOOL_USAGE_PROMPT']
+        self.message = [
+            {"role": "system", "content": self.sys_prompt},
+            {"role": "user", "content": self.user_prompt},
+        ]
+        return self.llm.chat(self.message)
+    
+    def generate_openapi_doc(self, tool_api_path):
+        # init current api's doc
+        curr_api_doc = {}
+        curr_api_doc["openapi"] = self.open_api_doc["openapi"]
+        curr_api_doc["info"] = self.open_api_doc["info"]
+        curr_api_doc["paths"] = {}
+        curr_api_doc["components"] = {"schemas":{}}
+        api_path_doc = {}
+        #extract path and schema
+        if tool_api_path not in self.open_api_doc["paths"]:
+            curr_api_doc = {"error": "The api is not existed"}
+            return curr_api_doc
+        api_path_doc = self.open_api_doc["paths"][tool_api_path]
+        curr_api_doc["paths"][tool_api_path] = api_path_doc
+        find_ptr = {}
+        if "get" in api_path_doc:
+            findptr  = api_path_doc["get"]
+        elif "post" in api_path_doc:
+            findptr = api_path_doc["post"]
+        api_params_schema_ref = ""
+        if (("requestBody" in findptr) and 
+        ("content" in findptr["requestBody"]) and 
+        ("application/json" in findptr["requestBody"]["content"]) and 
+        ("schema" in findptr["requestBody"]["content"]["application/json"]) and 
+        ("$ref" in findptr["requestBody"]["content"]["application/json"]["schema"])):
+            api_params_schema_ref = findptr["requestBody"]["content"]["application/json"]["schema"]["$ref"]
+        if api_params_schema_ref != None and api_params_schema_ref != "":
+            curr_api_doc["components"]["schemas"][api_params_schema_ref.split('/')[-1]] = self.open_api_doc["components"]["schemas"][api_params_schema_ref.split('/')[-1]]
+
 
 
 if __name__ == '__main__':
