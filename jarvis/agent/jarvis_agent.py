@@ -1,4 +1,5 @@
 from jarvis.agent.base_agent import BaseAgent
+from jarvis.agent.tool_agent import ToolAgent
 from jarvis.core.action_node import ActionNode
 from collections import defaultdict, deque
 from jarvis.environment.py_env import PythonEnv
@@ -348,6 +349,7 @@ class ExecutionModule(BaseAgent):
         super().__init__()
         # 模型，环境，数据库
         self.llm = llm
+        self.tool = ToolAgent(config_path=self.con)
         self.environment = environment
         self.action_lib = action_lib
         self.system_version = system_version
