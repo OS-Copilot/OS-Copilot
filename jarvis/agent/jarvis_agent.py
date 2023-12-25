@@ -155,13 +155,13 @@ class PlanningModule(BaseAgent):
 
     # Send decompse task prompt to LLM and get task list 
     def task_decompose_format_message(self, task, action_list, files_and_folders):
-        tool_list = get_open_api_description_pair()
+        api_list = get_open_api_description_pair()
         sys_prompt = self.prompt['_SYSTEM_TASK_DECOMPOSE_PROMPT']
         user_prompt = self.prompt['_USER_TASK_DECOMPOSE_PROMPT'].format(
             system_version=self.system_version,
             task=task,
             action_list = action_list,
-            tool_list = tool_list,
+            api_list = api_list,
             working_dir = self.environment.working_dir,
             files_and_folders = files_and_folders
         )

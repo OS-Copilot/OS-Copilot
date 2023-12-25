@@ -11,13 +11,13 @@ planning_agent = jarvis_agent.planner
 retrieve_agent = jarvis_agent.retriever
 execute_agent = jarvis_agent.executor
 
-task = '''
-Move the text files containing the word 'agent' from the folder named 'document' to the path '/home/heroding/桌面/Jarvis/working_dir/agent'.
-'''
-
 # task = '''
-# Download a dog picture from the Internet to the working directory.
+# Move the text files containing the word 'agent' from the folder named 'document' to the path '/home/heroding/桌面/Jarvis/working_dir/agent'.
 # '''
+
+task = '''
+Help me summarize what the autogen paper talks about.
+'''
 
 # relevant action 
 retrieve_action_name = retrieve_agent.retrieve_action_name(task)
