@@ -19,7 +19,7 @@ class ToolRequestUtil:
                 if content_type == "application/json":
                     result = self.session.get(url=url, json=params, headers=self.headers).json()
                 else: 
-                    result = requests.get(url=url, params=params, headers=self.headers).json()
+                    result = self.session.get(url=url, params=params, headers=self.headers).json()
             elif method == "post":
                 if content_type == "application/json":
                     result = self.session.post(url=url, json=params, headers=self.headers).json()

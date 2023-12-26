@@ -41,6 +41,42 @@
         }
       }
     },
+    "/tools/bing/image_search": {
+      "get": {
+        "summary": "Image Search API can return top k related image data based on keywords, including image name, download address and size.",
+        "operationId": "image_search_tools_bing_image_search_get",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueryItemV2"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },    
     "/tools/arxiv": {
       "get": {
         "summary": "tool to get Arxiv Article Information",

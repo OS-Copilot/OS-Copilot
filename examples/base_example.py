@@ -16,7 +16,7 @@ execute_agent = jarvis_agent.executor
 # '''
 
 task = '''
-Download any dog picture to the working directory.
+Download three pictures for me of East China Normal University.
 '''
 
 # relevant action 
