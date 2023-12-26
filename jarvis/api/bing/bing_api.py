@@ -11,6 +11,7 @@ class BingAPI:
     def __init__(self, subscription_key: str) -> None:
         self._headers = {
             'Ocp-Apim-Subscription-Key': subscription_key,
+            'BingAPIs-Market': 'en-US',
             
         }
         self._endpoint = "https://api.bing.microsoft.com/v7.0/search"
@@ -19,7 +20,7 @@ class BingAPI:
     def search(self, key_words: str, max_retry: int = 3):
         for _ in range(max_retry):
             try:
-                result = requests.get(self._endpoint, headers=self._headers, params={'q': key_words, 'mkt': self._mkt},
+                result = requests.get(self._endpoint, headers=self._headers, params={'q': key_words, 'mkt': self._mkt,'safeSearch' : 'moderate'},
                                       timeout=10)
             except Exception:
                 continue
