@@ -39,11 +39,17 @@ while planning_agent.execute_list:
     description = action_node.description
     code = action_node.code
     relevant_code = action_node.relevant_action
+    type = action_node.type
     pre_tasks_info = planning_agent.get_pre_tasks_info(action)
     # Create python tool class code and invoke
-    code, invoke = execute_agent.generate_action(action, description, pre_tasks_info, relevant_code)
+    if type == 'API':
+        api_path = execute_agent.extract_API_Path(description)
+        code = execute_agent.api_action(description, api_path, pre_tasks_info)
+        invoke = ''
+    else:
+        code, invoke = execute_agent.generate_action(action, description, pre_tasks_info, relevant_code)
     # Execute python tool class code
-    state = execute_agent.execute_action(code, invoke)
+    state = execute_agent.execute_action(code, invoke, type)
     # Check whether the code runs correctly, if not, amend the code
     need_mend = False
     trial_times = 0
@@ -57,11 +63,11 @@ while planning_agent.execute_list:
             need_mend = True
     else:
         #  Determine whether it is caused by an error outside the code
-        reasoning, type = execute_agent.analysis_action(code, description, state)
-        if type == 'replan':
+        reasoning, error_type = execute_agent.analysis_action(code, description, state)
+        if error_type == 'replan':
             relevant_action_name = retrieve_agent.retrieve_action_name(reasoning)
             relevant_action_description_pair = retrieve_agent.retrieve_action_description_pair(relevant_action_name)
-            planning_agent.replan_task(reasoning, action )
+            planning_agent.replan_task(reasoning, action)
             continue
         need_mend = True   
     # The code failed to complete its task, fix the code
@@ -73,7 +79,7 @@ while planning_agent.execute_list:
         critique = ''
         current_code = new_code
         # Run the current code and check for errors
-        state = execute_agent.execute_action(current_code, invoke)
+        state = execute_agent.execute_action(current_code, invoke, type)
         # print(state)
         # Recheck
         if state.error == None:
@@ -94,6 +100,6 @@ while planning_agent.execute_list:
         if score >= 7:
             execute_agent.store_action(action, current_code)
         print("Current task execution completed!!!")
-        planning_agent.update_action(action, current_code, state.result, status=True)
+        planning_agent.update_action(action, current_code, state.result, status=True, type=type)
         planning_agent.execute_list.remove(action)
 

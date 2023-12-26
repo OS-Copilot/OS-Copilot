@@ -7,7 +7,7 @@ from jarvis.core.llms import OpenAI
 from jarvis.core.action_manager import ActionManager
 from jarvis.action.get_os_version import get_os_version, check_os_version
 from jarvis.agent.prompt import prompt
-from jarvis.core.utils import get_open_api_description_pair
+from jarvis.core.utils import get_open_api_description_pair, get_open_api_doc_path
 import re
 import json
 
@@ -138,15 +138,16 @@ class PlanningModule(BaseAgent):
         # update topological sort
         self.topological_sort()
 
-    def update_action(self, action, code='', return_val='', relevant_action=None, status=False):
+    def update_action(self, action, code='', return_val='', relevant_action=None, status=False, type='General'):
         # 更新动作节点信息
         if code:
             self.action_node[action]._code = code
         if return_val:
-            return_val = self.extract_information(return_val, "<return>", "</return>")
-            print("************************<return>**************************")
-            print(return_val)
-            print("************************</return>*************************")  
+            if type=='General':
+                return_val = self.extract_information(return_val, "<return>", "</return>")
+                print("************************<return>**************************")
+                print(return_val)
+                print("************************</return>*************************")  
             if return_val != 'None':
                 self.action_node[action]._return_val = return_val
         if relevant_action:
@@ -355,6 +356,11 @@ class ExecutionModule(BaseAgent):
         self.system_version = system_version
         self.prompt = prompt
         self.max_iter = max_iter
+        self.open_api_doc_path = get_open_api_doc_path()
+        self.open_api_doc = {}
+        self.environment = PythonEnv()
+        with open(self.open_api_doc_path) as f:
+            self.open_api_doc = json.load(f) 
     
     def generate_action(self, task_name, task_description, pre_tasks_info, relevant_code):
         # 生成动作代码逻辑，生成可以完成动作的代码和其调用
@@ -370,11 +376,12 @@ class ExecutionModule(BaseAgent):
     #     code = self.extract_python_code(create_msg)
     #     return code
 
-    def execute_action(self, code, invoke):
+    def execute_action(self, code, invoke, type):
         # 实现动作执行逻辑，实例化动作类并执行，返回执行完毕的状态
         # print result info
-        info = "\n" + '''print("<return>")''' + "\n" + "print(result)" +  "\n" + '''print("</return>")'''
-        code = code + '\nresult=' + invoke + info
+        if type == 'General':
+            info = "\n" + '''print("<return>")''' + "\n" + "print(result)" +  "\n" + '''print("</return>")'''
+            code = code + '\nresult=' + invoke + info
         print("************************<code>**************************")
         print(code)
         print("************************</code>*************************")  
@@ -446,6 +453,11 @@ class ExecutionModule(BaseAgent):
         else:
             print("action already exists!")
 
+
+    def api_action(self, description, api_path, context="No context provided."):
+        response = self.generate_call_api_format_message(description, api_path, context)
+        code = self.extract_python_code(response)
+        return code 
 
     # Send skill generate and invoke message to LLM
     def skill_create_and_invoke_format_message(self, task_name, task_description, pre_tasks_info, relevant_code):
@@ -633,7 +645,7 @@ class ExecutionModule(BaseAgent):
         }
         return info
     
-    def generate_call_api_code(self, tool_sub_task,tool_api_path,context="No context provided."):
+    def generate_call_api_format_message(self, tool_sub_task, tool_api_path, context="No context provided."):
         self.sys_prompt = self.prompt['_SYSTEM_TOOL_USAGE_PROMPT'].format(
             openapi_doc = json.dumps(self.generate_openapi_doc(tool_api_path)),
             tool_sub_task = tool_sub_task,
@@ -674,36 +686,35 @@ class ExecutionModule(BaseAgent):
             api_params_schema_ref = findptr["requestBody"]["content"]["application/json"]["schema"]["$ref"]
         if api_params_schema_ref != None and api_params_schema_ref != "":
             curr_api_doc["components"]["schemas"][api_params_schema_ref.split('/')[-1]] = self.open_api_doc["components"]["schemas"][api_params_schema_ref.split('/')[-1]]
+        return curr_api_doc
+
+    def extract_API_Path(self, text):
+        """
+        Extracts UNIX-style and Windows-style paths from the given string,
+        handling paths that may be enclosed in quotes.
+
+        :param s: The string from which to extract paths.
+        :return: A list of extracted paths.
+        """
+        # Regular expression for UNIX-style and Windows-style paths
+        unix_path_pattern = r"/[^/\s]+(?:/[^/\s]*)*"
+        windows_path_pattern = r"[a-zA-Z]:\\(?:[^\\\/\s]+\\)*[^\\\/\s]+"
+
+        # Combine both patterns
+        pattern = f"({unix_path_pattern})|({windows_path_pattern})"
+
+        # Find all matches
+        matches = re.findall(pattern, text)
+
+        # Extract paths from the tuples returned by findall
+        paths = [match[0] or match[1] for match in matches]
+
+        # Remove enclosing quotes (single or double) from the paths
+        stripped_paths = [path.strip("'\"") for path in paths]
+        return stripped_paths[0]
 
 
 
 if __name__ == '__main__':
     agent = JarvisAgent(config_path='../../examples/config.json', action_lib_dir="../../jarvis/action_lib")
-    json = agent.executor.error_analysis_format_message('''
-    import pandas as pd
-    import numpy as np
-
-    # 创建一个包含随机数的DataFrame
-    df = pd.DataFrame(np.random.randn(10, 4), columns=['A', 'B', 'C', 'D'])
-
-    # 显示前几行数据
-    print("DataFrame:")
-    print(df)
-
-    # 计算基本统计数据
-    print("\nBasic Statistics:")
-    print(df.describe())
-
-    # 筛选出A列值大于0的行
-    filtered_df = df[df['A'] > 0]
-    print("\nRows where column A is greater than 0:")
-    pint(filtered_df)
-
-
-    ''',"Use pandas to operate on random arrays", '''
-    Traceback (most recent call last):
-    File "/home/heroding/桌面/Jarvis/working_dir/test.py", line 18, in <module>
-        pint(filtered_df)
-        ^^^^
-    NameError: name 'pint' is not defined. Did you mean: 'print'?
-    ''', "/home/heroding/桌面/Jarvis/tasks/travel/run_task", "cache  general.py  __pycache__  run.py  serve.py  simulator.py")
+    print(agent.executor.extract_API_Path('''Use the "/tools/arxiv' API to search for the autogen paper and retrieve its summary.'''))

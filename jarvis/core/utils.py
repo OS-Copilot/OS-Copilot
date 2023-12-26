@@ -191,6 +191,11 @@ def get_open_api_description_pair():
             open_api_description_pair[name] = value['get']['summary']
     return open_api_description_pair
 
+def get_open_api_doc_path():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    open_api_path = os.path.join(script_dir, 'openapi.json')
+    return open_api_path
+
     
 # prompt =  '''
 #         You are an expert in making plans. 

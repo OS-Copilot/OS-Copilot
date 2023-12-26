@@ -313,8 +313,8 @@ prompt = {
         I will give you a task and ask you to decompose this task into a series of subtasks. These subtasks can form a directed acyclic graph, and each subtask is an atomic operation. Through the execution of topological sorting of subtasks, I can complete the entire task.
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Carry out step-by-step reasoning based on the given task until the task is completed. Each step of reasoning is decomposed into sub-tasks. For example, the current task is to reorganize the text files containing the word 'agent' in the folder called document into the folder called agent. Then the reasoning process is as follows: According to Current Working Directiory and Files And Folders in Current Working Directiory information, the folders documernt and agent exist, so firstly, retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return. Secondly, put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.
-        2. There are two types of subtasks, one is a task that requires the use of tools to access external data sources to obtain information, such as retrieving information from the Internet, this type of task is called a tool task, and the other is a task that does not require the use of tools, which is called General tasks.
-        3. Each decomposed subtask has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a general task or a API task, If it is a general task, its value is 'general', if it is a API task, it is 'API'.
+        2. There are three types of subtasks, the first is a task that requires the use of tools to access external data sources to obtain information, such as retrieving information from the Internet, this type of task is called a tool task, and the second is a task that does not require the use of tools, which is called General tasks. The third is called QA task, it analyzes the results returned from the API tasks to obtain answers for the question and answer task.
+        3. Each decomposed subtask has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a general task or a API task or a QA task, If it is a general task, its value is 'general', if it is a API task, its value is 'API', if it is a QA task, its value is 'QA'.
         4. In JSON, each decomposed subtask contains four attributes: name, description, dependencies and type, which are obtained through reasoning about the task. The key of each subtask is the 'name' attribute of the subtask.
         5. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
         {
@@ -322,13 +322,13 @@ prompt = {
                 'name': 'retrieve_files',
                 'description': 'retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return.',
                 'dependencies': [],
-                'type' : 'general'
+                'type' : 'General'
             },
             'organize_files' : {
                 'name': 'organize_files',
                 'description': 'put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.',
                 'dependencies': ['retrieve_files'],
-                'type': 'general'
+                'type': 'General'
             }    
         }        
         And you should also follow the following criteria:
@@ -346,7 +346,8 @@ prompt = {
         12. When decomposing subtasks, avoid including redundant information. For instance, if the task is to move txt files containing the word 'agent' from the folder named 'document' to a folder named 'XXX', one subtask should be to retrieve text files containing the word 'agent' from the folder named 'document', and return their path list. Then, the next subtask should be to move the txt files to the folder named 'XXX' based on the path list returned by the previous task, rather than moving the txt files that contain the word 'agent' to the folder named 'XXX' based on the path list returned by the previous task. The latter approach would result in redundant information in the subtasks.
         13. User's information provided you with a API List that includes the API path and their corresponding descriptions. These APIs are designed for interacting with external data sources, like the Internet. 
         14. When decomposing subtasks, you need to pay attention to whether the current subtask involves obtaining data from external data sources (such as the Internet), such as finding cat pictures on the Internet, retrieving information on a certain web page, etc., then you need to select the relevant API from the API List.
-        15. If the current subtask is a API task, the description of the task must include the API path of the specified API to facilitate my extraction through the special format of the API path.
+        15. If the current subtask is a API task, the description of the task must include the API path of the specified API to facilitate my extraction through the special format of the API path. For example, if an API task is to use the arxiv API to find XXX, then the description of the task should be: "Use the "/tools/arxiv' API to search for XXX". 
+        16. Please note that sometimes the task may be just a question and answer task, that is, you only need to call the API to access the external data source, and then the last subtask will analyze the information returned by the API task. Then the subtasks you decompose, except for the last subtask, are all API tasks, and the last subtask is a QA task.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
