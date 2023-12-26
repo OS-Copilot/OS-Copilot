@@ -16,7 +16,7 @@ execute_agent = jarvis_agent.executor
 # '''
 
 task = '''
-给我下载一张华东师范大学的照片。
+请给我华东师范大学数据学院高明老师的信息。
 '''
 
 # relevant action 
