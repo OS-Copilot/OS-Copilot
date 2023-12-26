@@ -130,7 +130,6 @@ class ActionManager:
         print(f"\033[33mAction Manager retrieving for {k} Actions\033[0m")
         # 检索top k相关的任务描述
         docs_and_scores = self.vectordb.similarity_search_with_score(query, k=k)
-        print(docs_and_scores)
         print(
             f"\033[33mAction Manager retrieved actions: "
             f"{', '.join([doc.metadata['name'] for doc, _ in docs_and_scores])}\033[0m"
