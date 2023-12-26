@@ -31,7 +31,7 @@ class ImageSearchAPI:
                 if result != None:
                     image_List = [
                         {
-                            "name": item["name"],
+                            "imageName": item["name"],
                             "imageUrl": item["thumbnailUrl"],
                             "imageSize": item["thumbnail"]
                         } for item in result["value"]
