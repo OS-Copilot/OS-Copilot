@@ -221,6 +221,6 @@ if __name__ == '__main__':
     # print(res[0])
 
     # 删除
-    # actionManager.delete_action("download_file")
+    actionManager.delete_action("download_first_image")
     # actionManager.delete_action("zip_files")
     # print(actionManager.action_code('zip_files'))
