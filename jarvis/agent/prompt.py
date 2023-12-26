@@ -348,6 +348,7 @@ prompt = {
         14. When decomposing subtasks, you need to pay attention to whether the current subtask involves obtaining data from external data sources (such as the Internet), such as finding cat pictures on the Internet, retrieving information on a certain web page, etc., then you need to select the relevant API from the API List.
         15. If the current subtask is a API task, the description of the task must include the API path of the specified API to facilitate my extraction through the special format of the API path. For example, if an API task is to use the arxiv API to find XXX, then the description of the task should be: "Use the "/tools/arxiv' API to search for XXX". 
         16. Please note that sometimes the task may be just a question and answer task, that is, you only need to call the API to access the external data source, and then the last subtask will analyze the information returned by the API task. Then the subtasks you decompose, except for the last subtask, are all API tasks, and the last subtask is a QA task.
+        17. Please note that only when the task is a question and answer task, there will be a QA subtask, and the QA subtask can only be the last subtask decomposed.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:

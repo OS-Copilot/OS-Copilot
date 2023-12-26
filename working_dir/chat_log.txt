@@ -14039,3 +14039,53 @@ class extract_summary(BaseAction):
   "score": 4
 }
 ```
+2023-12-26 11:44:45,910 - INFO - Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2023-12-26 11:44:47,982 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2023-12-26 11:45:14,828 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2023-12-26 11:45:14,829 - INFO - To help summarize what the autogen paper talks about, we need to retrieve the information about the paper from an external data source, such as Arxiv. Since this task involves interacting with an external data source, we will use the appropriate API from the API List to obtain the paper's information. After retrieving the information, we will analyze the content to provide a summary.
+
+Here is the decomposition of the task into subtasks:
+
+1. Retrieve the autogen paper information from Arxiv using the '/tools/arxiv' API.
+2. Analyze the information returned by the API to summarize the content of the autogen paper.
+
+Now, let's define these subtasks in JSON format:
+
+```json
+{
+    "retrieve_paper_info": {
+        "name": "retrieve_paper_info",
+        "description": "Use the '/tools/arxiv' API to search for the autogen paper and retrieve its information.",
+        "dependencies": [],
+        "type": "API"
+    },
+    "summarize_paper": {
+        "name": "summarize_paper",
+        "description": "Analyze the information returned from the 'retrieve_paper_info' task to provide a summary of the autogen paper.",
+        "dependencies": ["retrieve_paper_info"],
+        "type": "QA"
+    }
+}
+```
+
+This JSON structure represents the subtasks needed to complete the main task. The 'retrieve_paper_info' subtask is an API task that will use the Arxiv API to get the paper's information. The 'summarize_paper' subtask is a QA task that depends on the output of the 'retrieve_paper_info' subtask and will analyze the retrieved information to summarize the paper's content.
+2023-12-26 11:45:18,582 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2023-12-26 11:45:18,946 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+2023-12-26 11:45:23,745 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2023-12-26 11:45:23,746 - INFO - ```python
+from jarvis.core.tool_request_util import ToolRequestUtil
+
+# Initialize the ToolRequestUtil
+tool_request_util = ToolRequestUtil()
+
+# Define the API path and the method
+api_path = '/tools/arxiv'
+method = 'get'
+
+# Define the query for the Arxiv API
+query = {"query": "autogen paper"}
+
+# Make the API request and print the return value
+response = tool_request_util.request(api_path, method, params=query, content_type='application/json')
+print(response)
+```
