@@ -3,6 +3,7 @@ from pydantic import BaseModel,Field
 from typing import Optional
 from .bing_api import BingAPI
 from .bing_api_v2 import BingAPIV2
+from .image_search_api import ImageSearchAPI
 import tiktoken
 
 # 计算网页内容对gpt4来说的token数，如果token太多就用3.5做摘要或者用向量数据库检索最相关的片段
@@ -16,6 +17,7 @@ router = APIRouter()
 
 bing_api = BingAPI('885e62a126554fb390af88ae31d2c8ff')
 bing_api_v2 = BingAPIV2()
+image_search_api = ImageSearchAPI('885e62a126554fb390af88ae31d2c8ff')
 
 # class QueryItem(BaseModel):
 #     query: str
@@ -47,6 +49,16 @@ class PageItemV2(BaseModel):
 #     if not page_loaded:
 #         raise HTTPException(status_code=500, detail=page_detail)
 #     return {"page_content": page_detail}
+
+@router.get("/tools/bing/image_search")
+async def image_search(item: QueryItemV2):
+    try:
+        if item.top_k == None:
+            item.top_k = 10
+        search_results = image_search_api.search_image(item.query,item.top_k)
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return search_results
 
 @router.get("/tools/bing/searchv2")
 async def bing_search_v2(item: QueryItemV2):
