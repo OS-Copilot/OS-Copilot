@@ -98,24 +98,28 @@ class JarvisAgent(BaseAgent):
 
 
 class PlanningModule(BaseAgent):
-    """ 规划模块，负责将复杂任务拆解为子任务 """
+    """ The planning module is responsible for breaking down complex tasks into subtasks, re-planning, etc. """
 
     def __init__(self, llm, environment, action_lib, prompt, system_version):
-        # 模块初始化，包括设置执行环境，初始化prompt等
+        """
+        Module initialization, including setting the execution environment, initializing prompts, etc.
+        """
         super().__init__()
-        # 模型，环境，数据库
+        # Model, environment, database
         self.llm = llm
         self.environment = environment
         self.action_lib = action_lib
         self.system_version = system_version
         self.prompt = prompt
-        # 动作节点，动作图信息和动作拓扑排序
+        # Action nodes, action graph information and action topology sorting
         self.action_node = {}
         self.action_graph = defaultdict(list)
         self.execute_list = []
 
-    # Implement task disassembly logic
     def decompose_task(self, task, action_description_pair):
+        """
+        Implement task disassembly logic.
+        """
         files_and_folders = self.environment.list_working_dir()
         action_description_pair = json.dumps(action_description_pair)
         response = self.task_decompose_format_message(task, action_description_pair, files_and_folders)
@@ -124,8 +128,10 @@ class PlanningModule(BaseAgent):
         self.create_action_graph(decompose_json)
         self.topological_sort()
 
-    # replan new task to origin action graph 
     def replan_task(self, reasoning, current_task, relevant_action_description_pair):
+        """
+        replan new task to origin action graph .
+        """
         # current_task information
         current_action = self.action_node[current_task]
         current_task_description = current_action.description
@@ -139,7 +145,9 @@ class PlanningModule(BaseAgent):
         self.topological_sort()
 
     def update_action(self, action, code='', return_val='', relevant_action=None, status=False, type='General'):
-        # 更新动作节点信息
+        """
+        Update action node info.
+        """
         if code:
             self.action_node[action]._code = code
         if return_val:
@@ -154,8 +162,10 @@ class PlanningModule(BaseAgent):
             self.action_node[action]._relevant_action = relevant_action
         self.action_node[action]._status = status
 
-    # Send decompse task prompt to LLM and get task list 
     def task_decompose_format_message(self, task, action_list, files_and_folders):
+        """
+        Send decompse task prompt to LLM and get task list.
+        """
         api_list = get_open_api_description_pair()
         sys_prompt = self.prompt['_SYSTEM_TASK_DECOMPOSE_PROMPT']
         user_prompt = self.prompt['_USER_TASK_DECOMPOSE_PROMPT'].format(
@@ -171,9 +181,11 @@ class PlanningModule(BaseAgent):
             {"role": "user", "content": user_prompt},
         ]
         return self.llm.chat(self.message)
-    
-    # Send replan task prompt to LLM and get task list 
+      
     def task_replan_format_message(self, reasoning, current_task, current_task_description, action_list, files_and_folders):
+        """
+        Send replan task prompt to LLM and get task list.
+        """
         sys_prompt = self.prompt['_SYSTEM_TASK_REPLAN_PROMPT'].format(
             current_task = current_task,
             current_task_description = current_task_description
@@ -191,8 +203,10 @@ class PlanningModule(BaseAgent):
         ]
         return self.llm.chat(self.message)
 
-    # Get action list, including action names and descriptions
     def get_action_list(self, relevant_action=None):
+        """
+        Get action list, including action names and descriptions.
+        """
         action_dict = self.action_lib.descriptions
         if not relevant_action:
             return json.dumps(action_dict)
@@ -200,15 +214,19 @@ class PlanningModule(BaseAgent):
         relevant_action_list = json.dumps(relevant_action_dict)
         return relevant_action_list
     
-    # Creates a action graph from a list of dependencies.
     def create_action_graph(self, decompose_json):
+        """
+        Creates a action graph from a list of dependencies.
+        """
         # generate execte graph
         for task_name, task_info in decompose_json.items():
             self.action_node[task_name] = ActionNode(task_name, task_info['description'], task_info['type'])
             self.action_graph[task_name] = task_info['dependencies']
     
-    # Creates a action graph from a list of dependencies.
     def add_new_action(self, new_task_json, current_task):
+        """
+        Creates a action graph from a list of dependencies.
+        """
         # update execte graph
         for task_name, task_info in new_task_json.items():
             self.action_node[task_name] = ActionNode(task_name, task_info['description'], task_info['type'])
@@ -216,8 +234,10 @@ class PlanningModule(BaseAgent):
         last_new_task = list(new_task_json.keys())[-1]
         self.action_graph[current_task].append(last_new_task)
 
-    # generate graph topological sort
     def topological_sort(self):
+        """
+        generate graph topological sort.
+        """
         # init execute list
         self.execute_list = []
         graph = defaultdict(list)
@@ -258,8 +278,10 @@ class PlanningModule(BaseAgent):
         else:
             return "Cycle detected in the graph, topological sort not possible."
         
-    # Get string information of the prerequisite task for the current task
     def get_pre_tasks_info(self, current_task):
+        """
+        Get string information of the prerequisite task for the current task.
+        """
         pre_tasks_info = {}
         for task in self.action_graph[current_task]:
             task_info = {
@@ -273,28 +295,36 @@ class PlanningModule(BaseAgent):
 
 
 class RetrievalModule(BaseAgent):
-    """ 检索模块，负责在动作库中检索可用动作 """
+    """ Retrieval module, responsible for retrieving available actions in the action library. """
 
     def __init__(self, llm, environment, action_lib, prompt):
-        # 模块初始化，包括设置执行环境，初始化prompt等
+        """
+        Module initialization, including setting the execution environment, initializing prompts, etc.
+        """
         super().__init__()
-        # 模型，环境，数据库
+        # Model, environment, database
         self.llm = llm
         self.environment = environment
         self.action_lib = action_lib
         self.prompt = prompt
 
     def delete_action(self, action):
-        # 删除相关动作内容，包括代码，描述，参数信息等
+        """
+        Delete relevant action content, including code, description, parameter information, etc.
+        """
         self.action_lib.delete_action(action)
 
     def retrieve_action_name(self, task, k=10):        
-        # 实现检索动作名称逻辑
+        """
+        Implement retrieval action name logic
+        """
         retrieve_action_name = self.action_lib.retrieve_action_name(task, k)
         return retrieve_action_name
 
     def action_code_filter(self, action_code_pair, task):
-        # 实现对检索代码进行过滤
+        """
+        Implement filtering of search codes.
+        """
         action_code_pair = json.dumps(action_code_pair)
         response = self.action_code_filter_format_message(action_code_pair, task)
         action_name = self.extract_information(response, '<action>', '</action>')[0]
@@ -304,17 +334,23 @@ class RetrievalModule(BaseAgent):
         return code
 
     def retrieve_action_description(self, action_name):
-        # 实现检索动作描述逻辑
+        """
+        Implement search action description logic.
+        """
         retrieve_action_description = self.action_lib.retrieve_action_description(action_name)
         return retrieve_action_description  
 
     def retrieve_action_code(self, action_name):
-        # 实现检索动作代码逻辑
+        """
+        Implement retrieval action code logic.
+        """
         retrieve_action_code = self.action_lib.retrieve_action_code(action_name)
         return retrieve_action_code 
     
     def retrieve_action_code_pair(self, retrieve_action_name):
-        # 检索任务代码对
+        """
+        Retrieve task code pairs.
+        """
         retrieve_action_code = self.retrieve_action_code(retrieve_action_name)
         action_code_pair = {}
         for name, description in zip(retrieve_action_name, retrieve_action_code):
@@ -322,7 +358,9 @@ class RetrievalModule(BaseAgent):
         return action_code_pair        
         
     def retrieve_action_description_pair(self, retrieve_action_name):
-        # 检索任务描述对
+        """
+        Retrieve task description pairs.
+        """
         retrieve_action_description = self.retrieve_action_description(retrieve_action_name)
         action_description_pair = {}
         for name, description in zip(retrieve_action_name, retrieve_action_description):
@@ -330,6 +368,9 @@ class RetrievalModule(BaseAgent):
         return action_description_pair
     
     def action_code_filter_format_message(self, action_code_pair, task_description):
+        """
+        Send aciton code to llm to filter useless action codes.
+        """
         sys_prompt = self.prompt['_SYSTEM_ACTION_CODE_FILTER_PROMPT']
         user_prompt = self.prompt['_USER_ACTION_CODE_FILTER_PROMPT'].format(
             task_description=task_description,
@@ -343,14 +384,14 @@ class RetrievalModule(BaseAgent):
 
 
 class ExecutionModule(BaseAgent):
-    """ 执行模块，负责执行动作并更新动作库 """
+    """ Execution module, responsible for executing actions and updating the action library """
 
     def __init__(self, llm, environment, action_lib, prompt, system_version, max_iter):
-        # 模块初始化，包括设置执行环境，初始化prompt等
+        '''
+        Module initialization, including setting the execution environment, initializing prompts, etc.
+        '''
         super().__init__()
-        # 模型，环境，数据库
         self.llm = llm
-        # self.tool = ToolAgent()
         self.environment = environment
         self.action_lib = action_lib
         self.system_version = system_version
@@ -363,7 +404,9 @@ class ExecutionModule(BaseAgent):
             self.open_api_doc = json.load(f) 
     
     def generate_action(self, task_name, task_description, pre_tasks_info, relevant_code):
-        # 生成动作代码逻辑，生成可以完成动作的代码和其调用
+        '''
+        Generate action code logic, generate code that can complete the action and its calls.
+        '''
         relevant_code = json.dumps(relevant_code)
         create_msg = self.skill_create_and_invoke_format_message(task_name, task_description, pre_tasks_info, relevant_code)
         code = self.extract_python_code(create_msg)
@@ -371,13 +414,18 @@ class ExecutionModule(BaseAgent):
         return code, invoke
 
     # def generate_action(self, task_name, task_description):
-    #     # 生成动作代码逻辑，生成可以完成动作的代码，返回生成的代码
+    #     '''
+    #     Generate action code logic, generate code that can complete the action and its calls.
+    #     '''
     #     create_msg = self.skill_create_format_message(task_name, task_description)
     #     code = self.extract_python_code(create_msg)
     #     return code
 
     def execute_action(self, code, invoke, type):
-        # 实现动作执行逻辑，实例化动作类并执行，返回执行完毕的状态
+        '''
+        Implement action execution logic.
+        instantiate the action class and execute it, and return the execution completed status.
+        '''
         # print result info
         if type == 'General':
             info = "\n" + '''print("<return>")''' + "\n" + "print(result)" +  "\n" + '''print("</return>")'''
@@ -392,7 +440,10 @@ class ExecutionModule(BaseAgent):
         return state
 
     # def execute_action(self, code, task_description, pre_tasks_info):
-    #     # 实现动作执行逻辑，实例化动作类并执行，返回执行完毕的状态
+    #     '''
+    #     Implement action execution logic.
+    #     instantiate the action class and execute it, and return the execution completed status.
+    #     '''
     #     invoke_msg = self.invoke_generate_format_message(code, task_description, pre_tasks_info)
     #     invoke = self.extract_information(invoke_msg, begin_str='<invoke>', end_str='</invoke>')[0]
     #     # print result info
@@ -408,7 +459,10 @@ class ExecutionModule(BaseAgent):
     #     return state
 
     def judge_action(self, code, task_description, state):
-        # 实现动作判断逻辑，判断动作是否完成当前任务，返回判断的JSON结果
+        '''
+        Implement action judgment logic.
+        judge whether the action completes the current task, and return the JSON result of the judgment.
+        '''
         judge_json = self.task_judge_format_message(code, task_description, state.result, state.pwd, state.ls)
         reasoning = judge_json['reasoning']
         judge = judge_json['judge']
@@ -416,51 +470,76 @@ class ExecutionModule(BaseAgent):
         return reasoning, judge, score
 
     def amend_action(self, current_code, task_description, state, critique, pre_tasks_info):
-        # 实现动作修复逻辑，对于未完成任务或者有错误的代码进行修复，返回修复后的代码和调用
+        '''
+        Implement action repair logic.
+        repair unfinished tasks or erroneous code, and return the repaired code and call.
+        '''
         amend_msg = self.skill_amend_and_invoke_format_message(current_code, task_description, state.error, state.result, state.pwd, state.ls, critique, pre_tasks_info)
         new_code = self.extract_python_code(amend_msg)
         invoke = self.extract_information(amend_msg, begin_str='<invoke>', end_str='</invoke>')[0]
         return new_code, invoke
 
     # def amend_action(self, current_code, task_description, state, critique):
-    #     # 实现动作修复逻辑，对于未完成任务或者有错误的代码进行修复，返回修复后的代码
+    #     '''
+    #     Implement action repair logic.
+    #     repair unfinished tasks or erroneous code, and return the repaired code and call.
+    #     '''
     #     amend_msg = self.skill_amend_format_message(current_code, task_description, state.error, state.result, state.pwd, state.ls, critique)
     #     new_code = self.extract_python_code(amend_msg)
     #     return new_code
 
     def analysis_action(self, code, task_description, state):
-        # 实现对代码错误的分析，如果是需要新的操作的环境错误，转到planning模块，否则交给amend_action，返回JSON
+        '''
+        Implement the analysis of code errors. 
+        If it is an environmental error that requires new operations, go to the planning module. 
+        Otherwise, hand it to amend_action and return JSON.
+        '''
         analysis_json = self.error_analysis_format_message(code, task_description, state.error, state.pwd, state.ls)
         reasoning = analysis_json['reasoning']
         type = analysis_json['type']
         return reasoning, type
         
     def store_action(self, action, code):
-        # 如果没有该工具
+        """
+        Store action code and info.
+        
+        """
+        # If action not in db.
         if not self.action_lib.exist_action(action):
-            # 实现动作存储逻辑，对新的动作进行存储
-            #  获取描述信息
+            # Implement action storage logic and store new actions
             args_description = self.extract_args_description(code)
             action_description = self.extract_action_description(code)
-            # 保存动作名称、代码，描述到JSON中
+            # Save action name, code, and description to JSON
             action_info = self.save_action_info_to_json(action, code, action_description)
-            # 保存代码，描述到数据库和JSON文件中
+            # Save code and descriptions to databases and JSON files
             self.action_lib.add_new_action(action_info)
-            # 参数描述保存路径
+            # Parameter description save path
             args_description_file_path = self.action_lib.action_lib_dir + '/args_description/' + action + '.txt'      
-            # 保存参数
+            # save args_description
             self.save_str_to_path(args_description, args_description_file_path)
         else:
             print("action already exists!")
 
 
     def api_action(self, description, api_path, context="No context provided."):
+        """
+        Call api tool to execute task.
+        """
         response = self.generate_call_api_format_message(description, api_path, context)
         code = self.extract_python_code(response)
         return code 
+    
+    def question_and_answer_action(self, context, question):
+        """
+        Answer questions based on the information found.
+        """
+        response = self.question_and_answer_format_message(context, question)
+        return response
 
-    # Send skill generate and invoke message to LLM
     def skill_create_and_invoke_format_message(self, task_name, task_description, pre_tasks_info, relevant_code):
+        """
+        Send skill generate and invoke message to LLM.
+        """
         sys_prompt = self.prompt['_SYSTEM_SKILL_CREATE_AND_INVOKE_PROMPT']
         user_prompt = self.prompt['_USER_SKILL_CREATE_AND_INVOKE_PROMPT'].format(
             system_version=self.system_version,
@@ -476,8 +555,10 @@ class ExecutionModule(BaseAgent):
         ]
         return self.llm.chat(self.message)
 
-    # Send skill create message to LLM
     def skill_create_format_message(self, task_name, task_description):
+        """
+        Send skill create message to LLM.
+        """
         sys_prompt = self.prompt['_SYSTEM_SKILL_CREATE_PROMPT']
         user_prompt = self.prompt['_USER_SKILL_CREATE_PROMPT'].format(
             system_version=self.system_version,
@@ -491,8 +572,10 @@ class ExecutionModule(BaseAgent):
         ]
         return self.llm.chat(self.message)
 
-    # Send invoke generate message to LLM
     def invoke_generate_format_message(self, class_code, task_description, pre_tasks_info):
+        """
+        Send invoke generate message to LLM.
+        """
         class_name, args_description = self.extract_class_name_and_args_description(class_code)
         sys_prompt = self.prompt['_SYSTEM_INVOKE_GENERATE_PROMPT']
         user_prompt = self.prompt['_USER_INVOKE_GENERATE_PROMPT'].format(
@@ -507,9 +590,26 @@ class ExecutionModule(BaseAgent):
             {"role": "user", "content": user_prompt},
         ]
         return self.llm.chat(self.message)        
-
-    # Send skill amend message to LLM
+    
+    def question_and_answer_format_message(self, context, question):
+        """
+        Send QA message to LLM.
+        """
+        sys_prompt = self.prompt['_SYSTEM_QA_PROMPT']
+        user_prompt = self.prompt['_USER_QA_PROMPT'].format(
+            context = context,
+            question = question
+        )
+        self.message = [
+            {"role": "system", "content": sys_prompt},
+            {"role": "user", "content": user_prompt},
+        ]
+        return self.llm.chat(self.message)      
+ 
     def skill_amend_and_invoke_format_message(self, original_code, task, error, code_output, current_working_dir, files_and_folders, critique, pre_tasks_info):
+        """
+        Send skill amend message to LLM.
+        """
         sys_prompt = self.prompt['_SYSTEM_SKILL_AMEND_AND_INVOKE_PROMPT']
         user_prompt = self.prompt['_USER_SKILL_AMEND_AND_INVOKE_PROMPT'].format(
             original_code = original_code,
@@ -528,8 +628,10 @@ class ExecutionModule(BaseAgent):
         ]
         return self.llm.chat(self.message)   
 
-    # Send skill amend message to LLM
     def skill_amend_format_message(self, original_code, task, error, code_output, current_working_dir, files_and_folders, critique):
+        """
+        Send skill amend message to LLM.
+        """
         sys_prompt = self.prompt['_SYSTEM_SKILL_AMEND_PROMPT']
         user_prompt = self.prompt['_USER_SKILL_AMEND_PROMPT'].format(
             original_code = original_code,
@@ -547,8 +649,10 @@ class ExecutionModule(BaseAgent):
         ]
         return self.llm.chat(self.message)    
     
-    # Send task judge prompt to LLM and get JSON response
     def task_judge_format_message(self, current_code, task, code_output, current_working_dir, files_and_folders):
+        """
+        Send task judge prompt to LLM and get JSON response.
+        """
         sys_prompt = self.prompt['_SYSTEM_TASK_JUDGE_PROMPT']
         user_prompt = self.prompt['_USER_TASK_JUDGE_PROMPT'].format(
             current_code=current_code,
@@ -569,8 +673,10 @@ class ExecutionModule(BaseAgent):
         print("************************</judge_json>*************************")           
         return judge_json    
 
-    # Send error analysis prompt to LLM and get JSON response
     def error_analysis_format_message(self, current_code, task, code_error, current_working_dir, files_and_folders):
+        """
+        Send error analysis prompt to LLM and get JSON response.
+        """
         sys_prompt = self.prompt['_SYSTEM_ERROR_ANALYSIS_PROMPT']
         user_prompt = self.prompt['_USER_ERROR_ANALYSIS_PROMPT'].format(
             current_code=current_code,
@@ -591,8 +697,10 @@ class ExecutionModule(BaseAgent):
         print("************************</analysis_json>*************************")           
         return analysis_json  
 
-    # Extract python code from response
     def extract_python_code(self, response):
+        """
+        Extract python code from response.
+        """
         python_code = ""
         if '```python' in response:
             python_code = response.split('```python')[1].split('```')[0]
@@ -600,8 +708,10 @@ class ExecutionModule(BaseAgent):
             python_code = response.split('```')[1].split('```')[0]
         return python_code    
 
-    # Extract class_name and args description from python code
     def extract_class_name_and_args_description(self, class_code):
+        """
+        Extract class_name and args description from python code.
+        """
         class_name_pattern = r"class (\w+)"
         class_name_match = re.search(class_name_pattern, class_code)
         class_name = class_name_match.group(1) if class_name_match else None
@@ -613,31 +723,39 @@ class ExecutionModule(BaseAgent):
 
         return class_name, args_description
     
-    # Extract args description from python code
     def extract_args_description(self, class_code):
+        """
+        Extract args description from python code.
+        """
         # Extracting the __call__ method's docstring
         call_method_docstring_pattern = r"def __call__\([^)]*\):\s+\"\"\"(.*?)\"\"\""
         call_method_docstring_match = re.search(call_method_docstring_pattern, class_code, re.DOTALL)
         args_description = call_method_docstring_match.group(1).strip() if call_method_docstring_match else None
         return args_description
 
-    # Extract action description from python code
     def extract_action_description(self, class_code):
+        """
+        Extract action description from python code.
+        """
         # Extracting the __init__ method's description
         init_pattern = r"def __init__\s*\(self[^)]*\):\s*(?:.|\n)*?self\._description\s*=\s*\"([^\"]+)\""
         action_match = re.search(init_pattern, class_code, re.DOTALL)
         action_description = action_match.group(1).strip() if action_match else None
         return action_description
     
-    # save str content to the specified path 
     def save_str_to_path(self, content, path):
+        """
+        save str content to the specified path. 
+        """
         with open(path, 'w', encoding='utf-8') as f:
             lines = content.strip().splitlines()
             content = '\n'.join(lines)
             f.write(content)
-                
-    # save action info to json 
+                 
     def save_action_info_to_json(self, action, code, description):
+        """
+        save action info to json. 
+        """
         info = {
             "task_name" : action,
             "code": code,
@@ -659,6 +777,9 @@ class ExecutionModule(BaseAgent):
         return self.llm.chat(self.message)
     
     def generate_openapi_doc(self, tool_api_path):
+        """
+        Format openapi document.
+        """
         # init current api's doc
         curr_api_doc = {}
         curr_api_doc["openapi"] = self.open_api_doc["openapi"]

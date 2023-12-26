@@ -301,8 +301,17 @@ prompt = {
         from jarvis.core.tool_request_util import ToolRequestUtil
         tool_request_util = ToolRequestUtil()
         # TODO: your code here
-        '''
+        ''',
 
+        # QA prompt in os
+        '_SYSTEM_QA_PROMPT' : '''
+        You are a helpful ai assistant that can answer the questions asked by the user with the help of the context provided by the user in a step by step manner.
+        If you don't know how to answer the user's question, answer "I don't know." instead of making up an answer.
+        ''',
+        '_USER_QA_PROMPT' : '''
+        context: {context}
+        question: {question}
+        '''
         
     },
 
