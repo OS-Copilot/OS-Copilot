@@ -1,0 +1,10 @@
+Download the first image from the search results and save it as image1.jpg in the current working directory.
+
+        Args:
+            image_url (str): The URL of the image to be downloaded.
+            save_path (str): The filename to save the downloaded image as. Default is 'image1.jpg'.
+            working_directory (str, optional): The working directory where the file will be saved.
+                If not provided, the current working directory will be used.
+
+        Returns:
+            None

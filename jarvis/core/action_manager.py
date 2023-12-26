@@ -217,10 +217,10 @@ if __name__ == '__main__':
     #             "description": tmp_obj.description
     #         })
     # 检索
-    res = actionManager.retrieve_action_name("Open the specified text file in the specified folder using the default text viewer on Ubuntu.")
-    print(res[0])
+    # res = actionManager.retrieve_action_name("Open the specified text file in the specified folder using the default text viewer on Ubuntu.")
+    # print(res[0])
 
     # 删除
-    # actionManager.delete_action("retrieve_document")
+    # actionManager.delete_action("download_file")
     # actionManager.delete_action("zip_files")
     # print(actionManager.action_code('zip_files'))

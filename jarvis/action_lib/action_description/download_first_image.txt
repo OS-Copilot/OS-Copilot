@@ -1,0 +1,1 @@
+Download the first image from the search results and save it in the current working directory.
