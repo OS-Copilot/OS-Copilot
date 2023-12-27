@@ -4,7 +4,8 @@ class ActionNode:
         self._description = description
         self._code = ''
         self._return_val = ''
-        self._relevant_action = {}
+        self._relevant_code = {}
+        self._next_action = {}
         self._status = False
         self._type = type
 
@@ -26,7 +27,7 @@ class ActionNode:
    
     @property
     def relevant_action(self):
-        return self._relevant_action
+        return self._relevant_code
     
     @property
     def status(self):
@@ -36,8 +37,12 @@ class ActionNode:
     def type(self):
         return self._type 
     
+    @property
+    def next_action(self):
+        return self._next_action   
+    
     def __str__(self):
-        return f"name: {self.name} \n description: {self.description} \n code: {self.code} \n return: {self.return_val} \n relevant_action: {self.relevant_action} \n status: {self.status} \n type: {self.type}"
+        return f"name: {self.name} \n description: {self.description} \n code: {self.code} \n return: {self.return_val} \n relevant_action: {self._relevant_code} \n next_action: {self.next_action} \n status: {self.status} \n type: {self.type}"
 
 
 if __name__ == '__main__':

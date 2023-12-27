@@ -19,7 +19,7 @@ prompt = {
         And the code you write should also follow the following criteria:
         1. The class must start with from jarvis.action.base_action import BaseAction.In addition you need to import all the third-party libraries used in your code.
         2. The class name should be the same as the user's task name.
-        3. In the __init__ method, only self._description should be initialized. And self._description must be general enough to encapsulate the functionality of the current class. For example, if the current task is to change the name of the file named test in the folder called document to test1, then the content of this attribute should be written as: Rename the specified file within a designated folder to a new, predetermined filename.
+        3. In the __init__ method, only self._description should be initialized. And self._description must be Code enough to encapsulate the functionality of the current class. For example, if the current task is to change the name of the file named test in the folder called document to test1, then the content of this attribute should be written as: Rename the specified file within a designated folder to a new, predetermined filename.
         4. The __call__ method must allow flexible arguments (*args, **kwargs) for different user requirements. The __call__ method can not hardcode specific task details, but rather, it should abstract them into parameters that can be passed in by the user, these parameters can be obtained by parsing and abstracting the task description. For example, if the class is meant to download and play music, the __call__ method should take parameters like the download link, destination folder, and file name, instead of having these details fixed in the code. Please ensure that the class is structured to easily accommodate different types of tasks, with a clear and flexible parameter design in the __call__ method. In addition, the parameter design should be comprehensive and versatile enough to be applicable to handling different targets under all the same task scenarios.
         5. For tasks involving os bash commands, use the subprocess library to execute these commands within the Python class.
         6. The code should include detailed comments explaining the purpose of the class, and the role of each parameter.
@@ -38,7 +38,8 @@ prompt = {
         19. If the current task requires the use of the return results from a preceding task, then its corresponding call method must include a parameter specifically for receiving the return results of the preceding task.
         20. Please note that I have provided you with some codes similar to the current task in the Relevant Code of the user information. If the current task can be directly implemented with a certain code, then use this code directly.
         21. If the code involves the output of file paths, ensure that the output includes the files' absolute path.
-        22. When your code involves the task of downloading files, please be sure to pay attention to the naming format of the file. If it is a jpg file called XXX, the name should be XXX.jpg. If it is an mp4 file called XXX, the name should be XXX. mp4. Additionally, the file name passed in may or may not have a file format suffix, and you need to handle these cases.
+        22. When your code involves the task of file operation, please be sure to pay attention to the naming format of the file. If it is a jpg file called XXX, the name should be XXX.jpg. If it is an mp4 file called XXX, the name should be XXX.mp4. Additionally, the file name passed in may or may not have a file format suffix, and you need to handle these cases.
+        23. Please note that the file path provided in the task might not include the file extension. This does not necessarily mean that the path is for a folder. You are required to devise an operation to determine the type of the file, which will assist you in obtaining the complete file path including the file type.
         And the invocation statement should also follow the following criteria:
         1. The __call__ method invocation must be syntactically correct as per Python standards.
         2. Clearly identify any fake or placeholder parameters used in the invocation.
@@ -186,7 +187,7 @@ prompt = {
         And the code you write should also follow the following criteria:
         1. The class must start with from jarvis.action.base_action import BaseAction.In addition you need to import all the third-party libraries used in your code.
         2. The class name should be the same as the user's task name.
-        3. In the __init__ method, only self._description should be initialized. And self._description must be general enough to encapsulate the functionality of the current class. For example, if the current task is to change the name of the file named test in the folder called document to test1, then the content of this attribute should be written as: Rename the specified file within a designated folder to a new, predetermined filename.
+        3. In the __init__ method, only self._description should be initialized. And self._description must be Code enough to encapsulate the functionality of the current class. For example, if the current task is to change the name of the file named test in the folder called document to test1, then the content of this attribute should be written as: Rename the specified file within a designated folder to a new, predetermined filename.
         4. The __call__ method must allow flexible arguments (*args, **kwargs) for different user requirements. The __call__ method can not hardcode specific task details, but rather, it should abstract them into parameters that can be passed in by the user, these parameters can be obtained by parsing and abstracting the task description. For example, if the class is meant to download and play music, the __call__ method should take parameters like the download link, destination folder, and file name, instead of having these details fixed in the code. Please ensure that the class is structured to easily accommodate different types of tasks, with a clear and flexible parameter design in the __call__ method. In addition, the parameter design should be comprehensive and versatile enough to be applicable to handling different targets under all the same task scenarios.
         5. For tasks involving os bash commands, use the subprocess library to execute these commands within the Python class.
         6. The code should include detailed comments explaining the purpose of the class, and the role of each parameter.
@@ -236,6 +237,7 @@ prompt = {
         7. If the Code Output contains information indicating that the task has been completed, the task can be considered completed.    
         8. In User's information, 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
         9. If the task is not completed, it may be because the code generation and calling did not consider the information returned by the predecessor task. This information may be used as input parameters of the __call__ method.
+        10. 'Next Task' in the User's information describes tasks that follow the current task and may depend on the return from the current task. If necessary, you should check the current task's code to ensure it returns the information required for these subsequent tasks. If it does not, then the current task can be considered incomplete.
         Now you will be provided with the following information, please give the result JSON according to these information:
         ''',
         '_USER_TASK_JUDGE_PROMPT' : '''
@@ -246,6 +248,7 @@ prompt = {
         Current Working Directiory: {current_working_dir}
         Working Directory: {working_dir}
         Files And Folders in Current Working Directiory: {files_and_folders}
+        Next Task: {next_action}
         ''',
 
         # Code error judge prompt in os
@@ -323,8 +326,8 @@ prompt = {
         I will give you a task and ask you to decompose this task into a series of subtasks. These subtasks can form a directed acyclic graph, and each subtask is an atomic operation. Through the execution of topological sorting of subtasks, I can complete the entire task.
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Carry out step-by-step reasoning based on the given task until the task is completed. Each step of reasoning is decomposed into sub-tasks. For example, the current task is to reorganize the text files containing the word 'agent' in the folder called document into the folder called agent. Then the reasoning process is as follows: According to Current Working Directiory and Files And Folders in Current Working Directiory information, the folders documernt and agent exist, so firstly, retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return. Secondly, put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.
-        2. There are three types of subtasks, the first is a task that requires the use of tools to access external data sources to obtain information, such as retrieving information from the Internet, this type of task is called 'API subtask', and the second is a task that does not require the use of tools, which is called 'General subtask'. The third is called 'QA subtask', it analyzes the results returned from the API tasks to obtain answers for the question and answer task.
-        3. Each decomposed subtask has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a general task or a API task or a QA task, If it is a general task, its value is 'general', if it is a API task, its value is 'API', if it is a QA task, its value is 'QA'.
+        2. There are three types of subtasks, the first is a task that requires the use of APIs to access internet resources to obtain information, such as retrieving information from the Internet, this type of task is called 'API subtask', and the second is a task that does not require the use of API tools but need to write code to complete, which is called 'Code subtask'. The third is called 'QA subtask', It answers task by analyzing contextual information (possibly returned by predecessor tasks).
+        3. Each decomposed subtask has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a Code task or a API task or a QA task, If it is a Code task, its value is 'Code', if it is a API task, its value is 'API', if it is a QA task, its value is 'QA'.
         4. In JSON, each decomposed subtask contains four attributes: name, description, dependencies and type, which are obtained through reasoning about the task. The key of each subtask is the 'name' attribute of the subtask.
         5. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
         {
@@ -332,30 +335,30 @@ prompt = {
                 'name': 'retrieve_files',
                 'description': 'retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return.',
                 'dependencies': [],
-                'type' : 'General'
+                'type' : 'Code'
             },
             'organize_files' : {
                 'name': 'organize_files',
                 'description': 'put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.',
                 'dependencies': ['retrieve_files'],
-                'type': 'General'
+                'type': 'Code'
             }    
         }        
         And you should also follow the following criteria:
         1. A task can be decomposed down into one or more atomic operations, depending on the complexity of the task.
         2. The Action List I gave you contains the name of each action and the corresponding operation description. These actions are all atomic operations. You can refer to these atomic operations to decompose the current task.
-        3. If the current sub-task is a General task, and can be addressed using an atomic action from the Action List, then the name of the decomposed sub-task should be directly adopted from the name of that atomic action.
+        3. If the current sub-task is a Code task, and can be addressed using an atomic action from the Action List, then the name of the decomposed sub-task should be directly adopted from the name of that atomic action.
         4. The decomposed subtasks can form a directed acyclic graph based on the dependencies between them.
         5. The description information of the subtask must be detailed enough, no entity and operation information in the task can be ignored.
         6. 'Current Working Directiory' and 'Files And Folders in Current Working Directiory' specify the path and directory of the current working directory. These information may help you understand and generate tasks.
         7. The tasks currently designed are compatible with and can be executed on the present version of the system.
         8. The current task may need the return results of its predecessor tasks. For example, the current task is: Move the text files containing the word 'agent' from the folder named 'document' in the working directory to a folder named 'agent'. We can decompose this task into two subtasks, the first task is to retrieve text files containing the word 'agent' from the folder named 'document', and return their path list. The second task is to move the txt files of the corresponding path to the folder named 'agent' based on the path list returned by the previous task.
         9. If the current subtask needs to use the return result of the previous subtask, then this process should be written in the task description of the subtask.
-        10. Please note that the name of a General subtask must be abstract. For instance, if the subtask is to search for the word "agent," then the subtask name should be "search_word," not "search_agent." As another example, if the subtask involves moving a file named "test," then the subtask name should be "move_file," not "move_test."
+        10. Please note that the name of a Code subtask must be abstract. For instance, if the subtask is to search for the word "agent," then the subtask name should be "search_word," not "search_agent." As another example, if the subtask involves moving a file named "test," then the subtask name should be "move_file," not "move_test."
         11. When generating the subtask description, you need to clearly specify whether the operation targets a single entity or multiple entities that meet certain criteria. 
         12. When decomposing subtasks, avoid including redundant information. For instance, if the task is to move txt files containing the word 'agent' from the folder named 'document' to a folder named 'XXX', one subtask should be to retrieve text files containing the word 'agent' from the folder named 'document', and return their path list. Then, the next subtask should be to move the txt files to the folder named 'XXX' based on the path list returned by the previous task, rather than moving the txt files that contain the word 'agent' to the folder named 'XXX' based on the path list returned by the previous task. The latter approach would result in redundant information in the subtasks.
-        13. User's information provided you with a API List that includes the API path and their corresponding descriptions. These APIs are designed for interacting with external data sources, like the Internet. 
-        14. When decomposing subtasks, you need to pay attention to whether the current subtask involves obtaining data from external data sources (such as the Internet), such as finding cat pictures on the Internet, retrieving information on a certain web page, etc., then you need to select the relevant API from the API List.
+        13. User's information provided you with a API List that includes the API path and their corresponding descriptions. These APIs are designed for interacting with internet resources, like the Internet. 
+        14. When decomposing subtasks, you need to pay attention to whether the current subtask involves obtaining data from internet resources, such as finding cat pictures on the Internet, retrieving information on a certain web page, etc., then you need to select the relevant API from the API List.
         15. If the current subtask is a API task, the description of the task must include the API path of the specified API to facilitate my extraction through the special format of the API path. For example, if an API task is to use the arxiv API to find XXX, then the description of the task should be: "Use the "/tools/arxiv' API to search for XXX". 
         16. Please note that sometimes the task may be just a question and answer task, that is, you only need to call the API to access the external data source, and then the last subtask will analyze the information returned by the API task. Then the subtasks you decompose, except for the last subtask, are all API tasks, and the last subtask is a QA task.
         17. If Task in User's information is a question and answer task, it will only contain one QA type subtask, and this subtask can only be the last subtask decomposed from the Task in User's information.
@@ -376,14 +379,15 @@ prompt = {
         When I was executing the task {current_task}: {current_task_description}, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.     
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Design new tasks based on the reasoning process of current task errors. For example, the inference process analyzed that the reason for the error was that there was no numpy package in the environment, causing it to fail to run. Then the reasoning process for designing a new task is: According to the reasoning process of error reporting, because there is no numpy package in the environment, we need to use the pip tool to install the numpy package.
-        2. Each new task has three attributes: name, task description, and dependencies. The 'name' abstracts an appropriate name based on the reasoning process of the current subtask, and 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task.
-        3. In JSON, each new task contains three attributes: name, description, and dependencies, which are obtained through reasoning about the task. The key of each task is the name of the task.
+        2. There are three types of subtasks, the first is a task that requires the use of APIs to access internet resources to obtain information, such as retrieving information from the Internet, this type of task is called 'API subtask', and the second is a task that does not require the use of API tools but need to write code to complete, which is called 'Code subtask'. The third is called 'QA subtask', It answers task by analyzing contextual information (possibly returned by predecessor tasks).
+        3. Each decomposed subtask has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a Code task or a API task or a QA task, If it is a Code task, its value is 'Code', if it is a API task, its value is 'API', if it is a QA task, its value is 'QA'.
         4. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
         {
             'install_package' : {
                 'name': 'install_package',
                 'description': 'Use pip to install the numpy package that is missing in the environment.',
-                'dependencies': []
+                'dependencies': [],
+                'type' : 'Code'
             }
         }
 

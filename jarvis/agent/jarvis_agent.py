@@ -70,7 +70,7 @@ The task is completed. <action>over()</over>
 
 
 class JarvisAgent(BaseAgent):
-    """ AI代理类，包含规划、检索和执行模块 """
+    """ AI agent class, including planning, retrieval and execution modules """
 
     def __init__(self, config_path=None, action_lib_dir=None, max_iter=3):
         super().__init__()
@@ -144,22 +144,22 @@ class PlanningModule(BaseAgent):
         # update topological sort
         self.topological_sort()
 
-    def update_action(self, action, code='', return_val='', relevant_action=None, status=False, type='General'):
+    def update_action(self, action, code='', return_val='', relevant_code=None, status=False, type='Code'):
         """
         Update action node info.
         """
         if code:
             self.action_node[action]._code = code
         if return_val:
-            if type=='General':
+            if type=='Code':
                 return_val = self.extract_information(return_val, "<return>", "</return>")
                 print("************************<return>**************************")
                 print(return_val)
                 print("************************</return>*************************")  
             if return_val != 'None':
                 self.action_node[action]._return_val = return_val
-        if relevant_action:
-            self.action_node[action]._relevant_action = relevant_action
+        if relevant_code:
+            self.action_node[action]._relevant_code = relevant_code
         self.action_node[action]._status = status
 
     def task_decompose_format_message(self, task, action_list, files_and_folders):
@@ -222,6 +222,9 @@ class PlanningModule(BaseAgent):
         for task_name, task_info in decompose_json.items():
             self.action_node[task_name] = ActionNode(task_name, task_info['description'], task_info['type'])
             self.action_graph[task_name] = task_info['dependencies']
+            for pre_action in self.action_graph[task_name]:
+                self.action_node[pre_action].next_action['task_name'] = task_info['description']
+
     
     def add_new_action(self, new_task_json, current_task):
         """
@@ -231,6 +234,8 @@ class PlanningModule(BaseAgent):
         for task_name, task_info in new_task_json.items():
             self.action_node[task_name] = ActionNode(task_name, task_info['description'], task_info['type'])
             self.action_graph[task_name] = task_info['dependencies']
+            for pre_action in self.action_graph[task_name]:
+                self.action_node[pre_action].next_action['task_name'] = task_info['description']            
         last_new_task = list(new_task_json.keys())[-1]
         self.action_graph[current_task].append(last_new_task)
 
@@ -427,7 +432,7 @@ class ExecutionModule(BaseAgent):
         instantiate the action class and execute it, and return the execution completed status.
         '''
         # print result info
-        if type == 'General':
+        if type == 'Code':
             info = "\n" + '''print("<return>")''' + "\n" + "print(result)" +  "\n" + '''print("</return>")'''
             code = code + '\nresult=' + invoke + info
         print("************************<code>**************************")
@@ -458,12 +463,12 @@ class ExecutionModule(BaseAgent):
     #     print("************************</state>*************************") 
     #     return state
 
-    def judge_action(self, code, task_description, state):
+    def judge_action(self, code, task_description, state, next_action):
         '''
         Implement action judgment logic.
         judge whether the action completes the current task, and return the JSON result of the judgment.
         '''
-        judge_json = self.task_judge_format_message(code, task_description, state.result, state.pwd, state.ls)
+        judge_json = self.task_judge_format_message(code, task_description, state.result, state.pwd, state.ls, next_action)
         reasoning = judge_json['reasoning']
         judge = judge_json['judge']
         score = judge_json['score']
@@ -649,18 +654,20 @@ class ExecutionModule(BaseAgent):
         ]
         return self.llm.chat(self.message)    
     
-    def task_judge_format_message(self, current_code, task, code_output, current_working_dir, files_and_folders):
+    def task_judge_format_message(self, current_code, task, code_output, current_working_dir, files_and_folders, next_action):
         """
         Send task judge prompt to LLM and get JSON response.
         """
+        next_action = json.dumps(next_action)
         sys_prompt = self.prompt['_SYSTEM_TASK_JUDGE_PROMPT']
         user_prompt = self.prompt['_USER_TASK_JUDGE_PROMPT'].format(
             current_code=current_code,
             task=task,
             code_output=code_output,
             current_working_dir=current_working_dir,
-            working_dir= self.environment.working_dir,
-            files_and_folders= files_and_folders
+            working_dir=self.environment.working_dir,
+            files_and_folders=files_and_folders,
+            next_action=next_action
         )
         self.message = [
             {"role": "system", "content": sys_prompt},
