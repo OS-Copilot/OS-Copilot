@@ -18,7 +18,7 @@ class BingAPI:
     def search(self, key_words: str, max_retry: int = 3):
         for _ in range(max_retry):
             try:
-                result = requests.get(self._endpoint, headers=self._headers, params={'q': key_words, 'mkt': self._mkt},
+                result = requests.get(self._endpoint, headers=self._headers, params={'q': key_words, 'mkt': self._mkt,'safeSearch' : 'moderate'},
                                       timeout=10)
             except Exception:
                 continue
