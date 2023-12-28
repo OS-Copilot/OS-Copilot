@@ -10,6 +10,7 @@ from jarvis.agent.prompt import prompt
 from jarvis.core.utils import get_open_api_description_pair, get_open_api_doc_path
 import re
 import json
+import logging
 
 
 USER_PROMPT='''
@@ -144,16 +145,15 @@ class PlanningModule(BaseAgent):
         # update topological sort
         self.topological_sort()
 
-    def update_action(self, action, code='', return_val='', relevant_code=None, status=False, type='Code'):
+    def update_action(self, action, return_val='', relevant_code=None, status=False, type='Code'):
         """
         Update action node info.
         """
-        if code:
-            self.action_node[action]._code = code
         if return_val:
             if type=='Code':
                 return_val = self.extract_information(return_val, "<return>", "</return>")
                 print("************************<return>**************************")
+                logging.info(return_val)
                 print(return_val)
                 print("************************</return>*************************")  
             if return_val != 'None':
@@ -404,7 +404,6 @@ class ExecutionModule(BaseAgent):
         self.max_iter = max_iter
         self.open_api_doc_path = get_open_api_doc_path()
         self.open_api_doc = {}
-        self.environment = PythonEnv()
         with open(self.open_api_doc_path) as f:
             self.open_api_doc = json.load(f) 
     

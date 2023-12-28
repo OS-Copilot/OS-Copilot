@@ -2,7 +2,6 @@ class ActionNode:
     def __init__(self, name, description, type):
         self._name = name
         self._description = description
-        self._code = ''
         self._return_val = ''
         self._relevant_code = {}
         self._next_action = {}
@@ -15,11 +14,7 @@ class ActionNode:
     
     @property
     def description(self):
-        return self._description
-    
-    @property
-    def code(self):
-        return self._code    
+        return self._description   
 
     @property
     def return_val(self):
@@ -42,7 +37,7 @@ class ActionNode:
         return self._next_action   
     
     def __str__(self):
-        return f"name: {self.name} \n description: {self.description} \n code: {self.code} \n return: {self.return_val} \n relevant_action: {self._relevant_code} \n next_action: {self.next_action} \n status: {self.status} \n type: {self.type}"
+        return f"name: {self.name} \n description: {self.description} \n return: {self.return_val} \n relevant_action: {self._relevant_code} \n next_action: {self.next_action} \n status: {self.status} \n type: {self.type}"
 
 
 if __name__ == '__main__':

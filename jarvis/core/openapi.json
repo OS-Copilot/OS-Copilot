@@ -77,6 +77,42 @@
         }
       }
     },    
+    "/tools/markdown/web2md": {
+      "get": {
+        "summary": "web2md can get the markdown formatting of a web page at a given url",
+        "operationId": "get_web_md_tools_markdown_web2md_get",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TargetPageModel"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },    
     "/tools/arxiv": {
       "get": {
         "summary": "tool to get Arxiv Article Information",
@@ -626,6 +662,19 @@
         ],
         "title": "QueryItemV2"
       },
+      "TargetPageModel": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "title": "Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "title": "TargetPageModel"
+      },      
       "SQLRequest": {
         "properties": {
           "queries": {

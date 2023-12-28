@@ -28,14 +28,14 @@ class GAIALoader:
                 return record
         return None
 
-
+# Please help me find the GitHub homepage of Zhiyong Wu from Shanghai AI Lab. Then get the summary from his homepage and organize it into a standard Markdown format, and save the standard Markdown format as wuzhiyong.md in the working directory.
 def main():
     parser = argparse.ArgumentParser(description='Inputs')
     parser.add_argument('--action_lib_path', type=str, default='../jarvis/action_lib', help='tool repo path')
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
-    parser.add_argument('--query', type=str, default='', help='user query')
+    parser.add_argument('--query', type=str, default='''There is a picture link of my personal photo and my personal statement in the test.txt file. Please generate a resume in markdown format for me based on these information and save it in test.md.''', help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
-    parser.add_argument('--task_id', type=str, default='cffe0e32-c9a6-4c52-9877-78ceb4aaa9fb', help='GAIA dataset task_id')
+    parser.add_argument('--task_id', type=str, default=None, help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
     parser.add_argument('--logging_filedir', type=str, default='log', help='GAIA dataset cache dir path')
     args = parser.parse_args()
@@ -73,7 +73,9 @@ def main():
         action = planning_agent.execute_list[0]
         action_node = planning_agent.action_node[action]
         description = action_node.description
-        code = action_node.code
+        code = ''
+        # The return value of the current task
+        result = ''
         next_action = action_node.next_action
         relevant_code = {}
         type = action_node.type
@@ -84,9 +86,8 @@ def main():
             relevant_code = retrieve_agent.retrieve_action_code_pair(retrieve_name)
         # task execute step
         if type == 'QA':
-            answer = execute_agent.question_and_answer_action(pre_tasks_info, task)
-            print(answer)
-            break
+            result = execute_agent.question_and_answer_action(pre_tasks_info, task)
+            print(result)
         elif type == 'API':
             api_path = execute_agent.extract_API_Path(description)
             code = execute_agent.api_action(description, api_path, pre_tasks_info)
@@ -94,8 +95,9 @@ def main():
         else:
             code, invoke = execute_agent.generate_action(action, description, pre_tasks_info, relevant_code)
         # Execute python tool class code
-        state = execute_agent.execute_action(code, invoke, type)
-        current_code = ''
+        state = execute_agent.execute_action(code, invoke, type)   
+        result = state.result 
+        logging.info(state.result) 
         # Check whether the code runs correctly, if not, amend the code
         if type == 'Code':
             need_mend = False
@@ -118,19 +120,20 @@ def main():
                     continue
                 need_mend = True   
             # The code failed to complete its task, fix the code
-            current_code = code
             while (trial_times < execute_agent.max_iter and need_mend == True):
                 trial_times += 1
                 print("current amend times: {}".format(trial_times))
-                new_code, invoke = execute_agent.amend_action(current_code, description, state, critique, pre_tasks_info)
+                new_code, invoke = execute_agent.amend_action(code, description, state, critique, pre_tasks_info)
                 critique = ''
-                current_code = new_code
+                code = new_code
                 # Run the current code and check for errors
-                state = execute_agent.execute_action(current_code, invoke, type)
+                state = execute_agent.execute_action(code, invoke, type)
+                result = state.result
+                logging.info(result) 
                 # print(state)
                 # Recheck
                 if state.error == None:
-                    critique, judge, score = execute_agent.judge_action(current_code, description, state, next_action)
+                    critique, judge, score = execute_agent.judge_action(code, description, state, next_action)
                     # The task execution is completed and the loop exits
                     if judge:
                         need_mend = False
@@ -144,10 +147,10 @@ def main():
                 print("I can't Do this Task!!")
                 break
             else: # The task is completed, if code is save the code, args_description, action_description in lib
-                if score >= 7:
-                    execute_agent.store_action(action, current_code)
-        print("Current task execution completed!!!")
-        planning_agent.update_action(action, current_code, state.result, relevant_code, True, type)
+                if score >= 8:
+                    execute_agent.store_action(action, code)
+        print("Current task execution completed!!!")  
+        planning_agent.update_action(action, result, relevant_code, True, type)
         planning_agent.execute_list.remove(action)
 if __name__ == '__main__':
     main()
