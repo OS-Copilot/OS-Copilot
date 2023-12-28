@@ -7,8 +7,7 @@ from jarvis.agent.jarvis_agent import JarvisAgent
 
 task1 = "Please help me find the GitHub blog of Zhiyong Wu from Shanghai AI Lab. Give me the markdown of the page link, and save the standard Markdown format as wuzhiyong.md in the working directory."
 task2 = "Please help me search the github blog homepage of zhiyong Wu who is from hku and summary the content to the wuzhiyong.txt file. In addition, you also need to download a photo of Zhiyong Wu from hku from the Internet to wuzhiyong.jpg."
-
-
+query_id = 1
 class GAIALoader:
     def __init__(self, cache_dir=None):
         if cache_dir != None:
@@ -46,7 +45,7 @@ def main():
     task_id = args.task_id
     query = args.query
     
-    logging.basicConfig(filename=os.path.join(args.logging_filedir, "{}.log".format(task_id)), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename=os.path.join(args.logging_filedir, "{}.log".format(query_id)), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
     jarvis_agent = JarvisAgent(config_path=args.config_path, action_lib_dir=args.action_lib_path)
     planning_agent = jarvis_agent.planner
