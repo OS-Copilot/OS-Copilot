@@ -5,6 +5,10 @@ from datasets import load_dataset
 from jarvis.agent.jarvis_agent import JarvisAgent
 
 
+task1 = "Please help me find the GitHub blog of Zhiyong Wu from Shanghai AI Lab. Give me the markdown of the page link, and save the standard Markdown format as wuzhiyong.md in the working directory."
+task2 = "Please help me search the github blog homepage of zhiyong Wu who is from hku and summary the content to the wuzhiyong.txt file. In addition, you also need to download a photo of Zhiyong Wu from hku from the Internet to wuzhiyong.jpg."
+
+
 class GAIALoader:
     def __init__(self, cache_dir=None):
         if cache_dir != None:
@@ -32,7 +36,7 @@ def main():
     parser = argparse.ArgumentParser(description='Inputs')
     parser.add_argument('--action_lib_path', type=str, default='../jarvis/action_lib', help='tool repo path')
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
-    parser.add_argument('--query', type=str, default='''Please help me find the GitHub blog of Zhiyong Wu from Shanghai AI Lab. Then get the summary from his homepage and organize it into a standard Markdown format, and save the standard Markdown format as wuzhiyong.md in the working directory.''', help='user query')
+    parser.add_argument('--query', type=str, default=task2, help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
     parser.add_argument('--task_id', type=str, default=None, help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
