@@ -79,7 +79,7 @@
     },    
     "/tools/markdown/web2md": {
       "get": {
-        "summary": "When the user wants to get the markdown format data of the web page, web2md can get the markdown formatting of a web page at a given url.",
+        "summary": "This API can only get the markdown formatting of a web page at a given url but can not do summary work.",
         "operationId": "get_web_md_tools_markdown_web2md_get",
         "requestBody": {
           "content": {
