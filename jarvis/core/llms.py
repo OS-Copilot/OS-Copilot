@@ -5,13 +5,6 @@ import json
 import logging
 
 
-# proxy = {
-# 'http': 'http://localhost:2081',
-# 'https': 'http://localhost:2081',
-# }
-
-# logging.basicConfig(filename='/home/heroding/桌面/Jarvis/working_dir/chat_log.txt', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 class OpenAI:
     """
       OPEN AI Chat Models

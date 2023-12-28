@@ -10,7 +10,9 @@ RESULT_TARGET_PAGE_PER_TEXT_COUNT = 500
 class BingAPI:
     def __init__(self, subscription_key: str) -> None:
         self._headers = {
-            'Ocp-Apim-Subscription-Key': subscription_key
+            'Ocp-Apim-Subscription-Key': subscription_key,
+            'BingAPIs-Market': 'en-US',
+            
         }
         self._endpoint = "https://api.bing.microsoft.com/v7.0/search"
         self._mkt = 'en-US'
@@ -55,3 +57,4 @@ class BingAPI:
             return True, page_detail
         except Exception:
             return False, "Timeout for loading this page, Please try to load another one or search again."
+

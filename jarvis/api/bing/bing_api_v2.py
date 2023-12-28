@@ -22,7 +22,7 @@ RESULT_TARGET_PAGE_PER_TEXT_COUNT = 500
 
 class BingAPIV2:
     def __init__(self) -> None:
-        self.search_engine = BingSearchAPIWrapper()
+        self.search_engine = BingSearchAPIWrapper(search_kwargs={'mkt': 'en-us','safeSearch': 'moderate'})
         self.web_loader = WebPageLoader()
         self.web_chunker = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
         self.web_sniptter_embed = OpenAIEmbeddings()
@@ -66,4 +66,4 @@ class BingAPIV2:
         return attended_content
 
 
-    
+
