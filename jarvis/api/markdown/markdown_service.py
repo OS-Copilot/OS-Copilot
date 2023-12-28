@@ -18,9 +18,10 @@ class TargetPageModel(BaseModel):
 
 @router.get("/tools/markdown/web2md")
 async def get_web_md(item: TargetPageModel):
+    result = {"markdown": ""}
     try:
         markdown_text = web2MdTool.get_web_md(item.url)
+        result["markdown"] = markdown_text
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
-    return markdown_text
-
+    return result

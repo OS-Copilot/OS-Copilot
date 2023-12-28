@@ -78,3 +78,8 @@ class WebPage2MDTool:
     @classmethod
     def close_session(cls):
         cls._session.close()
+
+
+
+# res = WebPage2MDTool().get_web_md("https://lividwo.github.io/zywu.github.io/")
+# print(type(res))
