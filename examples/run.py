@@ -28,12 +28,11 @@ class GAIALoader:
                 return record
         return None
 
-# Please help me find the GitHub homepage of Zhiyong Wu from Shanghai AI Lab. Then get the summary from his homepage and organize it into a standard Markdown format, and save the standard Markdown format as wuzhiyong.md in the working directory.
 def main():
     parser = argparse.ArgumentParser(description='Inputs')
     parser.add_argument('--action_lib_path', type=str, default='../jarvis/action_lib', help='tool repo path')
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
-    parser.add_argument('--query', type=str, default='''There is a picture link of my personal photo and my personal statement in the test.txt file. Please generate a resume in markdown format for me based on these information and save it in test.md.''', help='user query')
+    parser.add_argument('--query', type=str, default='''Please help me find the GitHub blog of Zhiyong Wu from Shanghai AI Lab. Then get the summary from his homepage and organize it into a standard Markdown format, and save the standard Markdown format as wuzhiyong.md in the working directory.''', help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
     parser.add_argument('--task_id', type=str, default=None, help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
@@ -55,7 +54,7 @@ def main():
         data = GAIALoader(args.cache_dir).get_data_by_task_id(task_id)
         task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(data['Question'], data['file_path'])
     elif task_id == None and query != '':
-        task = 'Your task is: {0}\nhe path of the files you need to use(if exists): {1}'.format(args.query, args.query_file_path)
+        task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(args.query, args.query_file_path)
     else:
         raise ValueError("Task_id and query cannot be both None or both not None.")
     print('Task:\n'+task)

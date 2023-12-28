@@ -1,23 +1,21 @@
 from jarvis.core.tool_request_util import ToolRequestUtil
 
-# Initialize the ToolRequestUtil
-tool_request_util = ToolRequestUtil()
+api_path = "/tools/bing/searchv2"
 
-# Define the API path and the method to be used
-api_path = '/tools/bing/image_search'
-method = 'get'
+# Define the method
+method = "get"
 
-# Define the parameters for the API call
+# Define the parameters
 params = {
-    "query": "East China Normal University",
-    "top_k": 3
+    "query": "GitHub blog of Zhiyong Wu from Shanghai AI Lab",
+    "top_k": 5
 }
 
 # Define the content type
-content_type = 'application/json'
+content_type = "application/json"
 
-# Make the API call using the ToolRequestUtil
-response = tool_request_util.request(api_path, method, params=params, content_type=content_type)
+# Make the request
+response = ToolRequestUtil().request(api_path, method, params, content_type)
 
-# Print the return value of the API call
+# Print the response
 print(response)
