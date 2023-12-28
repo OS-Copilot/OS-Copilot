@@ -53,9 +53,15 @@ def main():
     if task_id:
         print('Use the task_id {} to get the corresponding question in the GAIA dataset.'.format(task_id))
         data = GAIALoader(args.cache_dir).get_data_by_task_id(task_id)
-        task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(data['Question'], data['file_path'])
+        # 获取文件后缀，重命名下载的文件
+        file_extension = os.path.splitext(data['file_name'])[1]
+        raw_file_path = data['file_path']
+        data['file_path'] += file_extension
+        if os.path.exists(raw_file_path):
+            os.rename(raw_file_path, data['file_path'])
+        task = 'Your task : {0}\n You may need to read or operate the following file to accomplish this task: {1}'.format(data['Question'], data['file_path'])
     elif task_id == None and query != '':
-        task = 'Your task is: {0}\nhe path of the files you need to use(if exists): {1}'.format(args.query, args.query_file_path)
+        task = 'Your task is: {0}\nYou may need to read or operate the following file to accomplish this task:: {1}'.format(args.query, args.query_file_path)
     else:
         raise ValueError("Task_id and query cannot be both None or both not None.")
     print('Task:\n'+task)
