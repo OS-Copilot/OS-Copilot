@@ -18,6 +18,7 @@ from jarvis.api.wolfram_alpha.wolfram_alpha import router as wa_router
 from jarvis.api.weather.weather import router as weather_router  # 新增这一行
 from jarvis.api.google_calendar.calendar_service import router as calendar_router
 from jarvis.api.gmail.gmail import router as gmail_router  # 新增这一行
+from jarvis.api.markdown.markdown_service import router as markdown_router  # 新增这一行
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
@@ -51,12 +52,13 @@ services = {
     "wolframalpha": wa_router,
     "weather": weather_router,
     "calendar": calendar_router,
-    "gmail": gmail_router
+    "gmail": gmail_router,
+    "markdown": markdown_router
 
 }
 
 server_list = ["python_executor", "calculator","arxiv","bing","shell","ppt",
-               "database","wolframalpha","weather","calendar","gmail"]
+               "database","wolframalpha","weather","calendar","gmail","markdown"]
 
 # Include only the routers for the services listed in server_list
 for service in server_list:
