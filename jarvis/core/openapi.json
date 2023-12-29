@@ -664,7 +664,7 @@
       },
       "TargetPageModel": {
         "properties": {
-          "query": {
+          "url": {
             "type": "string",
             "title": "Url"
           }
