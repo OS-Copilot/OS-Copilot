@@ -6,8 +6,8 @@ from jarvis.agent.jarvis_agent import JarvisAgent
 
 
 task1 = "Please help me find the GitHub blog of Zhiyong Wu from Shanghai AI Lab. Give me the markdown of the page link, and save the standard Markdown format as wuzhiyong.md in the working directory."
-task2 = "Please help me search the github blog homepage of zhiyong Wu who is from hku and summary the content to the wuzhiyong.txt file. In addition, you also need to download a photo of Zhiyong Wu from hku from the Internet to wuzhiyong.jpg."
-query_id = 1
+task2 = "Please help me search the github blog homepage of zhiyong Wu who is from hku and summarize its profile and biography to the wuzhiyong.txt file. In addition, you also need to download a photo of Zhiyong Wu from hku from the Internet to wuzhiyong.jpg."
+query_id = 2
 class GAIALoader:
     def __init__(self, cache_dir=None):
         if cache_dir != None:
