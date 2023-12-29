@@ -1,9 +1,0 @@
-Download the image from the specified URL and save it to the given directory with the provided image name.
-
-        Args:
-            image_url (str): The URL of the image to be downloaded.
-            image_name (str): The name to save the image as.
-            save_directory (str): The directory where the image will be saved.
-            
-        Returns:
-            str: The absolute path to the downloaded image.

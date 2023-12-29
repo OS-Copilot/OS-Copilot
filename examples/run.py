@@ -5,6 +5,9 @@ from datasets import load_dataset
 from jarvis.agent.jarvis_agent import JarvisAgent
 
 
+task1 = "Please help me find the GitHub blog of Zhiyong Wu from Shanghai AI Lab. Give me the markdown of the page link, and save the standard Markdown format as wuzhiyong.md in the working directory."
+task2 = "Tell me who is Zhiyong Wu from HKU,please save the detailed answer in wuzhiyong.txt. In addition, you also need to download a photo of Zhiyong Wu from HKU from the Internet to wuzhiyong.jpg.Since there are a lot of people named Zhiyong Wu, you must be looking for the one from Shanghai AI Lab and graduated from HKU."
+query_id = 2
 class GAIALoader:
     def __init__(self, cache_dir=None):
         if cache_dir != None:
@@ -28,14 +31,13 @@ class GAIALoader:
                 return record
         return None
 
-
 def main():
     parser = argparse.ArgumentParser(description='Inputs')
     parser.add_argument('--action_lib_path', type=str, default='../jarvis/action_lib', help='tool repo path')
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
-    parser.add_argument('--query', type=str, default='', help='user query')
+    parser.add_argument('--query', type=str, default=task2, help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
-    parser.add_argument('--task_id', type=str, default='cffe0e32-c9a6-4c52-9877-78ceb4aaa9fb', help='GAIA dataset task_id')
+    parser.add_argument('--task_id', type=str, default=None, help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
     parser.add_argument('--logging_filedir', type=str, default='log', help='GAIA dataset cache dir path')
     args = parser.parse_args()
@@ -43,7 +45,7 @@ def main():
     task_id = args.task_id
     query = args.query
     
-    logging.basicConfig(filename=os.path.join(args.logging_filedir, "{}.log".format(task_id)), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename=os.path.join(args.logging_filedir, "{}.log".format(query_id)), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
     jarvis_agent = JarvisAgent(config_path=args.config_path, action_lib_dir=args.action_lib_path)
     planning_agent = jarvis_agent.planner
@@ -61,7 +63,7 @@ def main():
             os.rename(raw_file_path, data['file_path'])
         task = 'Your task : {0}\n You may need to read or operate the following file to accomplish this task: {1}'.format(data['Question'], data['file_path'])
     elif task_id == None and query != '':
-        task = 'Your task is: {0}\nYou may need to read or operate the following file to accomplish this task:: {1}'.format(args.query, args.query_file_path)
+        task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(args.query, args.query_file_path)
     else:
         raise ValueError("Task_id and query cannot be both None or both not None.")
     print('Task:\n'+task)
@@ -79,7 +81,9 @@ def main():
         action = planning_agent.execute_list[0]
         action_node = planning_agent.action_node[action]
         description = action_node.description
-        code = action_node.code
+        code = ''
+        # The return value of the current task
+        result = ''
         next_action = action_node.next_action
         relevant_code = {}
         type = action_node.type
@@ -90,9 +94,8 @@ def main():
             relevant_code = retrieve_agent.retrieve_action_code_pair(retrieve_name)
         # task execute step
         if type == 'QA':
-            answer = execute_agent.question_and_answer_action(pre_tasks_info, task)
-            print(answer)
-            break
+            result = execute_agent.question_and_answer_action(pre_tasks_info, task)
+            print(result)
         elif type == 'API':
             api_path = execute_agent.extract_API_Path(description)
             code = execute_agent.api_action(description, api_path, pre_tasks_info)
@@ -100,8 +103,9 @@ def main():
         else:
             code, invoke = execute_agent.generate_action(action, description, pre_tasks_info, relevant_code)
         # Execute python tool class code
-        state = execute_agent.execute_action(code, invoke, type)
-        current_code = ''
+        state = execute_agent.execute_action(code, invoke, type)   
+        result = state.result 
+        logging.info(state.result) 
         # Check whether the code runs correctly, if not, amend the code
         if type == 'Code':
             need_mend = False
@@ -124,19 +128,20 @@ def main():
                     continue
                 need_mend = True   
             # The code failed to complete its task, fix the code
-            current_code = code
             while (trial_times < execute_agent.max_iter and need_mend == True):
                 trial_times += 1
                 print("current amend times: {}".format(trial_times))
-                new_code, invoke = execute_agent.amend_action(current_code, description, state, critique, pre_tasks_info)
+                new_code, invoke = execute_agent.amend_action(code, description, state, critique, pre_tasks_info)
                 critique = ''
-                current_code = new_code
+                code = new_code
                 # Run the current code and check for errors
-                state = execute_agent.execute_action(current_code, invoke, type)
+                state = execute_agent.execute_action(code, invoke, type)
+                result = state.result
+                logging.info(result) 
                 # print(state)
                 # Recheck
                 if state.error == None:
-                    critique, judge, score = execute_agent.judge_action(current_code, description, state, next_action)
+                    critique, judge, score = execute_agent.judge_action(code, description, state, next_action)
                     # The task execution is completed and the loop exits
                     if judge:
                         need_mend = False
@@ -150,10 +155,10 @@ def main():
                 print("I can't Do this Task!!")
                 break
             else: # The task is completed, if code is save the code, args_description, action_description in lib
-                if score >= 7:
-                    execute_agent.store_action(action, current_code)
-        print("Current task execution completed!!!")
-        planning_agent.update_action(action, current_code, state.result, relevant_code, True, type)
+                if score >= 8:
+                    execute_agent.store_action(action, code)
+        print("Current task execution completed!!!")  
+        planning_agent.update_action(action, result, relevant_code, True, type)
         planning_agent.execute_list.remove(action)
 if __name__ == '__main__':
     main()

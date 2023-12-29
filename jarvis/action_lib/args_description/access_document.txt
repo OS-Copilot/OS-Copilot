@@ -1,7 +1,0 @@
-Access the document at the given file path and return its content if it's a file.
-
-        Args:
-            file_path (str): The absolute path to the document to be accessed.
-
-        Returns:
-            str: The content of the document if it's a file, or None if it's not a file.
