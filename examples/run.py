@@ -4,10 +4,6 @@ import logging
 from datasets import load_dataset
 from jarvis.agent.jarvis_agent import JarvisAgent
 
-
-task1 = "Please help me find the GitHub blog of Zhiyong Wu from Shanghai AI Lab. Give me the markdown of the page link, and save the standard Markdown format as wuzhiyong.md in the working directory."
-task2 = "Tell me who is Zhiyong Wu from HKU,please save the detailed answer in wuzhiyong.txt. In addition, you also need to download a photo of Zhiyong Wu from HKU from the Internet to wuzhiyong.jpg.Since there are a lot of people named Zhiyong Wu, you must be looking for the one from Shanghai AI Lab and graduated from HKU."
-query_id = 2
 class GAIALoader:
     def __init__(self, cache_dir=None):
         if cache_dir != None:
@@ -35,9 +31,9 @@ def main():
     parser = argparse.ArgumentParser(description='Inputs')
     parser.add_argument('--action_lib_path', type=str, default='../jarvis/action_lib', help='tool repo path')
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
-    parser.add_argument('--query', type=str, default=task2, help='user query')
+    parser.add_argument('--query', type=str, default=None, help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
-    parser.add_argument('--task_id', type=str, default=None, help='GAIA dataset task_id')
+    parser.add_argument('--task_id', type=str, default="e1fc63a2-da7a-432f-be78-7c4a95598703", help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
     parser.add_argument('--logging_filedir', type=str, default='log', help='GAIA dataset cache dir path')
     args = parser.parse_args()
@@ -45,7 +41,7 @@ def main():
     task_id = args.task_id
     query = args.query
     
-    logging.basicConfig(filename=os.path.join(args.logging_filedir, "{}.log".format(query_id)), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename=os.path.join(args.logging_filedir, "{}.log".format(task_id)), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
     jarvis_agent = JarvisAgent(config_path=args.config_path, action_lib_dir=args.action_lib_path)
     planning_agent = jarvis_agent.planner
@@ -55,13 +51,7 @@ def main():
     if task_id:
         print('Use the task_id {} to get the corresponding question in the GAIA dataset.'.format(task_id))
         data = GAIALoader(args.cache_dir).get_data_by_task_id(task_id)
-        # 获取文件后缀，重命名下载的文件
-        file_extension = os.path.splitext(data['file_name'])[1]
-        raw_file_path = data['file_path']
-        data['file_path'] += file_extension
-        if os.path.exists(raw_file_path):
-            os.rename(raw_file_path, data['file_path'])
-        task = 'Your task : {0}\n You may need to read or operate the following file to accomplish this task: {1}'.format(data['Question'], data['file_path'])
+        task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(data['Question'], data['file_path'])
     elif task_id == None and query != '':
         task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(args.query, args.query_file_path)
     else:
@@ -96,16 +86,17 @@ def main():
         if type == 'QA':
             result = execute_agent.question_and_answer_action(pre_tasks_info, task)
             print(result)
-        elif type == 'API':
-            api_path = execute_agent.extract_API_Path(description)
-            code = execute_agent.api_action(description, api_path, pre_tasks_info)
-            invoke = ''
         else:
-            code, invoke = execute_agent.generate_action(action, description, pre_tasks_info, relevant_code)
-        # Execute python tool class code
-        state = execute_agent.execute_action(code, invoke, type)   
-        result = state.result 
-        logging.info(state.result) 
+            invoke = ''
+            if type == 'API':
+                api_path = execute_agent.extract_API_Path(description)
+                code = execute_agent.api_action(description, api_path, pre_tasks_info)
+            else:
+                code, invoke = execute_agent.generate_action(action, description, pre_tasks_info, relevant_code)
+            # Execute python tool class code
+            state = execute_agent.execute_action(code, invoke, type)   
+            result = state.result 
+        logging.info(result) 
         # Check whether the code runs correctly, if not, amend the code
         if type == 'Code':
             need_mend = False

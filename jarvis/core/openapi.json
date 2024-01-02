@@ -661,7 +661,20 @@
           "query"
         ],
         "title": "QueryItemV2"
-      },     
+      },
+      "TargetPageModel": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "title": "TargetPageModel"
+      },      
       "SQLRequest": {
         "properties": {
           "queries": {
@@ -741,20 +754,8 @@
           "type"
         ],
         "title": "ValidationError"
-      },
-      "TargetPageModel": {
-        "properties": {
-          "url": {
-            "type": "string",
-            "title": "Url"
-          }
-        },
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "title": "TargetPageModel"
       }
+      
     }
   }
 }
