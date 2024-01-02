@@ -96,7 +96,7 @@ def main():
             # Execute python tool class code
             state = execute_agent.execute_action(code, invoke, type)   
             result = state.result 
-            logging.info(result) 
+        logging.info(result) 
         # Check whether the code runs correctly, if not, amend the code
         if type == 'Code':
             need_mend = False
