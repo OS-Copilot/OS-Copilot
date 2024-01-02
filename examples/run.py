@@ -33,7 +33,7 @@ def main():
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
     parser.add_argument('--query', type=str, default=None, help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
-    parser.add_argument('--task_id', type=str, default="6f37996b-2ac7-44b0-8e68-6d28256631b4", help='GAIA dataset task_id')
+    parser.add_argument('--task_id', type=str, default="9318445f-fe6a-4e1b-acbf-c68228c9906a", help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
     parser.add_argument('--logging_filedir', type=str, default='log', help='GAIA dataset cache dir path')
     args = parser.parse_args()
@@ -51,7 +51,7 @@ def main():
     if task_id:
         print('Use the task_id {} to get the corresponding question in the GAIA dataset.'.format(task_id))
         data = GAIALoader(args.cache_dir).get_data_by_task_id(task_id)
-        task = 'This is a QA task, Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(data['Question'], data['file_path'])
+        task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(data['Question'], data['file_path'])
     elif task_id == None and query != '':
         task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(args.query, args.query_file_path)
     else:
