@@ -118,6 +118,7 @@ prompt = {
         8. The solution must enable the code to successfully complete the intended task without errors.
         9. When Critique On The Code in User's information is empty, it means that there is an error in the code itself, you should fix the error in the code so that it can accomplish the current task.
         10. In User's information, 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
+        11. If the file does not exist in the given path, it may be because the given path does not have a file suffix. You can try adding the file suffix directly after the path.
         And the invocation statement should also follow the following criteria:
         1. The __call__ method invocation must be syntactically correct as per Python standards.
         2. Clearly identify any fake or placeholder parameters used in the invocation.
@@ -392,7 +393,6 @@ prompt = {
                 'type' : 'Code'
             }
         }
-
         And you should also follow the following criteria:
         1. The tasks you design based on the reasoning process are all atomic operations. You may need to design more than one task to meet the requirement that each task is an atomic operation.
         2. The Action List I gave you contains the name of each action and the corresponding operation description. These actions are all atomic operations. You can refer to these atomic operations to design new task.
@@ -404,7 +404,6 @@ prompt = {
         8. Please note that the name of a task must be abstract. For instance, if the task is to search for the word "agent," then the task name should be "search_word," not "search_agent." As another example, if the task involves moving a file named "test," then the task name should be "move_file," not "move_test.
         9. Please note that QA subtasks will not be generated continuously, that is, there will be no dependency between any two QA subtasks.
         10. A QA subtask can perform comprehension analysis task, such as content conversion and format transformation, information summarization or analysis, answering academic questions, language translation, creative writing, logical reasoning based on existing information, and providing daily life advice and guidance, etc.
-
         ''',
         '_USER_TASK_REPLAN_PROMPT' : '''
         User's information are as follows:

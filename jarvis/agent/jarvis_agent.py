@@ -219,11 +219,15 @@ class PlanningModule(BaseAgent):
         Creates a action graph from a list of dependencies.
         """
         # generate execte graph
-        for task_name, task_info in decompose_json.items():
-            self.action_node[task_name] = ActionNode(task_name, task_info['description'], task_info['type'])
-            self.action_graph[task_name] = task_info['dependencies']
+        for _, task_info in decompose_json.items():
+            task_name = task_info['name']
+            task_description = task_info['description']
+            task_type = task_info['type']
+            task_dependencies = task_info['dependencies']
+            self.action_node[task_name] = ActionNode(task_name, task_description, task_type)
+            self.action_graph[task_name] = task_dependencies
             for pre_action in self.action_graph[task_name]:
-                self.action_node[pre_action].next_action['task_name'] = task_info['description']
+                self.action_node[pre_action].next_action[task_name] = task_description
 
     
     def add_new_action(self, new_task_json, current_task):
@@ -231,11 +235,15 @@ class PlanningModule(BaseAgent):
         Creates a action graph from a list of dependencies.
         """
         # update execte graph
-        for task_name, task_info in new_task_json.items():
-            self.action_node[task_name] = ActionNode(task_name, task_info['description'], task_info['type'])
-            self.action_graph[task_name] = task_info['dependencies']
+        for _, task_info in new_task_json.items():
+            task_name = task_info['name']
+            task_description = task_info['description']
+            task_type = task_info['type']
+            task_dependencies = task_info['dependencies']
+            self.action_node[task_name] = ActionNode(task_name, task_description, task_type)
+            self.action_graph[task_name] = task_dependencies
             for pre_action in self.action_graph[task_name]:
-                self.action_node[pre_action].next_action['task_name'] = task_info['description']            
+                self.action_node[pre_action].next_action[task_name] = task_description           
         last_new_task = list(new_task_json.keys())[-1]
         self.action_graph[current_task].append(last_new_task)
 
