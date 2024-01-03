@@ -186,13 +186,12 @@ class PlanningModule(BaseAgent):
         """
         Send replan task prompt to LLM and get task list.
         """
-        sys_prompt = self.prompt['_SYSTEM_TASK_REPLAN_PROMPT'].format(
-            current_task = current_task,
-            current_task_description = current_task_description
-        )
+        sys_prompt = self.prompt['_SYSTEM_TASK_REPLAN_PROMPT']
         user_prompt = self.prompt['_USER_TASK_REPLAN_PROMPT'].format(
+            current_task = current_task,
+            current_task_description = current_task_description,
             system_version=self.system_version,
-            reasoing = reasoning,
+            reasoning = reasoning,
             action_list = action_list,
             working_dir = self.environment.working_dir,
             files_and_folders = files_and_folders
@@ -448,6 +447,7 @@ class ExecutionModule(BaseAgent):
         state = self.environment.step(code)
         print("************************<state>**************************")
         print(state)
+        # print("error: " + state.error + "\nresult: " + state.result + "\npwd: " + state.pwd + "\nls: " + state.ls)
         print("************************</state>*************************") 
         return state
 

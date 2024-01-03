@@ -33,7 +33,7 @@ def main():
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
     parser.add_argument('--query', type=str, default=None, help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
-    parser.add_argument('--task_id', type=str, default="a3fbeb63-0e8c-4a11-bff6-0e3b484c3e9c", help='GAIA dataset task_id')
+    parser.add_argument('--task_id', type=str, default="cffe0e32-c9a6-4c52-9877-78ceb4aaa9fb", help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
     parser.add_argument('--logging_filedir', type=str, default='log', help='GAIA dataset cache dir path')
     args = parser.parse_args()
@@ -51,7 +51,7 @@ def main():
     if task_id:
         print('Use the task_id {} to get the corresponding question in the GAIA dataset.'.format(task_id))
         data = GAIALoader(args.cache_dir).get_data_by_task_id(task_id)
-        task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(data['Question'], data['file_path'])
+        task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}.{2}'.format(data['Question'], data['file_path'], data['file_name'].split('.')[-1])
     elif task_id == None and query != '':
         task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(args.query, args.query_file_path)
     else:
@@ -97,7 +97,7 @@ def main():
             # Execute python tool class code
             state = execute_agent.execute_action(code, invoke, type)   
             result = state.result 
-        logging.info(result) 
+        logging.info(state) 
         # Check whether the code runs correctly, if not, amend the code
         if type == 'Code':
             need_mend = False
@@ -129,7 +129,7 @@ def main():
                 # Run the current code and check for errors
                 state = execute_agent.execute_action(code, invoke, type)
                 result = state.result
-                logging.info(result) 
+                logging.info(state) 
                 # print(state)
                 # Recheck
                 if state.error == None:

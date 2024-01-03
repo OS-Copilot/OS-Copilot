@@ -1,37 +1,46 @@
 from jarvis.action.base_action import BaseAction
-import os
-import glob
+import math
 
-class identify_ppt_file(BaseAction):
+class calculate_towers(BaseAction):
     def __init__(self):
-        self._description = "Locate the PowerPoint file in the given path."
+        self._description = "Calculate the minimum number of cell phone towers needed to cover all houses."
 
-    def __call__(self, search_path, *args, **kwargs):
+    def __call__(self, house_positions, radius=4, *args, **kwargs):
         """
-        Locate the PowerPoint file in the given path.
+        Calculate the minimum number of cell phone towers needed to cover all houses, given that each tower covers a certain radius.
 
         Args:
-            search_path (str): The path where PowerPoint files will be searched.
+            house_positions (dict): A dictionary with keys 'left' and 'right' containing lists of house positions on each side of the road.
+            radius (int): The radius (in miles) that each tower covers.
 
         Returns:
-            list: The paths of PowerPoint files found in the search path.
+            int: The minimum number of towers needed to cover all houses.
         """
-        # List to store the paths of PowerPoint files
-        ppt_files = []
-        print(os.path.join(search_path, '*.ppt'))
-        # Check if the search path exists
-        if not os.path.exists(search_path):
-            print(f"The search path {search_path} does not exist.")
-            return ppt_files
+        def min_towers_for_side(houses, radius):
+            houses.sort()
+            towers = 0
+            i = 0
+            while i < len(houses):
+                tower_loc = houses[i] + radius
+                while i < len(houses) and houses[i] <= tower_loc + radius:
+                    i += 1
+                towers += 1
+            return towers
 
-        # Search for PowerPoint files with .ppt and .pptx extensions
-        ppt_files.extend(glob.glob(os.path.join(search_path, '*.ppt')))
-        ppt_files.extend(glob.glob(os.path.join(search_path, '*.pptx')))
+        left_houses = house_positions.get('left', [])
+        right_houses = house_positions.get('right', [])
+        
+        left_towers = min_towers_for_side(left_houses, radius)
+        right_towers = min_towers_for_side(right_houses, radius)
+        
+        total_towers = left_towers + right_towers
+        
+        print(f"Task execution complete. Minimum number of towers needed: {total_towers}")
+        return total_towers
 
-        # Print the task execution completion message
-        print(f"Task execution complete. Found {len(ppt_files)} PowerPoint files.")
+# Example of how to use the class (this should be in the comments):
+# tower_calculator = calculate_towers()
+# house_positions = {'left': [0, 8, 20], 'right': [0, 11, 24, 29]}
+# result = tower_calculator(house_positions=house_positions)
 
-        # Return the list of PowerPoint files
-        return ppt_files
-
-print(identify_ppt_file()(search_path='/home/heroding/.cache/huggingface/datasets/downloads/1f26582c64d2b6df0030f51c5e3a01a51014fca32537d95112fdda518e0861c9'))
+calculate_towers()(house_positions={'left': [7, 15, 27], 'right': [0, 11, 24, 29]})

@@ -35,3 +35,9 @@ class EnvState:
     error: Optional[str] = None
     pwd: Optional[str] = None
     ls: Optional[str] = None
+
+    def __str__(self):
+        return (f"Result: {self.result}\n"
+                f"Error: {self.error}\n"
+                f"PWD: {self.pwd}\n"
+                f"LS: {self.ls}")    

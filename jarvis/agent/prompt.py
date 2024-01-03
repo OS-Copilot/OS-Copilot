@@ -118,7 +118,6 @@ prompt = {
         8. The solution must enable the code to successfully complete the intended task without errors.
         9. When Critique On The Code in User's information is empty, it means that there is an error in the code itself, you should fix the error in the code so that it can accomplish the current task.
         10. In User's information, 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
-        11. If the file does not exist in the given path, it may be because the given path does not have a file suffix. You can try adding the file suffix directly after the path.
         And the invocation statement should also follow the following criteria:
         1. The __call__ method invocation must be syntactically correct as per Python standards.
         2. Clearly identify any fake or placeholder parameters used in the invocation.
@@ -240,7 +239,7 @@ prompt = {
         7. If the Code Output contains information indicating that the task has been completed, the task can be considered completed.    
         8. In User's information, 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
         9. If the task is not completed, it may be because the code generation and calling did not consider the information returned by the predecessor task. This information may be used as input parameters of the __call__ method.
-        10. 'Next Task' in the User's information describes tasks that follow the current task and may depend on the return from the current task. If necessary, you should check the current task's code to ensure it returns the information required for these subsequent tasks. If it does not, then the current task can be considered incomplete.
+        10. 'Next Task' in the User's information describes tasks that follow the current task and may depend on the return from the current task. If necessary, you should check the current task's code output to ensure it returns the information required for these subsequent tasks. If it does not, then the current task can be considered incomplete.
         Now you will be provided with the following information, please give the result JSON according to these information:
         ''',
         '_USER_TASK_JUDGE_PROMPT' : '''
@@ -379,7 +378,7 @@ prompt = {
         # Task replan prompt in os
         '_SYSTEM_TASK_REPLAN_PROMPT' : '''
         You are an expert at designing new tasks based on the results of your reasoning.
-        When I was executing the task {current_task}: {current_task_description}, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.     
+        When I was executing the code of current task, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.     
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Design new tasks based on the reasoning process of current task errors. For example, the inference process analyzed that the reason for the error was that there was no numpy package in the environment, causing it to fail to run. Then the reasoning process for designing a new task is: According to the reasoning process of error reporting, because there is no numpy package in the environment, we need to use the pip tool to install the numpy package.
         2. There are three types of subtasks, the first is a task that requires the use of APIs to access internet resources to obtain information, such as retrieving information from the Internet, this type of task is called 'API subtask', and the second is a task that does not require the use of API tools but need to write code to complete, which is called 'Code subtask'. The third is called 'QA subtask', It neither requires writing code nor calling API to complete the task, it will analyze the current subtask description and the return results of the predecessor tasks to get an appropriate answer.
@@ -407,6 +406,8 @@ prompt = {
         ''',
         '_USER_TASK_REPLAN_PROMPT' : '''
         User's information are as follows:
+        Current Task: {current_task}
+        Current Task Description: {current_task_description}
         System Version: {system_version}
         reasoning: {reasoning}
         Action List: {action_list}
