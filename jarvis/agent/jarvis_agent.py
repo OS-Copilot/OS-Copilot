@@ -541,11 +541,11 @@ class ExecutionModule(BaseAgent):
         code = self.extract_python_code(response)
         return code 
     
-    def question_and_answer_action(self, context, question):
+    def question_and_answer_action(self, context, question, current_question):
         """
         Answer questions based on the information found.
         """
-        response = self.question_and_answer_format_message(context, question)
+        response = self.question_and_answer_format_message(context, question, current_question)
         return response
 
     def skill_create_and_invoke_format_message(self, task_name, task_description, pre_tasks_info, relevant_code):
@@ -603,14 +603,15 @@ class ExecutionModule(BaseAgent):
         ]
         return self.llm.chat(self.message)        
     
-    def question_and_answer_format_message(self, context, question):
+    def question_and_answer_format_message(self, context, question, current_question):
         """
         Send QA message to LLM.
         """
         sys_prompt = self.prompt['_SYSTEM_QA_PROMPT']
         user_prompt = self.prompt['_USER_QA_PROMPT'].format(
             context = context,
-            question = question
+            question = question,
+            current_question = current_question
         )
         self.message = [
             {"role": "system", "content": sys_prompt},

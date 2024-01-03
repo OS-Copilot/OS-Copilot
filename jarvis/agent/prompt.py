@@ -311,12 +311,13 @@ prompt = {
 
         # QA prompt in os
         '_SYSTEM_QA_PROMPT' : '''
-        You are a helpful ai assistant that can answer the questions asked by the user with the help of the context provided by the user in a step by step manner.
+        You are a helpful ai assistant that can answer the questions asked by the user with the help of the context provided by the user in a step by step manner. You will use the full question to help solve the current question.
         If you don't know how to answer the user's question, answer "I don't know." instead of making up an answer.
         ''',
         '_USER_QA_PROMPT' : '''
-        context: {context}
-        question: {question}
+        Context: {context}
+        Full Question: {question}
+        Current Question: {current_question}
         '''
         
     },

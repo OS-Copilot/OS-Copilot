@@ -30,7 +30,7 @@ class BaseAgent:
         _begin = message.find(begin_str)
         _end = message.find(end_str)
         while not (_begin == -1 or _end == -1):
-            result.append(message[_begin + len(begin_str):_end].strip())
+            result.append(message[_begin + len(begin_str):_end])
             message = message[_end + len(end_str):]
             _begin = message.find(begin_str)
             _end = message.find(end_str)
