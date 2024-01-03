@@ -237,7 +237,7 @@ prompt = {
         7. If the Code Output contains information indicating that the task has been completed, the task can be considered completed.    
         8. In User's information, 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
         9. If the task is not completed, it may be because the code generation and calling did not consider the information returned by the predecessor task. This information may be used as input parameters of the __call__ method.
-        10. 'Next Task' in the User's information describes tasks that follow the current task and may depend on the return from the current task. If necessary, you should check the current task's code to ensure it returns the information required for these subsequent tasks. If it does not, then the current task can be considered incomplete.
+        10. 'Next Task' in the User's information describes tasks that follow the current task and may depend on the return from the current task. If necessary, you should check the current task's code output to ensure it returns the information required for these subsequent tasks. If it does not, then the current task can be considered incomplete.
         Now you will be provided with the following information, please give the result JSON according to these information:
         ''',
         '_USER_TASK_JUDGE_PROMPT' : '''
@@ -309,12 +309,13 @@ prompt = {
 
         # QA prompt in os
         '_SYSTEM_QA_PROMPT' : '''
-        You are a helpful ai assistant that can answer the questions asked by the user with the help of the context provided by the user in a step by step manner.
+        You are a helpful ai assistant that can answer the questions asked by the user with the help of the context provided by the user in a step by step manner. You will use the full question to help solve the current question.
         If you don't know how to answer the user's question, answer "I don't know." instead of making up an answer.
         ''',
         '_USER_QA_PROMPT' : '''
-        context: {context}
-        question: {question}
+        Context: {context}
+        Full Question: {question}
+        Current Question: {current_question}
         '''
         
     },
@@ -376,7 +377,7 @@ prompt = {
         # Task replan prompt in os
         '_SYSTEM_TASK_REPLAN_PROMPT' : '''
         You are an expert at designing new tasks based on the results of your reasoning.
-        When I was executing the task {current_task}: {current_task_description}, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.     
+        When I was executing the code of current task, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.     
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Design new tasks based on the reasoning process of current task errors. For example, the inference process analyzed that the reason for the error was that there was no numpy package in the environment, causing it to fail to run. Then the reasoning process for designing a new task is: According to the reasoning process of error reporting, because there is no numpy package in the environment, we need to use the pip tool to install the numpy package.
         2. There are three types of subtasks, the first is a task that requires the use of APIs to access internet resources to obtain information, such as retrieving information from the Internet, this type of task is called 'API subtask', and the second is a task that does not require the use of API tools but need to write code to complete, which is called 'Code subtask'. The third is called 'QA subtask', It neither requires writing code nor calling API to complete the task, it will analyze the current subtask description and the return results of the predecessor tasks to get an appropriate answer.
@@ -390,7 +391,6 @@ prompt = {
                 'type' : 'Code'
             }
         }
-
         And you should also follow the following criteria:
         1. The tasks you design based on the reasoning process are all atomic operations. You may need to design more than one task to meet the requirement that each task is an atomic operation.
         2. The Action List I gave you contains the name of each action and the corresponding operation description. These actions are all atomic operations. You can refer to these atomic operations to design new task.
@@ -402,10 +402,11 @@ prompt = {
         8. Please note that the name of a task must be abstract. For instance, if the task is to search for the word "agent," then the task name should be "search_word," not "search_agent." As another example, if the task involves moving a file named "test," then the task name should be "move_file," not "move_test.
         9. Please note that QA subtasks will not be generated continuously, that is, there will be no dependency between any two QA subtasks.
         10. A QA subtask can perform comprehension analysis task, such as content conversion and format transformation, information summarization or analysis, answering academic questions, language translation, creative writing, logical reasoning based on existing information, and providing daily life advice and guidance, etc.
-
         ''',
         '_USER_TASK_REPLAN_PROMPT' : '''
         User's information are as follows:
+        Current Task: {current_task}
+        Current Task Description: {current_task_description}
         System Version: {system_version}
         reasoning: {reasoning}
         Action List: {action_list}

@@ -186,13 +186,12 @@ class PlanningModule(BaseAgent):
         """
         Send replan task prompt to LLM and get task list.
         """
-        sys_prompt = self.prompt['_SYSTEM_TASK_REPLAN_PROMPT'].format(
-            current_task = current_task,
-            current_task_description = current_task_description
-        )
+        sys_prompt = self.prompt['_SYSTEM_TASK_REPLAN_PROMPT']
         user_prompt = self.prompt['_USER_TASK_REPLAN_PROMPT'].format(
+            current_task = current_task,
+            current_task_description = current_task_description,
             system_version=self.system_version,
-            reasoing = reasoning,
+            reasoning = reasoning,
             action_list = action_list,
             working_dir = self.environment.working_dir,
             files_and_folders = files_and_folders
@@ -219,11 +218,15 @@ class PlanningModule(BaseAgent):
         Creates a action graph from a list of dependencies.
         """
         # generate execte graph
-        for task_name, task_info in decompose_json.items():
-            self.action_node[task_name] = ActionNode(task_name, task_info['description'], task_info['type'])
-            self.action_graph[task_name] = task_info['dependencies']
+        for _, task_info in decompose_json.items():
+            task_name = task_info['name']
+            task_description = task_info['description']
+            task_type = task_info['type']
+            task_dependencies = task_info['dependencies']
+            self.action_node[task_name] = ActionNode(task_name, task_description, task_type)
+            self.action_graph[task_name] = task_dependencies
             for pre_action in self.action_graph[task_name]:
-                self.action_node[pre_action].next_action['task_name'] = task_info['description']
+                self.action_node[pre_action].next_action[task_name] = task_description
 
     
     def add_new_action(self, new_task_json, current_task):
@@ -231,11 +234,15 @@ class PlanningModule(BaseAgent):
         Creates a action graph from a list of dependencies.
         """
         # update execte graph
-        for task_name, task_info in new_task_json.items():
-            self.action_node[task_name] = ActionNode(task_name, task_info['description'], task_info['type'])
-            self.action_graph[task_name] = task_info['dependencies']
+        for _, task_info in new_task_json.items():
+            task_name = task_info['name']
+            task_description = task_info['description']
+            task_type = task_info['type']
+            task_dependencies = task_info['dependencies']
+            self.action_node[task_name] = ActionNode(task_name, task_description, task_type)
+            self.action_graph[task_name] = task_dependencies
             for pre_action in self.action_graph[task_name]:
-                self.action_node[pre_action].next_action['task_name'] = task_info['description']            
+                self.action_node[pre_action].next_action[task_name] = task_description           
         last_new_task = list(new_task_json.keys())[-1]
         self.action_graph[current_task].append(last_new_task)
 
@@ -440,6 +447,7 @@ class ExecutionModule(BaseAgent):
         state = self.environment.step(code)
         print("************************<state>**************************")
         print(state)
+        # print("error: " + state.error + "\nresult: " + state.result + "\npwd: " + state.pwd + "\nls: " + state.ls)
         print("************************</state>*************************") 
         return state
 
@@ -533,11 +541,11 @@ class ExecutionModule(BaseAgent):
         code = self.extract_python_code(response)
         return code 
     
-    def question_and_answer_action(self, context, question):
+    def question_and_answer_action(self, context, question, current_question):
         """
         Answer questions based on the information found.
         """
-        response = self.question_and_answer_format_message(context, question)
+        response = self.question_and_answer_format_message(context, question, current_question)
         return response
 
     def skill_create_and_invoke_format_message(self, task_name, task_description, pre_tasks_info, relevant_code):
@@ -595,14 +603,15 @@ class ExecutionModule(BaseAgent):
         ]
         return self.llm.chat(self.message)        
     
-    def question_and_answer_format_message(self, context, question):
+    def question_and_answer_format_message(self, context, question, current_question):
         """
         Send QA message to LLM.
         """
         sys_prompt = self.prompt['_SYSTEM_QA_PROMPT']
         user_prompt = self.prompt['_USER_QA_PROMPT'].format(
             context = context,
-            question = question
+            question = question,
+            current_question = current_question
         )
         self.message = [
             {"role": "system", "content": sys_prompt},
