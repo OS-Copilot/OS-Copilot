@@ -33,7 +33,7 @@ def main():
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
     parser.add_argument('--query', type=str, default=None, help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
-    parser.add_argument('--task_id', type=str, default="e1fc63a2-da7a-432f-be78-7c4a95598703", help='GAIA dataset task_id')
+    parser.add_argument('--task_id', type=str, default="5cfb274c-0207-4aa7-9575-6ac0bd95d9b2", help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
     parser.add_argument('--logging_filedir', type=str, default='log', help='GAIA dataset cache dir path')
     args = parser.parse_args()
@@ -84,7 +84,7 @@ def main():
             relevant_code = retrieve_agent.retrieve_action_code_pair(retrieve_name)
         # task execute step
         if type == 'QA':
-            result = execute_agent.question_and_answer_action(pre_tasks_info, task)
+            result = execute_agent.question_and_answer_action(pre_tasks_info, description)
             print(result)
         else:
             invoke = ''
