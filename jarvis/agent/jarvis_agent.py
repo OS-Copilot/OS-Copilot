@@ -113,6 +113,7 @@ class PlanningModule(BaseAgent):
         self.system_version = system_version
         self.prompt = prompt
         # Action nodes, action graph information and action topology sorting
+        self.action_num = 0
         self.action_node = {}
         self.action_graph = defaultdict(list)
         self.execute_list = []
@@ -219,6 +220,7 @@ class PlanningModule(BaseAgent):
         """
         # generate execte graph
         for _, task_info in decompose_json.items():
+            self.action_num += 1
             task_name = task_info['name']
             task_description = task_info['description']
             task_type = task_info['type']
@@ -235,6 +237,7 @@ class PlanningModule(BaseAgent):
         """
         # update execte graph
         for _, task_info in new_task_json.items():
+            self.action_num += 1
             task_name = task_info['name']
             task_description = task_info['description']
             task_type = task_info['type']
@@ -541,7 +544,7 @@ class ExecutionModule(BaseAgent):
         code = self.extract_python_code(response)
         return code 
     
-    def question_and_answer_action(self, context, question, current_question):
+    def question_and_answer_action(self, context, question, current_question=None):
         """
         Answer questions based on the information found.
         """

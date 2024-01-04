@@ -33,7 +33,7 @@ def main():
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
     parser.add_argument('--query', type=str, default=None, help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
-    parser.add_argument('--task_id', type=str, default="a3fbeb63-0e8c-4a11-bff6-0e3b484c3e9c", help='GAIA dataset task_id')
+    parser.add_argument('--task_id', type=str, default="c714ab3a-da30-4603-bacd-d008800188b9", help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
     parser.add_argument('--logging_filedir', type=str, default='log', help='GAIA dataset cache dir path')
     args = parser.parse_args()
@@ -71,7 +71,7 @@ def main():
         action = planning_agent.execute_list[0]
         action_node = planning_agent.action_node[action]
         description = action_node.description
-        logging.info("The current subtask is:{subtask}".format(subtask=description))
+        logging.info("The current subtask is: {subtask}".format(subtask=description))
         code = ''
         # The return value of the current task
         result = ''
@@ -85,7 +85,10 @@ def main():
             relevant_code = retrieve_agent.retrieve_action_code_pair(retrieve_name)
         # task execute step
         if type == 'QA':
-            result = execute_agent.question_and_answer_action(pre_tasks_info, task, description)
+            if planning_agent.action_num == 1:
+                result = execute_agent.question_and_answer_action(pre_tasks_info, task)
+            else:
+                result = execute_agent.question_and_answer_action(pre_tasks_info, task, description)
             print(result)
             logging.info(result)
         else:
