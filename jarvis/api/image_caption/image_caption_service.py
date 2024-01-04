@@ -21,9 +21,9 @@ async def image_search(item: CaptionQueryItem):
         if(item.query == None):
             item.query = "What's in this image?"
         if(item.url == None):
-            return "Invalid picture url"
+            return {"error":"Invalid picture url"}
         caption = image_caption_api.caption(url=item.url,query=item.query)
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
-    return caption
+    return {"caption":caption}
 
