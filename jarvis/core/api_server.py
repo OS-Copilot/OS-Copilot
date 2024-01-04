@@ -53,11 +53,7 @@ services = {
     "weather": weather_router,
     "calendar": calendar_router,
     "gmail": gmail_router,
-<<<<<<< HEAD
-    "markdown": markdown_router,
-=======
     "markdown": markdown_router
->>>>>>> e40e1b5ed1a1e36395d5da5f5a83923837c0864e
 
 }
 
