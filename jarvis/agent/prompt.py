@@ -49,6 +49,7 @@ prompt = {
         6. 'Working Directory' in User's information represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
         7. The code comments include an example of a class invocation. You can refer to this example, but you should not directly copy it. Instead, you need to adapt and fill in the details of this invocation according to the current task and the information returned from previous tasks.
         8. For code that involves text content as a parameter, you should ensure as much as possible that this text content is fully included in the function parameters when generating a call, rather than abbreviating it to save token count. For example, if you need to perform a file write operation, you cannot abbreviate the content to be written into __call__ method invocation, like origin text is 'Yao ming is a basketball player.', you can not write 'Yao ming is ...'.     
+        9. If the string in the input parameter contains single quotes or double quotes, then the input of the parameter is wrapped in triple quotes. The following is an example of an invocation statement: <invoke>Demo()("""xx"x"xxx""" )</invoke>
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information.         
         ''',
         '_USER_SKILL_CREATE_AND_INVOKE_PROMPT': '''
@@ -311,7 +312,7 @@ prompt = {
 
         # QA prompt in os
         '_SYSTEM_QA_PROMPT' : '''
-        You are a helpful ai assistant that can answer the questions asked by the user with the help of the context provided by the user in a step by step manner. You will use the full question to help solve the current question.
+        You are a helpful ai assistant that can answer the question with the help of the context provided by the user in a step by step manner. The full question may help you to solve the current question.
         If you don't know how to answer the user's question, answer "I don't know." instead of making up an answer.
         ''',
         '_USER_QA_PROMPT' : '''
@@ -368,6 +369,8 @@ prompt = {
         18. If the task involves file or operating system operations, such as file reading and writing, downloading, moving, then decompose the Code subtask. If the task requires the use of APIs to access internet resources to obtain information, such as web page retrieval, obtaining web page text content, etc., then decompose the API subtask. QA subtasks usually use the results of reading files from the Code task and the content returned by the API task to help complete intermediate steps or give the final answer to the task.
         19. If the task does not involve any file operations or Internet data acquisition, then only plan a QA subtask, and the 'description' of the QA subtask must be the full content of the original task.
         20. If the task is to use the content in a local file to answer question or retrieve a certain word or content, then you only need to plan a Code subtask to read the text content in the file, and then plan a QA subtask to analyze the text content returned by the Code subtask to answer the question.
+        21. If the task is to read and analyze the content of a PowerPoint presentation, it can be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the text content of the PowerPoint slides into a list. The second is a QA sub-task, which involves analyzing the text information extracted from each slide. 
+        22. Once the task involves obtaining knowledge such as books, articles, character information, etc., you need to plan API tasks to obtain this knowledge from the Internet.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
