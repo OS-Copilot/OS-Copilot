@@ -15,11 +15,11 @@ class AudioTextQueryItem(BaseModel):
 
 
 @router.post("/tools/audio2text")
-async def image_search(item: AudioTextQueryItem = Depends()):
+async def audio2text(item: AudioTextQueryItem = Depends()):
     try:
-         # 读取上传的文件
-        contents = await item.file.read()
-        caption = whisper_api.caption(audio_file=contents)
+        #  # 读取上传的文件
+        # contents = await item.file.read()
+        caption = whisper_api.caption(audio_file=item.file)
         return {"text": caption}
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))

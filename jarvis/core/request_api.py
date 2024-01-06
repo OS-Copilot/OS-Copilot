@@ -5,7 +5,7 @@ headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWe
 # url="http://101.132.188.137:8079/test?q=1"
 # url="http://101.132.188.137:8079/tools/bing/load_pagev2"
 # url="http://192.168.1.102:8079/tools/bing/load_pagev2"
-url="http://43.159.144.130:8079/tools/image_caption"
+url="http://43.159.144.130:8079/tools/audio2text"
 # param = {
 #   # 'url': 'https://blog.csdn.net/sjxgghg/article/details/134312033',
 #   # 'query': '如何解决这个bug?',
@@ -19,8 +19,7 @@ url="http://43.159.144.130:8079/tools/image_caption"
 #   'url':'https://en.wikipedia.org/wiki/OpenAI'
 # }
 
-files = {'image_file': open("birds.jpg", "rb")}
-
+files = {'file': open("test.mp3", "rb")}
 res = requests.post(url,
                    headers=headers,
                    files=files,
