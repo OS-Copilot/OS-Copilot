@@ -76,15 +76,22 @@ class ToolAgent():
         elif "post" in api_path_doc:
             findptr = api_path_doc["post"]
         api_params_schema_ref = ""
+        # json格式
         if (("requestBody" in findptr) and 
         ("content" in findptr["requestBody"]) and 
         ("application/json" in findptr["requestBody"]["content"]) and 
         ("schema" in findptr["requestBody"]["content"]["application/json"]) and 
         ("$ref" in findptr["requestBody"]["content"]["application/json"]["schema"])):
             api_params_schema_ref = findptr["requestBody"]["content"]["application/json"]["schema"]["$ref"]
+        elif (("requestBody" in findptr) and 
+        ("content" in findptr["requestBody"]) and 
+        ("multipart/form-data" in findptr["requestBody"]["content"]) and 
+        ("schema" in findptr["requestBody"]["content"]["multipart/form-data"]) and 
+        ("allOf" in findptr["requestBody"]["content"]["multipart/form-data"]["schema"]) and 
+        ("$ref" in findptr["requestBody"]["content"]["multipart/form-data"]["schema"]["allOf"][0])):
+            api_params_schema_ref = findptr["requestBody"]["content"]["multipart/form-data"]["schema"]["allOf"][0]["$ref"]
         if api_params_schema_ref != None and api_params_schema_ref != "":
             curr_api_doc["components"]["schemas"][api_params_schema_ref.split('/')[-1]] = self.open_api_doc["components"]["schemas"][api_params_schema_ref.split('/')[-1]]
-            
         return curr_api_doc
     def extract_python_code(self, response):
         python_code = ""
@@ -103,7 +110,9 @@ class ToolAgent():
         return api_result
 
         
-# agent = ToolAgent("../../examples/config.json","../core/openapi.json")
+agent = ToolAgent("../../examples/config.json","../core/openapi.json")
+res = agent.generate_openapi_doc("/tools/image_caption")
+print(res)
 # code_text = agent.generate_call_api_code("use /tools/bing/searchv2 tool to search How many studio albums were published by Mercedes Sosa between 2000 and 2009 (included)? You can use the latest 2022 version of english wikipedia.","/tools/bing/searchv2")
 # code = agent.extract_python_code(code_text)
 # print(code)

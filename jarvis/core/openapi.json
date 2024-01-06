@@ -429,18 +429,57 @@
       }
     },
     "/tools/image_caption": {
-      "get": {
-        "summary": "You don't have eyes, so if you want to know what the picture is about, you have to use the Image Caption tool, who converts the picture into natural language text that you can understand.For local images you want to understand, you need to convert them to the base64 url format",
-        "operationId": "image_search_tools_image_caption_get",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CaptionQueryItem"
-              }
+      "post": {
+        "summary": "You don't have eyes, so if you want to know what the picture is about, you have to use the Image Caption tool, who converts the picture into natural language text that you can understand.For local images you want to understand, you need to only give the image_file without url",
+        "operationId": "image_search_tools_image_caption_post",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "What's in this image?",
+              "title": "Query"
             }
           },
-          "required": true
+          {
+            "name": "url",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Url"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Body_image_search_tools_image_caption_post"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
         },
         "responses": {
           "200": {
@@ -710,6 +749,24 @@
         ],
         "title": "QueryItem"
       },
+      "Body_image_search_tools_image_caption_post": {
+        "properties": {
+          "image_file": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "binary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image File"
+          }
+        },
+        "type": "object",
+        "title": "Body_image_search_tools_image_caption_post"
+      },
       "AudioTextQueryItem": {
         "properties": {
           "file": {
@@ -723,30 +780,6 @@
           "file"
         ],
         "title": "AudioTextQueryItem"
-      },"CaptionQueryItem": {
-        "properties": {
-          "query": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Query",
-            "default": "What's in this image?"
-          },
-          "url": {
-            "type": "string",
-            "title": "Url"
-          }
-        },
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "title": "CaptionQueryItem"
       },
       "QueryItemV2": {
         "properties": {
