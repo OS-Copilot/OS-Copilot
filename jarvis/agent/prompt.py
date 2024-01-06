@@ -318,6 +318,8 @@ prompt = {
         '_SYSTEM_QA_PROMPT' : '''
         You are a helpful ai assistant that can answer the question with the help of the context provided by the user in a step by step manner. The full question may help you to solve the current question.
         If you don't know how to answer the user's question, answer "I don't know." instead of making up an answer.
+        And you should also follow the following criteria:
+        1. Pay attention to task involving calculations. Please make sure not to make mistakes in calculations.
         ''',
         '_USER_QA_PROMPT' : '''
         Context: {context}
@@ -373,8 +375,9 @@ prompt = {
         18. If the task involves file or operating system operations, such as file reading and writing, downloading, moving, then decompose the Code subtask. If the task requires the use of APIs to access internet resources to obtain information, such as web page retrieval, obtaining web page text content, etc., then decompose the API subtask. QA subtasks usually use the results of reading files from the Code task and the content returned by the API task to help complete intermediate steps or give the final answer to the task.
         19. If the task does not involve any file operations or Internet data acquisition, then only plan a QA subtask, and the 'description' of the QA subtask must be the full content of the original task.
         20. If the task is to use the content in a local file to answer question or retrieve a certain word or content, then you only need to plan a Code subtask to read the text content in the file, and then plan a QA subtask to analyze the text content returned by the Code subtask to answer the question.
-        21. If the task is to read and analyze the content of a PowerPoint presentation, it can be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the text content of the PowerPoint slides into a list. The second is a QA sub-task, which involves analyzing the text information extracted from each slide. 
-        22. Once the task involves obtaining knowledge such as books, articles, character information, etc., you need to plan API tasks to obtain this knowledge from the Internet.
+        21. If the task is to read and analyze the content of a PowerPoint presentation, it can be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the text content of the PowerPoint slides into a list. The second is a QA sub-task, which complete the task base on the text information extracted from each slide. 
+        22. If the task involves calculation of local Excel content, it can be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the text content of the excel file. The second is a API sub-task, which uses math API tool to accomplish this task.
+        23. Once the task involves obtaining knowledge such as books, articles, character information, etc., you need to plan API tasks to obtain this knowledge from the Internet.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
