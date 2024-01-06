@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, File, UploadFile
+from fastapi import APIRouter, HTTPException, File, UploadFile,Depends
 from pydantic import BaseModel,Field
 from typing import Optional
 from .audio2text import Audio2TextTool
@@ -14,8 +14,8 @@ class AudioTextQueryItem(BaseModel):
 
 
 
-@router.get("/tools/audio2text")
-async def image_search(item: AudioTextQueryItem):
+@router.post("/tools/audio2text")
+async def image_search(item: AudioTextQueryItem = Depends()):
     try:
          # 读取上传的文件
         contents = await item.file.read()

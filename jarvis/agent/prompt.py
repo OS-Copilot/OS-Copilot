@@ -303,7 +303,8 @@ prompt = {
             :param api_path: the path of the API
             :param method: get/post
             :param params: the parameters of the API, can be None
-            :param content_type: the content type of the API, e.g., application/json, can be None
+            :param files: files to be uploaded, can be None
+            :param content_type: the content_type of api, e.g., application/json, multipart/form-data, can be None
             :return: the response from the API
             """
         Please begin your code completion:
