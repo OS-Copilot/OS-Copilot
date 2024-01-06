@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2024-01-02 16:53:04,954 - INFO - Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
 2024-01-02 16:53:12,031 - WARNING - Found cached dataset gaia (/home/heroding/.cache/huggingface/datasets/gaia-benchmark___gaia/2023_level1/0.0.1/ec492fe4320ee795b1aed6bb46229c5f693226b0f1316347501c24b4baeee005)
 2024-01-02 16:53:13,539 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
@@ -179,3 +180,9 @@ Detailed Explanation:
   "score": 5
 }
 ```
+=======
+2024-01-03 17:51:28,405 - INFO - Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2024-01-03 17:51:35,731 - INFO - Your task is: As a comma separated list with no whitespace, using the provided image provide all the fractions that use / as the fraction line and the answers to the sample problems. Order the list by the order in which the fractions appear.
+The path of the files you need to use(if exists): /storage/hf-datasets-cache/medium/datasets/60530074150638-config-parquet-and-info-gaia-benchmark-GAIA-6a4b2225/downloads/2105d7660150b62c9b52b778082c3ba8bd69ecc463e61343dbf0f6e79c96294a.png
+2024-01-03 17:51:37,301 - INFO - HTTP Request: POST https://api.openai.com/v1/embeddings "HTTP/1.1 200 OK"
+>>>>>>> ae93c44f5f82b3c56dd092755e973089ae754d61

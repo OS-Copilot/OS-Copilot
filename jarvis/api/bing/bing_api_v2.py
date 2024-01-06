@@ -24,7 +24,7 @@ class BingAPIV2:
     def __init__(self) -> None:
         self.search_engine = BingSearchAPIWrapper(search_kwargs={'mkt': 'en-us','safeSearch': 'moderate'})
         self.web_loader = WebPageLoader()
-        self.web_chunker = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+        self.web_chunker = RecursiveCharacterTextSplitter(chunk_size=4500, chunk_overlap=0)
         self.web_sniptter_embed = OpenAIEmbeddings()
         self.web_summarizer = OpenAI(
             temperature=0,
@@ -64,6 +64,5 @@ class BingAPIV2:
         relatedChunks = chunSearch.similarity_search(query_str, k=3)
         attended_content = '...'.join([chunk.page_content for chunk in relatedChunks])
         return attended_content
-
 
 

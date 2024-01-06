@@ -4,7 +4,11 @@ Auto-GPT/
 Agents/
 utils/
 
+<<<<<<< HEAD
 # /examples/log/*.log
+=======
+
+>>>>>>> ae93c44f5f82b3c56dd092755e973089ae754d61
 working_dir/*.log
 .vs/
 .vscode/

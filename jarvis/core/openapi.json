@@ -188,7 +188,7 @@
     },
     "/tools/bing/load_pagev2": {
       "get": {
-        "summary": "Web browser tool for detailed content retrieval and specific information extraction from a target URL. When the task involves searching for specific details within the web page, the 'query' parameter is essential to guide the search towards the relevant information",
+        "summary": "Web browser tool for detailed content retrieval and specific information extraction from a target URL.In the case of Wikipedia, the number of tokens on such pages is often too large to load the entire page, so the 'query' parameter must be given to perform a similarity query to find the most relevant pieces of content. The 'query' parameter should be assigned with your task description to find the most relevant content of the web page.It is important that your 'query' must retain enough details about the task, such as time, location, quantity, and other information, to ensure that the results obtained are accurate enough.",
         "operationId": "load_page_v2_tools_bing_load_pagev2_get",
         "requestBody": {
           "content": {
@@ -260,7 +260,7 @@
     },
     "/tools/wolframalpha": {
       "post": {
-        "summary": "Do Wolframalpha Query to perform complex mathematical calculations such as linear algebra, calculus and probability statistics ",
+        "summary": "A good Math tool.Do Wolframalpha Query to perform complex mathematical calculations such as linear algebra, calculus and probability statistics.Can be used as a calculator or used to solve complex mathematical problems. ",
         "operationId": "wolframalpha_query_tools_wolframalpha_post",
         "requestBody": {
           "content": {
@@ -386,6 +386,78 @@
             "content": {
               "application/json": {
                 "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/audio2text": {
+      "get": {
+        "summary": "A tool that converts audio to natural language text",
+        "operationId": "image_search_tools_audio2text_get",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AudioTextQueryItem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/image_caption": {
+      "get": {
+        "summary": "You don't have eyes, so if you want to know what the picture is about, you have to use the Image Caption tool, who converts the picture into natural language text that you can understand.For local images you want to understand, you need to convert them to the base64 url format",
+        "operationId": "image_search_tools_image_caption_get",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CaptionQueryItem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
               }
             }
           }
@@ -638,6 +710,44 @@
         ],
         "title": "QueryItem"
       },
+      "AudioTextQueryItem": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "AudioTextQueryItem"
+      },"CaptionQueryItem": {
+        "properties": {
+          "query": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Query",
+            "default": "What's in this image?"
+          },
+          "url": {
+            "type": "string",
+            "title": "Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "title": "CaptionQueryItem"
+      },
       "QueryItemV2": {
         "properties": {
           "query": {
@@ -755,6 +865,7 @@
         ],
         "title": "ValidationError"
       }
+      
     }
   }
 }
