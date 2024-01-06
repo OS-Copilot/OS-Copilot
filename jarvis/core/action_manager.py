@@ -30,7 +30,7 @@ class ActionManager:
             collection_name="action_vectordb",
             embedding_function=OpenAIEmbeddings(
                 openai_api_key=config['OPENAI_API_KEY'],
-                # openai_organization=config['OPENAI_ORGANIZATION'],
+                openai_organization=config['OPENAI_ORGANIZATION'],
             ),
             persist_directory=self.vectordb_path,
         )

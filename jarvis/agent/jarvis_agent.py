@@ -1,5 +1,4 @@
 from jarvis.agent.base_agent import BaseAgent
-from jarvis.agent.tool_agent import ToolAgent
 from jarvis.core.action_node import ActionNode
 from collections import defaultdict, deque
 from jarvis.environment.py_env import PythonEnv

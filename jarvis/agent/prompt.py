@@ -377,8 +377,9 @@ prompt = {
         19. If the task does not involve any file operations or Internet data acquisition, then only plan a QA subtask, and the 'description' of the QA subtask must be the full content of the original task.
         20. If the task is to use the content in a local file to answer question or retrieve a certain word or content, then you only need to plan a Code subtask to read the text content in the file, and then plan a QA subtask to analyze the text content returned by the Code subtask to answer the question.
         21. If the task is to read and analyze the content of a PowerPoint presentation, it can be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the text content of the PowerPoint slides into a list. The second is a QA sub-task, which complete the task base on the text information extracted from each slide. 
-        22. If the task involves calculation of local Excel content, it can be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the text content of the excel file. The second is a API sub-task, which uses math API tool to accomplish this task.
+        22. If the task is to calculate sales in an excel file, it can be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the text content of the excel file. The second is a API sub-task, which uses math API tool to accomplish this task.
         23. Once the task involves obtaining knowledge such as books, articles, character information, etc., you need to plan API tasks to obtain this knowledge from the Internet.
+        24. Please note that the QA subtask must be added after the API subtask to analyze the information returned by the API subtask.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
