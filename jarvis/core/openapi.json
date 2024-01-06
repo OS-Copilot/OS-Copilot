@@ -393,14 +393,14 @@
       }
     },
     "/tools/audio2text": {
-      "get": {
+      "post": {
         "summary": "A tool that converts audio to natural language text",
-        "operationId": "image_search_tools_audio2text_get",
+        "operationId": "audio2text_tools_audio2text_post",
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/AudioTextQueryItem"
+                "$ref": "#/components/schemas/Body_audio2text_tools_audio2text_post"
               }
             }
           },
@@ -430,7 +430,7 @@
     },
     "/tools/image_caption": {
       "post": {
-        "summary": "You don't have eyes, so if you want to know what the picture is about, you have to use the Image Caption tool, who converts the picture into natural language text that you can understand.For local images you want to understand, you need to only give the image_file without url",
+        "summary": "You don't have eyes, so if you want to know what the picture is about, you have to use the Image Caption tool, who converts the picture into natural language text that you can understand.For local images you want to understand, you need to only give the image_file without url.In most time,you should give the 'query' paramter to tell the question you want to ask in the picture",
         "operationId": "image_search_tools_image_caption_post",
         "parameters": [
           {
@@ -767,7 +767,7 @@
         "type": "object",
         "title": "Body_image_search_tools_image_caption_post"
       },
-      "AudioTextQueryItem": {
+      "Body_audio2text_tools_audio2text_post": {
         "properties": {
           "file": {
             "type": "string",
@@ -779,7 +779,7 @@
         "required": [
           "file"
         ],
-        "title": "AudioTextQueryItem"
+        "title": "Body_audio2text_tools_audio2text_post"
       },
       "QueryItemV2": {
         "properties": {
