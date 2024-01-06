@@ -40,6 +40,7 @@ prompt = {
         21. If the code involves the output of file paths, ensure that the output includes the files' absolute path.
         22. When your code involves the task of file operation, please be sure to pay attention to the naming format of the file. If it is a jpg file called XXX, the name should be XXX.jpg. If it is an mp4 file called XXX, the name should be XXX.mp4. Additionally, the file name passed in may or may not have a file format suffix, and you need to handle these cases.
         23. Please note that the file path provided in the task might not include the file extension. This does not necessarily mean that the path is for a folder. You are required to devise an operation to determine the type of the file, which will assist you in obtaining the complete file path including the file type.
+        24. Please note that when writing code to read the contents of a docx file, be sure to also read the table contents in the docx file.
         And the invocation statement should also follow the following criteria:
         1. The __call__ method invocation must be syntactically correct as per Python standards.
         2. Clearly identify any fake or placeholder parameters used in the invocation.
