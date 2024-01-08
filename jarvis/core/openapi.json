@@ -113,43 +113,6 @@
         }
       }
     },    
-    "/tools/arxiv": {
-      "get": {
-        "summary": "tool to get Arxiv Article Information",
-        "description": "Run Arxiv search and get the article meta information.",
-        "operationId": "get_arxiv_article_information_tools_arxiv_get",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ArxivQuery"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/tools/bing/searchv2": {
       "get": {
         "summary": "Execute Bing Search - returns top web snippets related to the query. Avoid using complex filters like 'site:'. For detailed page content, further use the web browser tool.",
@@ -564,19 +527,6 @@
           "bullet_items"
         ],
         "title": "AddTextPageModel"
-      },
-      "ArxivQuery": {
-        "properties": {
-          "query": {
-            "type": "string",
-            "title": "Query"
-          }
-        },
-        "type": "object",
-        "required": [
-          "query"
-        ],
-        "title": "ArxivQuery"
       },
       "CalendarEvent": {
         "properties": {

@@ -10,11 +10,11 @@ class GAIALoader:
             assert os.path.exists(cache_dir), f"Cache directory {cache_dir} does not exist."
             self.cache_dir = cache_dir
             try:
-                self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level1", cache_dir=self.cache_dir)
+                self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level2", cache_dir=self.cache_dir)
             except Exception as e:
                 raise Exception(f"Failed to load GAIA dataset: {e}")
         else:
-            self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level1")
+            self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level2")
             
         
     def get_data_by_task_id(self, task_id):
@@ -33,9 +33,9 @@ def main():
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
     parser.add_argument('--query', type=str, default=None, help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
-    parser.add_argument('--task_id', type=str, default="99c9cc74-fdc8-46c6-8f8d-3ce2d3bfeea3", help='GAIA dataset task_id')
+    parser.add_argument('--task_id', type=str, default="b4cc024b-3f5e-480e-b96a-6656493255b5", help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
-    parser.add_argument('--logging_filedir', type=str, default='log', help='GAIA dataset cache dir path')
+    parser.add_argument('--logging_filedir', type=str, default='log/level2', help='GAIA dataset cache dir path')
     args = parser.parse_args()
 
     task_id = args.task_id
@@ -52,7 +52,9 @@ def main():
         print('Use the task_id {} to get the corresponding question in the GAIA dataset.'.format(task_id))
         data = GAIALoader(args.cache_dir).get_data_by_task_id(task_id)
         # task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(data['Question'], data['file_path'])
-        task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}.{2}'.format(data['Question'], data['file_path'], data['file_name'].split('.')[-1])
+        task = 'Your task is: {0}'.format(data['Question'])
+        if data['file_name'] != '':
+            task = task + '\nThe path of the files you need to use: {0}.{1}'.format(data['file_path'], data['file_name'].split('.')[-1])
     elif task_id == None and query != '':
         task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(args.query, args.query_file_path)
     else:

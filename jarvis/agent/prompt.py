@@ -321,6 +321,7 @@ prompt = {
         If you don't know how to answer the user's question, answer "I don't know." instead of making up an answer.
         And you should also follow the following criteria:
         1. Pay attention to task involving calculations. Please make sure not to make mistakes in calculations.
+        2. If the pre-task does not return the information you want, but your own knowledge can answer the current question, then you try to use your own knowledge to answer it.
         ''',
         '_USER_QA_PROMPT' : '''
         Context: {context}

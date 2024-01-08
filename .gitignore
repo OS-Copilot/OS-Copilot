@@ -5,7 +5,7 @@ Agents/
 utils/
 
 
-/examples/log/*.log
+/examples/log/*
 working_dir/*.log
 .vs/
 .vscode/
