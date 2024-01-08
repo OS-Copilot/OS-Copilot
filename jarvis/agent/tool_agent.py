@@ -110,9 +110,9 @@ class ToolAgent():
         return api_result
 
         
-agent = ToolAgent("../../examples/config.json","../core/openapi.json")
-res = agent.generate_openapi_doc("/tools/image_caption")
-print(res)
+# agent = ToolAgent("../../examples/config.json","../core/openapi.json")
+# res = agent.generate_openapi_doc("/tools/image_caption")
+# print(res)
 # code_text = agent.generate_call_api_code("use /tools/bing/searchv2 tool to search How many studio albums were published by Mercedes Sosa between 2000 and 2009 (included)? You can use the latest 2022 version of english wikipedia.","/tools/bing/searchv2")
 # code = agent.extract_python_code(code_text)
 # print(code)

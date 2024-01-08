@@ -4,15 +4,15 @@ from jarvis.core.tool_request_util import ToolRequestUtil
 tool_request_util = ToolRequestUtil()
 
 # Define the API path
-api_path = "/tools/bing/searchv2"
+api_path = "/tools/bing/load_pagev2"
 
 # Define the method to be used for the API call
 method = "get"
 
 # Define the parameters for the API call
 params = {
-    "query": "Mercedes Sosa studio albums 2000-2009 site:en.wikipedia.org",
-    "top_k": 5  # We only need the top result since we are looking for a specific piece of information
+    "query": "Vietnamese specimens described by Kuznetzov in Nedoshivina's 2010 paper deposition",
+    "url": "https://www.zobodat.at/pdf/Atalanta_41_0335-0347.pdf"  # We only need the top result since we are looking for a specific piece of information
 }
 
 # Define the content type

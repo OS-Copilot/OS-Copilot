@@ -5,7 +5,7 @@ class ToolRequestUtil:
         self.headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML like Gecko) Chrome/52.0.2743.116 Safari/537.36'}
         self.base_url = "http://43.159.144.130:8079"
 
-    def request(self, api_path, method, params=None, files=None, content_type=None):
+    def request(self, api_path, method, params=None, files=None, content_type="application/json"):
         """
         :param api_path: the path of the api
         :param method: get/post

@@ -40,6 +40,7 @@ prompt = {
         21. If the code involves the output of file paths, ensure that the output includes the files' absolute path.
         22. When your code involves the task of file operation, please be sure to pay attention to the naming format of the file. If it is a jpg file called XXX, the name should be XXX.jpg. If it is an mp4 file called XXX, the name should be XXX.mp4. Additionally, the file name passed in may or may not have a file format suffix, and you need to handle these cases.
         23. Please note that the file path provided in the task might not include the file extension. This does not necessarily mean that the path is for a folder. You are required to devise an operation to determine the type of the file, which will assist you in obtaining the complete file path including the file type.
+        24. Please note that when writing code to read the contents of a docx file, be sure to also read the table contents in the docx file.
         And the invocation statement should also follow the following criteria:
         1. The __call__ method invocation must be syntactically correct as per Python standards.
         2. Clearly identify any fake or placeholder parameters used in the invocation.
@@ -47,7 +48,13 @@ prompt = {
         4. The 'Information of Prerequisite Tasks' from User's information provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
         5. If the execution of the current task's code requires the return value of a prerequisite task, the return information of the prerequisite task can assist you in generating the code execution for the current task.
         6. 'Working Directory' in User's information represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
+<<<<<<< HEAD
+        7. The code comments include an example of a class invocation. You can refer to this example, but you should not directly copy it. Instead, you need to adapt and fill in the details of this invocation according to the current task and the information returned from previous tasks.
+        8. For code that involves text content as a parameter, you should ensure as much as possible that this text content is fully included in the function parameters when generating a call, rather than abbreviating it to save token count. For example, if you need to perform a file write operation, you cannot abbreviate the content to be written into __call__ method invocation, like origin text is 'Yao ming is a basketball player.', you can not write 'Yao ming is ...'.     
+        9. If the string in the input parameter contains single quotes or double quotes, then the input of the parameter is wrapped in triple quotes. The following is an example of an invocation statement: <invoke>Demo()("""xx"x"xxx""" )</invoke>
+=======
         7. The code comments include an example of a class invocation. You can refer to this example, but you should not directly copy it. Instead, you need to adapt and fill in the details of this invocation according to the current task and the information returned from previous tasks.  
+>>>>>>> ae93c44f5f82b3c56dd092755e973089ae754d61
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information.         
         ''',
         '_USER_SKILL_CREATE_AND_INVOKE_PROMPT': '''
@@ -310,7 +317,7 @@ prompt = {
 
         # QA prompt in os
         '_SYSTEM_QA_PROMPT' : '''
-        You are a helpful ai assistant that can answer the questions asked by the user with the help of the context provided by the user in a step by step manner. You will use the full question to help solve the current question.
+        You are a helpful ai assistant that can answer the question with the help of the context provided by the user in a step by step manner. The full question may help you to solve the current question.
         If you don't know how to answer the user's question, answer "I don't know." instead of making up an answer.
         ''',
         '_USER_QA_PROMPT' : '''
@@ -367,6 +374,8 @@ prompt = {
         18. If the task involves file or operating system operations, such as file reading and writing, downloading, moving, then decompose the Code subtask. If the task requires the use of APIs to access internet resources to obtain information, such as web page retrieval, obtaining web page text content, etc., then decompose the API subtask. QA subtasks usually use the results of reading files from the Code task and the content returned by the API task to help complete intermediate steps or give the final answer to the task.
         19. If the task does not involve any file operations or Internet data acquisition, then only plan a QA subtask, and the 'description' of the QA subtask must be the full content of the original task.
         20. If the task is to use the content in a local file to answer question or retrieve a certain word or content, then you only need to plan a Code subtask to read the text content in the file, and then plan a QA subtask to analyze the text content returned by the Code subtask to answer the question.
+        21. If the task is to read and analyze the content of a PowerPoint presentation, it can be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the text content of the PowerPoint slides into a list. The second is a QA sub-task, which involves analyzing the text information extracted from each slide. 
+        22. Once the task involves obtaining knowledge such as books, articles, character information, etc., you need to plan API tasks to obtain this knowledge from the Internet.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
