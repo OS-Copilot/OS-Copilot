@@ -221,6 +221,19 @@ if __name__ == '__main__':
     # print(res[0])
 
     # 删除
-    actionManager.delete_action("access_document")
+    # actionManager.delete_action("access_document")
     # actionManager.delete_action("zip_files")
     # print(actionManager.action_code('zip_files'))
+
+    # 手动添加action
+    # code = ''
+    # with open("xxx", 'r') as file:
+    #     code = file.read()
+
+    # info = {
+    #     "task_name" : "extract_excel_content",
+    #     "code" : code,
+    #     "description" : "Extract the full text content of the specified Excel file."
+    # }
+
+    # actionManager.add_new_action(info)

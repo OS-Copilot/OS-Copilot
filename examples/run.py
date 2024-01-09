@@ -33,7 +33,7 @@ def main():
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
     parser.add_argument('--query', type=str, default=None, help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
-    parser.add_argument('--task_id', type=str, default="b4cc024b-3f5e-480e-b96a-6656493255b5", help='GAIA dataset task_id')
+    parser.add_argument('--task_id', type=str, default="3627a8be-a77f-41bb-b807-7e1bd4c0ebdf", help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
     parser.add_argument('--logging_filedir', type=str, default='log/level2', help='GAIA dataset cache dir path')
     args = parser.parse_args()

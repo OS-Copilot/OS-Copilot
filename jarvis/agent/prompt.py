@@ -48,13 +48,9 @@ prompt = {
         4. The 'Information of Prerequisite Tasks' from User's information provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
         5. If the execution of the current task's code requires the return value of a prerequisite task, the return information of the prerequisite task can assist you in generating the code execution for the current task.
         6. 'Working Directory' in User's information represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
-<<<<<<< HEAD
         7. The code comments include an example of a class invocation. You can refer to this example, but you should not directly copy it. Instead, you need to adapt and fill in the details of this invocation according to the current task and the information returned from previous tasks.
         8. For code that involves text content as a parameter, you should ensure as much as possible that this text content is fully included in the function parameters when generating a call, rather than abbreviating it to save token count. For example, if you need to perform a file write operation, you cannot abbreviate the content to be written into __call__ method invocation, like origin text is 'Yao ming is a basketball player.', you can not write 'Yao ming is ...'.     
         9. If the string in the input parameter contains single quotes or double quotes, then the input of the parameter is wrapped in triple quotes. The following is an example of an invocation statement: <invoke>Demo()("""xx"x"xxx""" )</invoke>
-=======
-        7. The code comments include an example of a class invocation. You can refer to this example, but you should not directly copy it. Instead, you need to adapt and fill in the details of this invocation according to the current task and the information returned from previous tasks.  
->>>>>>> ae93c44f5f82b3c56dd092755e973089ae754d61
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information.         
         ''',
         '_USER_SKILL_CREATE_AND_INVOKE_PROMPT': '''
@@ -378,9 +374,10 @@ prompt = {
         19. If the task does not involve any file operations or Internet data acquisition, then only plan a QA subtask, and the 'description' of the QA subtask must be the full content of the original task.
         20. If the task is to use the content in a local file to answer question or retrieve a certain word or content, then you only need to plan a Code subtask to read the text content in the file, and then plan a QA subtask to analyze the text content returned by the Code subtask to answer the question.
         21. If the task is to read and analyze the content of a PowerPoint presentation, it can be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the text content of the PowerPoint slides into a list. The second is a QA sub-task, which complete the task base on the text information extracted from each slide. 
-        22. If the task is to calculate sales in an excel file, it can be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the text content of the excel file. The second is a API sub-task, which uses math API tool to accomplish this task.
+        22. If the attached file is a xlsx file, the task must be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the full text content of the excel file. The second is a QA subtask, which analyzes and completes task based on the content in excel.
         23. Once the task involves obtaining knowledge such as books, articles, character information, etc., you need to plan API tasks to obtain this knowledge from the Internet.
-        24. Please add a QA subtask following the API subtask that is used for Internet information retrieval. However, it is not necessary to include a QA subtask after the API subtask that is used for format conversion.
+        24. When you determine the need to use an information retrieval API such as "/tools/bing/searchv2" during step-by-step reasoning, you need to continue reasoning and plan out a QA subtask to analyze and summarize the information returned by these APIs.
+        25. When the task involves retrieving a certain detailed content, then after decomposing the API subtask using '/tools/bing/searchv2', you also need to decompose an API subtask using '/tools/bing/load_pagev2', using for more detailed content.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:

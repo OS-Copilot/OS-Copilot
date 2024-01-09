@@ -40,42 +40,6 @@
           }
         }
       }
-    },
-    "/tools/bing/image_search": {
-      "get": {
-        "summary": "Image Search API can return top k related image data based on keywords, including image name, download address and size.",
-        "operationId": "image_search_tools_bing_image_search_get",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/QueryItemV2"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
     },    
     "/tools/markdown/web2md": {
       "get": {
@@ -368,81 +332,6 @@
             }
           },
           "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/tools/image_caption": {
-      "post": {
-        "summary": "You don't have eyes, so if you want to know what the picture is about, you have to use the Image Caption tool, who converts the picture into natural language text that you can understand.For local images you want to understand, you need to only give the image_file without url.In most time,you should give the 'query' paramter to tell the question you want to ask in the picture",
-        "operationId": "image_search_tools_image_caption_post",
-        "parameters": [
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": "What's in this image?",
-              "title": "Query"
-            }
-          },
-          {
-            "name": "url",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Url"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/Body_image_search_tools_image_caption_post"
-                  }
-                ],
-                "title": "Body"
-              }
-            }
-          }
         },
         "responses": {
           "200": {
