@@ -77,6 +77,10 @@
         }
       }
     },    
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 2fbb5c0f1466fe11ac744bab88147cfac67a8ee4
     "/tools/bing/searchv2": {
       "get": {
         "summary": "Execute Bing Search - returns top web snippets related to the query. Avoid using complex filters like 'site:'. For detailed page content, further use the web browser tool.",
