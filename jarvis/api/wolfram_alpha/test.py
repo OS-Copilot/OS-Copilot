@@ -2,7 +2,7 @@ import requests
 import json
 
 # API endpoint
-url = "http://127.0.0.1:8079/tools/wolframalpha"
+url = "http://43.159.144.130:8079/tools/wolframalpha"
 
 # Headers
 headers = {

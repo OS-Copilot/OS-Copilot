@@ -4,10 +4,10 @@ from jarvis.core.tool_request_util import ToolRequestUtil
 tool_request_util = ToolRequestUtil()
 
 # Extract the URL from the context provided
-research_article_url = "https://www.science.org/doi/10.1126/sciadv.abi8620"
+research_article_url = "http://downloads.bbc.co.uk/writersroom/scripts/DW9-EP11-Heaven-Sent.pdf"
 
 # Construct the query to find the most relevant content about the age of the beads
-query = "abstract"
+query = "site, first scene heading"
 
 # Prepare the parameters for the API call
 params = {

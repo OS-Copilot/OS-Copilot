@@ -4,43 +4,7 @@
     "title": "FastAPI",
     "version": "0.1.0"
   },
-  "paths": {
-    "/tools/calculator": {
-      "post": {
-        "summary": "math calculator,can be used to perform simple quadratic operations ",
-        "operationId": "evaluate_tools_calculator_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Expression"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },    
+  "paths": {  
     "/tools/markdown/web2md": {
       "get": {
         "summary": "This API can only get the markdown formatting of a web page at a given url but can not do summary work.",
@@ -77,10 +41,7 @@
         }
       }
     },    
-<<<<<<< HEAD
-=======
     
->>>>>>> 2fbb5c0f1466fe11ac744bab88147cfac67a8ee4
     "/tools/bing/searchv2": {
       "get": {
         "summary": "Execute Bing Search - returns top web snippets related to the query. Avoid using complex filters like 'site:'. For detailed page content, further use the web browser tool.",
@@ -162,42 +123,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/SQLRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/tools/wolframalpha": {
-      "post": {
-        "summary": "A good Math tool.Do Wolframalpha Query to perform complex mathematical calculations such as linear algebra, calculus and probability statistics.Can be used as a calculator or used to solve complex mathematical problems. ",
-        "operationId": "wolframalpha_query_tools_wolframalpha_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/QueryItem"
               }
             }
           },
@@ -336,6 +261,81 @@
             }
           },
           "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/image_caption": {
+      "post": {
+        "summary": "You don't have eyes, so if you want to know what the local picture(not on the internet) is about, you have to use the Image Caption tool, who converts the picture into natural language text that you can understand.For local images you want to understand, you need to only give the image_file without url.In most time,you should give the 'query' paramter to tell the question you want to ask in the picture",
+        "operationId": "image_search_tools_image_caption_post",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": "What's in this image?",
+              "title": "Query"
+            }
+          },
+          {
+            "name": "url",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Url"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/Body_image_search_tools_image_caption_post"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
         },
         "responses": {
           "200": {

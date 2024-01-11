@@ -318,6 +318,7 @@ prompt = {
         And you should also follow the following criteria:
         1. Pay attention to task involving calculations. Please make sure not to make mistakes in calculations.
         2. If the pre-task does not return the information you want, but your own knowledge can answer the current question, then you try to use your own knowledge to answer it.
+        3. If your current answer is incorrect but you have a potential solution, please implement your potential solution directly.
         ''',
         '_USER_QA_PROMPT' : '''
         Context: {context}
@@ -376,7 +377,7 @@ prompt = {
         21. If the task is to read and analyze the content of a PowerPoint presentation, it can be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the text content of the PowerPoint slides into a list. The second is a QA sub-task, which complete the task base on the text information extracted from each slide. 
         22. If the attached file is a xlsx file, the task must be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the full text content of the excel file. The second is a QA subtask, which analyzes and completes task based on the content in excel.
         23. Once the task involves obtaining knowledge such as books, articles, character information, etc., you need to plan API tasks to obtain this knowledge from the Internet.
-        24. When you determine the need to use an information retrieval API such as "/tools/bing/searchv2" during step-by-step reasoning, you need to continue reasoning and plan out a QA subtask to analyze and summarize the information returned by these APIs.
+        24. When decomposing an API subtask which uses the Bing Search API, you need to proceed to plan a QA subtask for analyzing and summarizing the information returned by that API subtask.
         25. When the task involves retrieving a certain detailed content, then after decomposing the API subtask using '/tools/bing/searchv2', you also need to decompose an API subtask using '/tools/bing/load_pagev2', using for more detailed content.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT' : '''
