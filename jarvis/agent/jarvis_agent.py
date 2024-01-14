@@ -33,9 +33,6 @@ class JarvisAgent(BaseAgent):
         """
         Run JarvisAgent to execute task.
         """
-        print('Task:\n'+task)
-        logging.info(task)
-
         # relevant action 
         retrieve_action_name = self.retriever.retrieve_action_name(task)
         retrieve_action_description_pair = self.retriever.retrieve_action_description_pair(retrieve_action_name)
