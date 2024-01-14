@@ -1,0 +1,1 @@
+Extract the full text content of the specified JSON Lines file.

@@ -10,19 +10,19 @@ class GAIALoader:
             assert os.path.exists(cache_dir), f"Cache directory {cache_dir} does not exist."
             self.cache_dir = cache_dir
             try:
-                self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level2", cache_dir=self.cache_dir)
+                self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level1", cache_dir=self.cache_dir)
             except Exception as e:
                 raise Exception(f"Failed to load GAIA dataset: {e}")
         else:
-            self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level2")
+            self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level1")
             
         
-    def get_data_by_task_id(self, task_id):
-        if self.dataset is None or 'validation' not in self.dataset:
-            raise ValueError("Dataset not loaded or validation set not available.")
+    def get_data_by_task_id(self, task_id, type):
+        if self.dataset is None or type not in self.dataset:
+            raise ValueError("Dataset not loaded or data set not available.")
 
-        validation_set = self.dataset['validation']
-        for record in validation_set:
+        data_set = self.dataset[type]
+        for record in data_set:
             if record['task_id'] == task_id:
                 return record
         return None
@@ -33,9 +33,9 @@ def main():
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
     parser.add_argument('--query', type=str, default=None, help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
-    parser.add_argument('--task_id', type=str, default="f2feb6a4-363c-4c09-a804-0db564eafd68", help='GAIA dataset task_id')
+    parser.add_argument('--task_id', type=str, default="6af95c8f-8cbf-4c12-b02c-f9a23cc1ecb9", help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
-    parser.add_argument('--logging_filedir', type=str, default='log/level2_val', help='GAIA dataset cache dir path')
+    parser.add_argument('--logging_filedir', type=str, default='log/test_level1', help='GAIA dataset cache dir path')
     args = parser.parse_args()
 
     task_id = args.task_id
@@ -50,7 +50,7 @@ def main():
 
     if task_id:
         print('Use the task_id {} to get the corresponding question in the GAIA dataset.'.format(task_id))
-        data = GAIALoader(args.cache_dir).get_data_by_task_id(task_id)
+        data = GAIALoader(args.cache_dir).get_data_by_task_id(task_id, "test")
         # task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(data['Question'], data['file_path'])
         task = 'Your task is: {0}'.format(data['Question'])
         if data['file_name'] != '':
@@ -88,9 +88,9 @@ def main():
             relevant_code = retrieve_agent.retrieve_action_code_pair(retrieve_name)
         # task execute step
         if type == 'QA':
-            # result = execute_agent.question_and_answer_action(pre_tasks_info, task)
+            # result = execute_agent.question_and_answer_action(pre_tasks_info, task, task)
             if planning_agent.action_num == 1:
-                result = execute_agent.question_and_answer_action(pre_tasks_info, task)
+                result = execute_agent.question_and_answer_action(pre_tasks_info, task, task)
             else:
                 result = execute_agent.question_and_answer_action(pre_tasks_info, task, description)
             print(result)

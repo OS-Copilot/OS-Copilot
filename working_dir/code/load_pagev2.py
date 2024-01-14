@@ -3,20 +3,19 @@ from jarvis.core.tool_request_util import ToolRequestUtil
 # Initialize the ToolRequestUtil
 tool_request_util = ToolRequestUtil()
 
-# Extract the URL from the context provided
-research_article_url = "http://downloads.bbc.co.uk/writersroom/scripts/DW9-EP11-Heaven-Sent.pdf"
+# Extract the URL for the lyrics page from the context
+lyrics_page_url = "https://genius.com/Michael-jackson-human-nature-lyrics"  # URL from the first search result
 
-# Construct the query to find the most relevant content about the age of the beads
-query = "site, first scene heading"
-
-# Prepare the parameters for the API call
+# Set up the parameters for the API call
+api_path = '/tools/bing/load_pagev2'
+method = 'get'
 params = {
-    "url": research_article_url,
-    "query": query
+    "url": lyrics_page_url,
+    "query": "Michael Jackson – Human Nature Lyrics"
 }
 
-# Call the '/tools/bing/load_pagev2' API using the ToolRequestUtil
-response = tool_request_util.request(api_path="/tools/bing/load_pagev2", method="get", params=params)
+# Call the API
+response = tool_request_util.request(api_path, method, params=params, content_type='application/json')
 
 # Print the return value of the API
 print(response)

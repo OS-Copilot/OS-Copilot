@@ -1,0 +1,1 @@
+Extract the text content from a specified PDF file.

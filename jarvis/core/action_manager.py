@@ -30,7 +30,7 @@ class ActionManager:
             collection_name="action_vectordb",
             embedding_function=OpenAIEmbeddings(
                 openai_api_key=config['OPENAI_API_KEY'],
-                # openai_organization=config['OPENAI_ORGANIZATION'],
+                openai_organization=config['OPENAI_ORGANIZATION'],
             ),
             persist_directory=self.vectordb_path,
         )
@@ -227,13 +227,13 @@ if __name__ == '__main__':
 
     # 手动添加action
     # code = ''
-    # with open("xxx", 'r') as file:
+    # with open("/home/heroding/桌面/Jarvis/working_dir/code/temp.py", 'r') as file:
     #     code = file.read()
 
     # info = {
-    #     "task_name" : "extract_excel_content",
+    #     "task_name" : "read_csv_file",
     #     "code" : code,
-    #     "description" : "Extract the full text content of the specified Excel file."
+    #     "description" : "Read the content of a CSV file to extract data."
     # }
 
     # actionManager.add_new_action(info)

@@ -314,7 +314,7 @@ prompt = {
         # QA prompt in os
         '_SYSTEM_QA_PROMPT' : '''
         You are a helpful ai assistant that can answer the question with the help of the context provided by the user in a step by step manner. The full question may help you to solve the current question.
-        If you don't know how to answer the user's question, answer "I don't know." instead of making up an answer.
+        If you don't know how to answer the user's question, answer "I don't know." instead of making up an answer. 
         And you should also follow the following criteria:
         1. Pay attention to task involving calculations. Please make sure not to make mistakes in calculations.
         2. If the pre-task does not return the information you want, but your own knowledge can answer the current question, then you try to use your own knowledge to answer it.
@@ -322,8 +322,8 @@ prompt = {
         ''',
         '_USER_QA_PROMPT' : '''
         Context: {context}
-        Full Question: {question}
-        Current Question: {current_question}
+        Full Question: {question} 
+        Current Question: {current_question} 
         '''
         
     },
@@ -335,7 +335,7 @@ prompt = {
         I will give you a task and ask you to decompose this task into a series of subtasks. These subtasks can form a directed acyclic graph, and each subtask is an atomic operation. Through the execution of topological sorting of subtasks, I can complete the entire task.
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Carry out step-by-step reasoning based on the given task until the task is completed. Each step of reasoning is decomposed into sub-tasks. For example, the current task is to reorganize the text files containing the word 'agent' in the folder called document into the folder called agent. Then the reasoning process is as follows: According to Current Working Directiory and Files And Folders in Current Working Directiory information, the folders documernt and agent exist, so firstly, retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return. Secondly, put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.
-        2. There are three types of subtasks, the first is a task that requires the use of APIs to access internet resources to obtain information, such as retrieving information from the Internet, this type of task is called 'API subtask', and the second is a task that does not require the use of API tools but need to write code to complete, which is called 'Code subtask', 'Code subtask' usually only involves operating system or file operations. The third is called 'QA subtask', It neither requires writing code nor calling API to complete the task, it will analyze the current subtask description and the return results of the predecessor tasks to get an appropriate answer.
+        2. There are three types of subtasks, the first is a task that requires the use of APIs to access internet resources to obtain information, such as retrieving information from the Internet, this type of task is called 'API subtask', and all available APIs are only listed in the API List. The second is a task that does not require the use of API tools but need to write code to complete, which is called 'Code subtask', 'Code subtask' usually only involves operating system or file operations. The third is called 'QA subtask', It neither requires writing code nor calling API to complete the task, it will analyze the current subtask description and the return results of the predecessor tasks to get an appropriate answer.
         3. Each decomposed subtask has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a Code task or a API task or a QA task, If it is a Code task, its value is 'Code', if it is a API task, its value is 'API', if it is a QA task, its value is 'QA'.
         4. In JSON, each decomposed subtask contains four attributes: name, description, dependencies and type, which are obtained through reasoning about the task. The key of each subtask is the 'name' attribute of the subtask.
         5. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
@@ -375,10 +375,13 @@ prompt = {
         19. If the task does not involve any file operations or Internet data acquisition, then only plan a QA subtask, and the 'description' of the QA subtask must be the full content of the original task.
         20. If the task is to use the content in a local file to answer question or retrieve a certain word or content, then you only need to plan a Code subtask to read the text content in the file, and then plan a QA subtask to analyze the text content returned by the Code subtask to answer the question.
         21. If the task is to read and analyze the content of a PowerPoint presentation, it can be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the text content of the PowerPoint slides into a list. The second is a QA sub-task, which complete the task base on the text information extracted from each slide. 
-        22. If the attached file is a xlsx file, the task must be broken down into two sub-tasks. The first is a Code sub-task, which involves extracting the full text content of the excel file. The second is a QA subtask, which analyzes and completes task based on the content in excel.
+        22. If the attached file is an xlsx, xls or csv file, the task must first be decomposed into Code subtask, which involves extracting the full text content of the excel file. If you need to obtain information from the Internet, then decompose the API subtask, otherwise just decompose the QA subtask, which analyzes and completes task based on the content in excel.
         23. Once the task involves obtaining knowledge such as books, articles, character information, etc., you need to plan API tasks to obtain this knowledge from the Internet.
-        24. When decomposing an API subtask which uses the Bing Search API, you need to proceed to plan a QA subtask for analyzing and summarizing the information returned by that API subtask.
+        24. When decomposing an API subtask which uses the Bing Search API or the Bing Load Page API, you need to proceed to plan a QA subtask for analyzing and summarizing the information returned by that API subtask.
         25. When the task involves retrieving a certain detailed content, then after decomposing the API subtask using '/tools/bing/searchv2', you also need to decompose an API subtask using '/tools/bing/load_pagev2', using for more detailed content.
+        26. If the attached file is a picture file, the task must be broken down into two sub-tasks. The first is a API subtask, which uses image caption API to extract detail information of the picture file. The second is a QA subtask, which analyzes and completes task based on the return from API subtask.
+        27. Please note that all available APIs are only in the API List. You should not make up APIs that are not in the API List.
+        28. Please note that if the problem involves the database, you can use the Bing Search API to obtain relevant results.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:

@@ -41,7 +41,43 @@
         }
       }
     },    
-    
+    "/tools/arxiv": {
+      "get": {
+        "summary": "tool to get Arxiv Article Information",
+        "description": "Run Arxiv search and get the article meta information.",
+        "operationId": "get_arxiv_article_information_tools_arxiv_get",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArxivQuery"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/tools/bing/searchv2": {
       "get": {
         "summary": "Execute Bing Search - returns top web snippets related to the query. Avoid using complex filters like 'site:'. For detailed page content, further use the web browser tool.",
@@ -87,42 +123,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/PageItemV2"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/tools/database": {
-      "post": {
-        "summary": "Execute Sqlite script for the travel datebase in the server",
-        "operationId": "execute_sqlite_tools_database_post",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SQLRequest"
               }
             }
           },
@@ -261,81 +261,6 @@
             }
           },
           "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/tools/image_caption": {
-      "post": {
-        "summary": "You don't have eyes, so if you want to know what the local picture(not on the internet) is about, you have to use the Image Caption tool, who converts the picture into natural language text that you can understand.For local images you want to understand, you need to only give the image_file without url.In most time,you should give the 'query' paramter to tell the question you want to ask in the picture",
-        "operationId": "image_search_tools_image_caption_post",
-        "parameters": [
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "default": "What's in this image?",
-              "title": "Query"
-            }
-          },
-          {
-            "name": "url",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "Url"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "allOf": [
-                  {
-                    "$ref": "#/components/schemas/Body_image_search_tools_image_caption_post"
-                  }
-                ],
-                "title": "Body"
-              }
-            }
-          }
         },
         "responses": {
           "200": {
@@ -740,6 +665,19 @@
           "type"
         ],
         "title": "ValidationError"
+      },
+      "ArxivQuery": {
+        "properties": {
+          "query": {
+            "type": "string",
+            "title": "Query"
+          }
+        },
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "title": "ArxivQuery"
       }
       
     }

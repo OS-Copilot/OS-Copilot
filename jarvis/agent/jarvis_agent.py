@@ -11,64 +11,6 @@ import re
 import json
 import logging
 
-
-USER_PROMPT='''
-Task: {task}
-
-'''
-PLANNING_SYSTEM_PROMPT = '''
-
-'''
-PLANNING_EXAMPLE_MESSAGES = [{'role': 'system', 'name': 'example_user',
-                     'content': '''Task Requirements: Bob is in Shanghai and going to travel in several cities, please make a ticket purchase plan and travel sequence for him.The demands are as follows:
-1. visit ['Beijing']. The order doesn't matter and he needs to return to Shanghai finally.
-2. He is free to travel from 2023.7.1 to 2023.7.20. The budget for transportation is 1000.0 CNY.
-3. Play at least 3 days in Beijing.
-4. If you arrive in a city before 12:00 noon, that day can be counted as a day of play. If it's past 12 o'clock, it doesn't count as a day.
-5. On the basis of completing the above conditions (especially the budget), spend as little time as possible.
-'''},
-                    {'role': 'system', 'name': 'example_assistant', 'content':
-                        '''Based on the requirements, we can know that Bob need to go to Beijing from Shanghai, stay in Beijing for 3 days and then go to Shanghai from Beijing.
-Given the task, the first step is to find available train tickets that fit Bob's schedule and budget. This is a subtask that requires the use of external resources, so I will assign it to another agent.
-<subtask>
-{
-"subtask_name": "find_available_train_tickets",
-"goal": "Find train tickets from Shanghai to Beijing and back to Shanghai that fit within the travel dates, budget, and allow for at least 3 full days of play in Beijing. If the arrival is before 12:00 noon, it counts as a day of play.",
-"criticism": "Must ensure that the total cost of the round trip tickets does not exceed the budget of 1000.0 CNY and that the timings allow for at least 3 full days in Beijing. For each ticket, you must give me the ticket number, origin, destination, departure time, arrival time and the price.",
-"milestones": ["Identify a suitable train from Shanghai to Beijing that arrives before 12:00 noon, ensuring a day of play.", "Identify a return train from Beijing to Shanghai after at least 3 days in Beijing.", "Ensure the total cost of both tickets is within the budget of 1000.0 CNY."]
-}
-</subtask>
-<action>subagent_handle("find_available_train_tickets")</action>
-
-Once I receive the information about the train tickets, I will proceed with planning the rest of Bob's travel schedule.
-'''},
-
-                    {'role': 'system', 'name': 'example_user',
-                     'content': '''Action:
-<action>subagent_handle("find_available_train_tickets")</action>
-Result:
-For Bob's travel from Beijing to Chengdu and back, the updated option is:
-- Departure on train **G1371** from Beijing to Chengdu on **2023-07-02 08:57**, arriving at **2023-07-02 17:54**. This costs **747.0 CNY** and takes approximately 8 hours 57 minutes.
-- Return on train **K1382** from Chengdu to Beijing on **2023-07-02 19:04**, arriving at **2023-07-03 11:52**. This costs **252.0 CNY** and takes about 16 hours 48 minutes.
-The total round trip costs **999.0 CNY** and will take about 25 hours 45 minutes.
-For future planning:
-With this new itinerary, Bob will be able to spend a full 24 hours in Chengdu.
-Bob can now proceed to research places of interest in Chengdu and plan his day accordingly. He can use the 'place' and 'in_city_transport' tables for this purpose.
-Bob should also consider the transport options within Chengdu, ensuring he can visit his chosen destinations without spending too much time commuting.
-'''},
-                    {'role': 'system', 'name': 'example_assistant', 'content':
-                        '''Next we can get the final plan. This task is simple so I can do it without other agents. We just need to use go_to_city() and stay_in() here. Based on the information provided, here is the final travel plan for Bob:
-<plan>go_to_city("Beijing", "Chengdu", "2023-07-02 08:57", "2023-07-02 17:54", "G1371")</plan>
-<plan>stay_in("Chengdu", "2023-07-02 17:54", "2023-07-03 17:54")</plan>
-<plan>go_to_city("Chengdu", "Beijing", "2023-07-03 19:04", "2023-07-04 11:52", "K1382")</plan>
-The task is completed. <action>over()</over>
-'''}]
-
-
-
-
-
-
 class JarvisAgent(BaseAgent):
     """ AI agent class, including planning, retrieval and execution modules """
 
@@ -87,14 +29,111 @@ class JarvisAgent(BaseAgent):
         except ValueError as e:
             print(e)        
 
-    def planning(self, task):
-        # 综合处理任务的方法
-        subtasks = self.planner.decompose_task(task)
-        for subtask in subtasks:
-            action = self.retriever.search_action(subtask)
-            if action:
-                result = self.executor.execute_action(action)
-                # 进一步处理结果
+    def run(self, task):
+        """
+        Run JarvisAgent to execute task.
+        """
+        print('Task:\n'+task)
+        logging.info(task)
+
+        # relevant action 
+        retrieve_action_name = self.retriever.retrieve_action_name(task)
+        retrieve_action_description_pair = self.retriever.retrieve_action_description_pair(retrieve_action_name)
+
+        # decompose task
+        self.planner.decompose_task(task, retrieve_action_description_pair)
+
+        # iter each subtask
+        while self.planner.execute_list:
+            action = self.planner.execute_list[0]
+            action_node = self.planner.action_node[action]
+            description = action_node.description
+            logging.info("The current subtask is: {subtask}".format(subtask=description))
+            code = ''
+            # The return value of the current task
+            result = ''
+            next_action = action_node.next_action
+            relevant_code = {}
+            type = action_node.type
+            pre_tasks_info = self.planner.get_pre_tasks_info(action)
+            if type == 'Code':
+                # retrieve existing action
+                retrieve_name = self.retriever.retrieve_action_name(description, 3)
+                relevant_code = self.retriever.retrieve_action_code_pair(retrieve_name)
+            # task execute step
+            if type == 'QA':
+                # result = self.executor.question_and_answer_action(pre_tasks_info, task, task)
+                if self.planner.action_num == 1:
+                    result = self.executor.question_and_answer_action(pre_tasks_info, task, task)
+                else:
+                    result = self.executor.question_and_answer_action(pre_tasks_info, task, description)
+                print(result)
+                logging.info(result)
+            else:
+                invoke = ''
+                if type == 'API':
+                    api_path = self.executor.extract_API_Path(description)
+                    code = self.executor.api_action(description, api_path, pre_tasks_info)
+                else:
+                    code, invoke = self.executor.generate_action(action, description, pre_tasks_info, relevant_code)
+                # Execute python tool class code
+                state = self.executor.execute_action(code, invoke, type)   
+                result = state.result 
+                logging.info(state) 
+            # Check whether the code runs correctly, if not, amend the code
+            if type == 'Code':
+                need_mend = False
+                trial_times = 0
+                critique = ''
+                score = 0
+                # If no error is reported, check whether the task is completed
+                if state.error == None:
+                    critique, judge, score = self.executor.judge_action(code, description, state, next_action)
+                    if not judge:
+                        print("critique: {}".format(critique))
+                        need_mend = True
+                else:
+                    #  Determine whether it is caused by an error outside the code
+                    reasoning, error_type = self.executor.analysis_action(code, description, state)
+                    if error_type == 'replan':
+                        relevant_action_name = self.retriever.retrieve_action_name(reasoning)
+                        relevant_action_description_pair = self.retriever.retrieve_action_description_pair(relevant_action_name)
+                        self.planner.replan_task(reasoning, action, relevant_action_description_pair)
+                        continue
+                    need_mend = True   
+                # The code failed to complete its task, fix the code
+                while (trial_times < self.executor.max_iter and need_mend == True):
+                    trial_times += 1
+                    print("current amend times: {}".format(trial_times))
+                    new_code, invoke = self.executor.amend_action(code, description, state, critique, pre_tasks_info)
+                    critique = ''
+                    code = new_code
+                    # Run the current code and check for errors
+                    state = self.executor.execute_action(code, invoke, type)
+                    result = state.result
+                    logging.info(state) 
+                    # print(state)
+                    # Recheck
+                    if state.error == None:
+                        critique, judge, score = self.executor.judge_action(code, description, state, next_action)
+                        # The task execution is completed and the loop exits
+                        if judge:
+                            need_mend = False
+                            break
+                        # print("critique: {}".format(critique))
+                    else: # The code still needs to be corrected
+                        need_mend = True
+
+                # If the task still cannot be completed, an error message will be reported.
+                if need_mend == True:
+                    print("I can't Do this Task!!")
+                    break
+                else: # The task is completed, if code is save the code, args_description, action_description in lib
+                    if score >= 8:
+                        self.executor.store_action(action, code)
+            print("Current task execution completed!!!")  
+            self.planner.update_action(action, result, relevant_code, True, type)
+            self.planner.execute_list.remove(action)
 
 
 class PlanningModule(BaseAgent):
