@@ -19,9 +19,9 @@ class ToolRequestUtil:
             # 判断请求方法
             if method.lower() == "get":
                 if content_type == "application/json":
-                    result = self.session.get(url=url, json=params, headers=self.headers).json()
+                    result = self.session.get(url=url, json=params, headers=self.headers, timeout=60).json()
                 else: 
-                    result = self.session.get(url=url, params=params, headers=self.headers).json()
+                    result = self.session.get(url=url, params=params, headers=self.headers, timeout=60).json()
             elif method.lower() == "post":
                 if content_type == "multipart/form-data":
                     result = self.session.post(url=url, files=files, data=params, headers=self.headers).json()

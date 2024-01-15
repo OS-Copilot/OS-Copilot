@@ -381,7 +381,6 @@ prompt = {
         25. When the task involves retrieving a certain detailed content, then after decomposing the API subtask using '/tools/bing/searchv2', you also need to decompose an API subtask using '/tools/bing/load_pagev2', using for more detailed content.
         26. If the attached file is a picture file, the task must be broken down into two sub-tasks. The first is a API subtask, which uses image caption API to extract detail information of the picture file. The second is a QA subtask, which analyzes and completes task based on the return from API subtask.
         27. Please note that all available APIs are only in the API List. You should not make up APIs that are not in the API List.
-        28. Please note that if the problem involves the database, you can use the Bing Search API to obtain relevant results.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
