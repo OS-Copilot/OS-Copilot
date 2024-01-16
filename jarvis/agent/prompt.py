@@ -298,7 +298,7 @@ prompt = {
             """
             :param api_path: the path of the API
             :param method: get/post
-            :param params: the parameters of the API, can be None.You cannot pass files to 'params' parameter.All files should be passed to 'files' parameter
+            :param params: the parameters of the API, can be None.You cannot pass files to 'params' parameter.All files should be passed to 'files' parameter. 
             :param files: files to be uploaded, can be None.Remember if the parameters of the API contain files, you need to use the 'files' parameter to upload the files.
             :param content_type: the content_type of api, e.g., application/json, multipart/form-data, can be None
             :return: the response from the API

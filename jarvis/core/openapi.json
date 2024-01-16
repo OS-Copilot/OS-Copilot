@@ -286,7 +286,7 @@
     },
     "/tools/image_caption": {
       "post": {
-        "summary": "You don't have eyes, so if you want to know what the local picture(not on the internet) is about, you have to use the Image Caption tool, who converts the picture into natural language text that you can understand.For local images you want to understand, you need to only give the image_file without url.In most time,you should give the 'query' paramter to tell the question you want to ask in the picture",
+        "summary": "When the task is to question and answer based on local picture, you have to use the Image Caption tool, who can directly analyze picture to answer question and complete task. For local images you want to understand, you need to only give the image_file without url. And you must give the 'query' paramter, its content is the task itself.",
         "operationId": "image_search_tools_image_caption_post",
         "parameters": [
           {

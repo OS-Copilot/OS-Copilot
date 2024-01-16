@@ -33,7 +33,7 @@ def main():
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
     parser.add_argument('--query', type=str, default=None, help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
-    parser.add_argument('--task_id', type=str, default="d62cbee6-47c7-4918-825d-3b73b1af7e85", help='GAIA dataset task_id')
+    parser.add_argument('--task_id', type=str, default="d89733a3-7d86-4ed8-b5a3-bf4831b06e3c", help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
     parser.add_argument('--logging_filedir', type=str, default='log/test_level1', help='GAIA dataset cache dir path')
     args = parser.parse_args()
@@ -99,7 +99,7 @@ def main():
             invoke = ''
             if type == 'API':
                 api_path = execute_agent.extract_API_Path(description)
-                code = execute_agent.api_action(description, api_path, pre_tasks_info)
+                code = execute_agent.api_action(task, api_path, pre_tasks_info)
             else:
                 code, invoke = execute_agent.generate_action(action, description, pre_tasks_info, relevant_code)
             # Execute python tool class code
