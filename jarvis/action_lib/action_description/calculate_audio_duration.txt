@@ -1,0 +1,1 @@
+Calculate the duration of the specified audio file and return the duration in seconds.

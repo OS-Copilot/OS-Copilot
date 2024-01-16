@@ -221,7 +221,7 @@ if __name__ == '__main__':
     # print(res[0])
 
     # 删除
-    # actionManager.delete_action("access_document")
+    # actionManager.delete_action("implement_newtons_method")
     # actionManager.delete_action("zip_files")
     # print(actionManager.action_code('zip_files'))
 
@@ -231,9 +231,9 @@ if __name__ == '__main__':
     #     code = file.read()
 
     # info = {
-    #     "task_name" : "read_csv_file",
+    #     "task_name" : "implement_newtons_method",
     #     "code" : code,
-    #     "description" : "Read the content of a CSV file to extract data."
+    #     "description" : "Implement Newton's Method to find a root of the function f(x)."
     # }
 
     # actionManager.add_new_action(info)

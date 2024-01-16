@@ -12,10 +12,10 @@ api_path = '/tools/image_caption'
 method = 'post'
 
 # Define the query parameter to specify the task of extracting butterfat content information
-query_params = {'query': 'What brand are the harnesses the dogs are wearing?'}
+query_params = {'query': 'How many cats are in the attached photo, including those that are partially obscured or not fully in frame?'}
 
 # Define the file to be uploaded
-file_path = '/home/heroding/.cache/huggingface/datasets/downloads/931dbe038478709e8d21e5d04703e9855f590061682b778b9612067c117cdb37.jpg'
+file_path = '/home/heroding/.cache/huggingface/datasets/downloads/28242018ceba2e5429c7fa9fe177fc248eed4d3e90b266190c0175a97166f20b.jpg'
 files = {'image_file': open(file_path, 'rb')}
 
 # Make the API call using the ToolRequestUtil
