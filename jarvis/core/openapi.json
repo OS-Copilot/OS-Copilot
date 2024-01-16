@@ -286,7 +286,7 @@
     },
     "/tools/image_caption": {
       "post": {
-        "summary": "When the task is to question and answer based on local picture, you have to use the Image Caption tool, who can directly analyze picture to answer question and complete task. For local images you want to understand, you need to only give the image_file without url. And you must give the 'query' paramter, its content is the task itself.",
+        "summary": "When the task is to question and answer based on local picture, you have to use the Image Caption tool, who can directly analyze picture to answer question and complete task. For local images you want to understand, you need to only give the image_file without url. It is crucial to provide the 'query' parameter, and its value must be the full content of the task itself.",
         "operationId": "image_search_tools_image_caption_post",
         "parameters": [
           {
