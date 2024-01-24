@@ -40,43 +40,6 @@
           }
         }
       }
-    },    
-    "/tools/arxiv": {
-      "get": {
-        "summary": "tool to get Arxiv Article Information",
-        "description": "Run Arxiv search and get the article meta information.",
-        "operationId": "get_arxiv_article_information_tools_arxiv_get",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ArxivQuery"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
     },
     "/tools/bing/searchv2": {
       "get": {

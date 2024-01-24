@@ -3,19 +3,27 @@ from jarvis.core.tool_request_util import ToolRequestUtil
 # Initialize the ToolRequestUtil
 tool_request_util = ToolRequestUtil()
 
-# Extract the URL for the lyrics page from the context
-lyrics_page_url = "https://www.fao.org/3/ca8753en/ca8753en.pdf"  # URL from the first search result
-
-# Set up the parameters for the API call
+# Define the API path
 api_path = '/tools/bing/load_pagev2'
+
+# Define the method for the API call
 method = 'get'
+
+# Extract the URL from the previous task's context
+bls_page_url = "https://www.bls.gov/news.release/archives/empsit_07022009.pdf"
+
+# Define the query for the API call
+query = ''
+
+# Define the params for the API call
 params = {
-    "url": lyrics_page_url,
-    "query": ""
+    'url': bls_page_url,
+    'query': query
 }
 
-# Call the API
-response = tool_request_util.request(api_path, method, params=params, content_type='application/json')
+# Define the content type
+content_type = 'application/json'
 
-# Print the return value of the API
+# Make the API call and print the return value
+response = tool_request_util.request(api_path, method, params=params, content_type=content_type)
 print(response)

@@ -1,0 +1,1 @@
+Calculate the distances between each pair of adjacent site using latitude and longitude.

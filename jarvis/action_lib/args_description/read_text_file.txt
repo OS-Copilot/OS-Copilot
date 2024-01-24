@@ -1,0 +1,7 @@
+Read the content of the specified text file and return its content.
+
+        Args:
+            file_path (str): The absolute path to the text file to be read.
+
+        Returns:
+            str: The content of the text file, or None if an error occurs.

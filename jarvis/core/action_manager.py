@@ -221,7 +221,7 @@ if __name__ == '__main__':
     # print(res[0])
 
     # 删除
-    # actionManager.delete_action("implement_newtons_method")
+    # actionManager.delete_action("execute_original_python_code")
     # actionManager.delete_action("zip_files")
     # print(actionManager.action_code('zip_files'))
 
@@ -231,9 +231,9 @@ if __name__ == '__main__':
     #     code = file.read()
 
     # info = {
-    #     "task_name" : "implement_newtons_method",
+    #     "task_name" : "execute_original_python_code",
     #     "code" : code,
-    #     "description" : "Implement Newton's Method to find a root of the function f(x)."
+    #     "description" : "Execute the Python code read from a file and get the original output."
     # }
 
     # actionManager.add_new_action(info)

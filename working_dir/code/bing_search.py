@@ -4,16 +4,21 @@ from jarvis.core.tool_request_util import ToolRequestUtil
 tool_request_util = ToolRequestUtil()
 
 # Define the API path
-api_path = '/tools/bing/searchv2'
+api_path = '/tools/bing/load_pagev2'
 
 # Define the method to be used for the API request
 method = 'get'
 
-# Define the parameters for the API request
-# The query is constructed to include information about koi fish, the watershed id, and the year
+# Based on the context provided, the URL for the Lego 4855 instruction manual is obtained from the previous search
+url = "https://www.lego.com/en-us/service/buildinginstructions"
+
+# Define the query for the API request
+query = ''
+
+# Define the params for the API request
 params = {
-    "query": "koi fish 02040203",
-    "top_k": None  # Assuming we want the default number of results
+    'url': url,
+    'query': query
 }
 
 # Define the content type for the API request
@@ -22,5 +27,5 @@ content_type = 'application/json'
 # Make the API request and store the response
 response = tool_request_util.request(api_path, method, params=params, content_type=content_type)
 
-# Print the response from the API
+# Print the return value of the API
 print(response)

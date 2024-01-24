@@ -1,0 +1,1 @@
+Read the full text content of a specified text file.

@@ -10,11 +10,11 @@ class GAIALoader:
             assert os.path.exists(cache_dir), f"Cache directory {cache_dir} does not exist."
             self.cache_dir = cache_dir
             try:
-                self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level1", cache_dir=self.cache_dir)
+                self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level2", cache_dir=self.cache_dir)
             except Exception as e:
                 raise Exception(f"Failed to load GAIA dataset: {e}")
         else:
-            self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level1")
+            self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level2")
             
         
     def get_data_by_task_id(self, task_id, type):
@@ -33,9 +33,9 @@ def main():
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
     parser.add_argument('--query', type=str, default=None, help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
-    parser.add_argument('--task_id', type=str, default="66bd1b1c-443b-4b4e-a108-0fa06527dd62", help='GAIA dataset task_id')
+    parser.add_argument('--task_id', type=str, default="6178671d-6f80-4e0d-9672-54afaf7b527b", help='GAIA dataset task_id')
     parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
-    parser.add_argument('--logging_filedir', type=str, default='log/test_level1', help='GAIA dataset cache dir path')
+    parser.add_argument('--logging_filedir', type=str, default='log/test_level2', help='GAIA dataset cache dir path')
     args = parser.parse_args()
 
     task_id = args.task_id
