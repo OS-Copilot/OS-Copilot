@@ -381,8 +381,10 @@ prompt = {
         24. If the attached file is a png or jpg file, the task must first be decomposed a API subtask, which uses image caption API to analyze image and solve problem. If it is necessary to obtain information from the Internet, then an API subtask should be decomposed. Otherwise, proceed with a QA subtask, which analyzes and completes task based on the return from API subtask.
         25. Please note that all available APIs are only in the API List. You should not make up APIs that are not in the API List.
         26. If the attached file is a mp3 file, you can only break out two subtasks! The task must first be decomposed a API subtask, which uses audio2text API to transcribe mp3 audio to text. Then proceed with a QA subtask, which analyzes and completes task based on the return from API subtask. 
-        35. Since the analyse or the content of the file are in the return value of the first subtask, if the following subtask requires the content or the analyse, the first subtask needs to be added to the dependencies of that subtask.
-        36. If the task has a path to the file, then the subtask that reads the file must write the full path of the file in the task description.
+        27. Since the analyse or the content of the file are in the return value of the first subtask, if the following subtask requires the content or the analyse, the first subtask needs to be added to the dependencies of that subtask.
+        28. If the task has a path to the file, then the subtask that reads the file must write the full path of the file in the task description.
+        29. If the task involves the calculation of ISBN-10, The list of ISBNs that need to be calculated must be fully written in the description of the task.
+        30. Matplotlib will draw a image and save it. If the task involves analyzing the image, you need to use Image Caption API to analyze the saved image.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:

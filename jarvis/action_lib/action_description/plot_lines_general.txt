@@ -1,0 +1,1 @@
+Plots lines connecting numbers and letters based on the given connections and optionally saves the plot as an image.
