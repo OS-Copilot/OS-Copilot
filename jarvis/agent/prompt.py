@@ -52,6 +52,7 @@ prompt = {
         7. The code comments include an example of a class invocation. You can refer to this example, but you should not directly copy it. Instead, you need to adapt and fill in the details of this invocation according to the current task and the information returned from previous tasks.
         8. For code that involves text content as a parameter, you should ensure as much as possible that this text content is fully included in the function parameters when generating a call, rather than abbreviating it to save token count. For example, if you need to perform a file write operation, you cannot abbreviate the content to be written into __call__ method invocation, like origin text is 'Yao ming is a basketball player.', you can not write 'Yao ming is ...'.     
         9. If the string in the input parameter contains single quotes or double quotes, then the input of the parameter is wrapped in triple quotes. The following is an example of an invocation statement: <invoke>Demo()("""xx"x"xxx""" )</invoke>
+        10. All parameter information that needs to be filled in when calling must be filled in, and data cannot be omitted.
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information.         
         ''',
         '_USER_SKILL_CREATE_AND_INVOKE_PROMPT': '''
@@ -129,6 +130,7 @@ prompt = {
         5. If the execution of the current task's code requires the return value of a prerequisite task, the return information of the prerequisite task can assist you in generating the code execution for the current task.
         6. 'Working Directory' in User's information represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
         7. The code comments include an example of a class invocation. You can refer to this example, but you should not directly copy it. Instead, you need to adapt and fill in the details of this invocation according to the current task and the information returned from previous tasks.        
+        8. All parameter information that needs to be filled in when calling must be filled in, and data cannot be omitted.
         Now you will be provided with the following information, please give your modified python code and invocation statement according to these information:
         ''',
         '_USER_SKILL_AMEND_AND_INVOKE_PROMPT' : '''
@@ -337,9 +339,10 @@ prompt = {
         You should only respond with a reasoning process and a JSON result in the format as described below:
         1. Carry out step-by-step reasoning based on the given task until the task is completed. Each step of reasoning is decomposed into sub-tasks. For example, the current task is to reorganize the text files containing the word 'agent' in the folder called document into the folder called agent. Then the reasoning process is as follows: According to Current Working Directiory and Files And Folders in Current Working Directiory information, the folders documernt and agent exist, so firstly, retrieve the txt text in the folder call document in the working directory. If the text contains the word "agent", save the path of the text file into the list, and return. Secondly, put the retrieved files into a folder named agent based on the file path list obtained by executing the previous task.
         2. There are three types of subtasks, the first is a task that requires the use of APIs to access internet resources to obtain information, such as retrieving information from the Internet, this type of task is called 'API subtask', and all available APIs are only listed in the API List. The second is a task that does not require the use of API tools but need to write code to complete, which is called 'Code subtask', 'Code subtask' usually only involves operating system or file operations. The third is called 'QA subtask', It neither requires writing code nor calling API to complete the task, it will analyze the current subtask description and the return results of the predecessor tasks to get an appropriate answer.
-        3. Each decomposed subtask has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a Code task or a API task or a QA task, If it is a Code task, its value is 'Code', if it is a API task, its value is 'API', if it is a QA task, its value is 'QA'.
+        3. Each decomposed subtask has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask, and if the current task is related to a corresponding file operation, the path to the file needs to be written in the 'description'. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a Code task or a API task or a QA task, If it is a Code task, its value is 'Code', if it is a API task, its value is 'API', if it is a QA task, its value is 'QA'.
         4. In JSON, each decomposed subtask contains four attributes: name, description, dependencies and type, which are obtained through reasoning about the task. The key of each subtask is the 'name' attribute of the subtask.
         5. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
+        ```json
         {
             "retrieve_files" : {
                 "name": "retrieve_files",
@@ -353,7 +356,8 @@ prompt = {
                 "dependencies": ["retrieve_files"],
                 "type": "Code"
             }    
-        }        
+        }      
+        ```  
         And you should also follow the following criteria:
         1. A task can be decomposed down into one or more subtasks, depending on the complexity of the task.
         2. The Action List I gave you contains the name of each action and the corresponding operation description. These actions are all atomic code task. You can refer to these atomic operations to decompose the code task.
@@ -382,9 +386,7 @@ prompt = {
         25. Please note that all available APIs are only in the API List. You should not make up APIs that are not in the API List.
         26. If the attached file is a mp3 file, you can only break out two subtasks! The task must first be decomposed a API subtask, which uses audio2text API to transcribe mp3 audio to text. Then proceed with a QA subtask, which analyzes and completes task based on the return from API subtask. 
         27. Since the analyse or the content of the file are in the return value of the first subtask, if the following subtask requires the content or the analyse, the first subtask needs to be added to the dependencies of that subtask.
-        28. If the task has a path to the file, then the subtask that reads the file must write the full path of the file in the task description.
-        29. If the task involves the calculation of ISBN-10, The list of ISBNs that need to be calculated must be fully written in the description of the task.
-        30. Matplotlib will draw a image and save it. If the task involves analyzing the image, you need to use Image Caption API to analyze the saved image.
+        28. If the task has a path to the file, then the subtask that operates the file must write the full path of the file in the task description, for example, add a new sheet, write calculation results into a certain column, etc.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT' : '''
         User's information are as follows:
@@ -405,6 +407,7 @@ prompt = {
         2. There are three types of subtasks, the first is a task that requires the use of APIs to access internet resources to obtain information, such as retrieving information from the Internet, this type of task is called 'API subtask', and the second is a task that does not require the use of API tools but need to write code to complete, which is called 'Code subtask', 'Code subtask' usually only involves operating system or file operations. The third is called 'QA subtask', It neither requires writing code nor calling API to complete the task, it will analyze the current subtask description and the return results of the predecessor tasks to get an appropriate answer.
         3. Each decomposed subtask has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a Code task or a API task or a QA task, If it is a Code task, its value is 'Code', if it is a API task, its value is 'API', if it is a QA task, its value is 'QA'.
         4. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
+        ```json
         {
             "install_package" : {
                 "name": "install_package",
@@ -413,6 +416,7 @@ prompt = {
                 "type" : "Code"
             }
         }
+        ```
         And you should also follow the following criteria:
         1. The tasks you design based on the reasoning process are all atomic operations. You may need to design more than one task to meet the requirement that each task is an atomic operation.
         2. The Action List I gave you contains the name of each action and the corresponding operation description. These actions are all atomic operations. You can refer to these atomic operations to design new task.

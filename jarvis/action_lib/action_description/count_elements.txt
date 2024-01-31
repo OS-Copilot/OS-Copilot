@@ -1,0 +1,1 @@
+Counts the frequency of each element in an iterable.

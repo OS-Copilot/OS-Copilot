@@ -221,19 +221,19 @@ if __name__ == '__main__':
     # print(res[0])
 
     # 删除
-    # actionManager.delete_action("plot_lines_general")
+    # actionManager.delete_action("plot_bar_chart")
     # actionManager.delete_action("zip_files")
     # print(actionManager.action_code('zip_files'))
 
     # 手动添加action
-    code = ''
-    with open("/home/heroding/桌面/Jarvis/working_dir/code/temp.py", 'r') as file:
-        code = file.read()
+    # code = ''
+    # with open("/home/heroding/桌面/Jarvis/working_dir/code/temp.py", 'r') as file:
+    #     code = file.read()
 
-    info = {
-        "task_name" : "plot_two_lines_graph",
-        "code" : code,
-        "description" : "Use matplotlib to plot the data into a line graph with 'x' as the horizontal axis and 'y1' and 'y2' as the vertical axes, then save the graph as 'lines.png' in the working directory."
-    }
+    # info = {
+    #     "task_name" : "create_excel_horizontal_bar_chart",
+    #     "code" : code,
+    #     "description" : "Create a horizontal bar chart in an Excel file."
+    # }
 
-    actionManager.add_new_action(info)
+    # actionManager.add_new_action(info)

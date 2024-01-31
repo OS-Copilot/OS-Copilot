@@ -61,5 +61,5 @@ class create_excel_horizontal_bar_chart(BaseAction):
         print("horizontal bar chart is successfully created!")
 
 # Example usage:
-res = create_excel_horizontal_bar_chart()("/home/heroding/桌面/Jarvis/tasks/SheetTasks/sheets/StockChange.xlsx", "Value of Stock on Dec 31", "Value of Stock on Dec 31", "Stock", "Sheet1")
-print(res)
+# res = create_excel_horizontal_bar_chart()("/home/heroding/桌面/Jarvis/tasks/SheetTasks/sheets/StockChange.xlsx", "Value of Stock on Dec 31", "Value of Stock on Dec 31", "Stock", "Sheet1")
+# print(res)

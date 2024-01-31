@@ -1,0 +1,1 @@
+Insert a line chart into an Excel sheet using the provided data lists.
