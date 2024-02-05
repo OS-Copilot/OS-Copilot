@@ -5,7 +5,7 @@ from langchain.llms import OpenAI
 from langchain.chains import RetrievalQA
 from langchain.document_loaders import TextLoader
 import json
-with open("../../examples/config.json") as f:
+with open("config.json") as f:
     config = json.load(f)
 with open('./test.txt') as f:
     state_of_the_union = f.read()

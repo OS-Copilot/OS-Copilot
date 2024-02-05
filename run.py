@@ -9,11 +9,11 @@ def main():
     parser = argparse.ArgumentParser(description='Inputs')
     parser.add_argument('--action_lib_path', type=str, default='friday/action_lib', help='tool repo path')
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
-    parser.add_argument('--query', type=str, default='''What is China's GDP in each year from 2010 to 2022? Please retrieve the relevant data, analyze and organize it into a structured format, use matplotlib to draw it into a bar chart and save it to the working directory as bar.png.''', help='user query')
+    parser.add_argument('--query', type=str, default='''Move the text files containing the word 'agent' from the folder named 'document' to the path 'working_dir/agent' ''', help='user query')
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
     parser.add_argument('--logging_filedir', type=str, default='log', help='log path')
     parser.add_argument('--logging_filename', type=str, default='temp.log', help='log file name')
-    parser.add_argument('--score', type=int, default=8, help='')
+    parser.add_argument('--score', type=int, default=8, help='critic score > score => store the tool')
     args = parser.parse_args()
     
     logging.basicConfig(filename=os.path.join(args.logging_filedir, args.logging_filename), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -123,11 +123,10 @@ def main():
                 print("I can't Do this Task!!")
                 break
             else: # The task is completed, if code is save the code, args_description, action_description in lib
-                if score >= 8:
+                if score >= args.score:
                     execute_agent.store_action(action, code)
         print("Current task execution completed!!!")  
         planning_agent.update_action(action, result, relevant_code, True, type)
         planning_agent.execute_list.remove(action)
 if __name__ == '__main__':
     main()
-

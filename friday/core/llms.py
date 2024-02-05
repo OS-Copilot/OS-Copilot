@@ -12,6 +12,8 @@ class OpenAI:
         self.model_name = config['model_name']
         openai.api_key = config['OPENAI_API_KEY']
         openai.organization = config['OPENAI_ORGANIZATION']
+        print(openai.api_key)
+        print(openai.organization)
         # openai.proxy = proxy
 
     def chat(self, messages, temperature=0, sleep_time=2):
