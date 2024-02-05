@@ -1,0 +1,1 @@
+However, most of these agents are designed to interact with a narrow domain, such as a specific software or website.
