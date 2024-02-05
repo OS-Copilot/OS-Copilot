@@ -1,5 +1,4 @@
 import platform
-# import os
 
 def get_os_version():
     system = platform.system()
@@ -8,7 +7,6 @@ def get_os_version():
         # macOS
         return 'macOS ' + platform.mac_ver()[0]
     elif system == "Linux":
-        # Linux: 尝试读取 /etc/os-release 文件
         try:
             with open("/etc/os-release") as f:
                 lines = f.readlines()
@@ -18,7 +16,6 @@ def get_os_version():
         except FileNotFoundError:
             pass
 
-        # 如果 /etc/os-release 不存在或无法提供所需信息
         return platform.version()
     else:
         return "Unknown Operating System"
