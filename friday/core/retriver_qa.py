@@ -17,7 +17,7 @@ embeddings = OpenAIEmbeddings(
     openai_organization=config['OPENAI_ORGANIZATION'],
 )
 docsearch = Chroma.from_documents(texts, embeddings)
-query = "请总结https://zhuanlan.zhihu.com/p/541484549这个网页主要讲了什么"
+query = "Please summarize what this webpage https://zhuanlan.zhihu.com/p/541484549 is mainly about."
 docs = docsearch.similarity_search(query, k=3)
 res = '...'.join([doc.page_content for doc in docs])
 print(res)

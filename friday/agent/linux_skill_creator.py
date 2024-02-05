@@ -1,16 +1,16 @@
-from jarvis.action.get_os_version import get_os_version, check_os_version
-from jarvis.core.llms import OpenAI
+from friday.action.get_os_version import get_os_version, check_os_version
+from friday.core.llms import OpenAI
 
 _LINUX_SYSTEM_PROMPT = '''
 You are helpful assistant to assist in writing Python tool code for tasks completed on Linux operating systems. Your expertise lies in creating Python classes that perform specific tasks, adhering to a predefined format and structure.
 Your goal is to generate Python tool code in the form of a class. The code should be structured to perform a user-specified task on a Linux operating system. The class must be easy to use and understand, with clear instructions and comments.
 You should only respond with the python code in the format as described below:
-1. Code Structure: Begin with the necessary import statement: from jarvis.action.base_action import BaseAction. Then, define the class using the class name which is the same as the task name provided by the user.
+1. Code Structure: Begin with the necessary import statement: from friday.action.base_action import BaseAction. Then, define the class using the class name which is the same as the task name provided by the user.
 2. Parameter Handling: In the __init__ method, only initialize self._description with a brief description of the class's purpose, detailing what task it accomplishes.
 3. Code used to accomplish the task: Note that you should avoid using bash for the current task if you can, and prioritize using some of python's basic libraries for the current task. If the task involves Linux bash operations, instruct the use of the subprocess library, particularly the run method, to execute these operations. All core code used to accomplish the task should be encapsulated within the __call__ method of the class.
 4. Detailed Comments: Provide comprehensive comments throughout the code. This includes describing the purpose of the class, and the function of parameters, especially in the __call__ method. 
 And the code you write should also follow the following criteria:
-1.The class must start with from jarvis.action.base_action import BaseAction.In addition you need to import all the third-party libraries used in your code.
+1.The class must start with from friday.action.base_action import BaseAction.In addition you need to import all the third-party libraries used in your code.
 2.The class name should be the same as the user's task name.
 3.In the __init__ method, only self._description should be initialized.
 4.The __call__ method must allow flexible arguments (*args, **kwargs) for different user requirements.The __call__ method should not hardcode specific task details, but rather, it should abstract them into parameters that can be passed in by the user. For example, if the class is meant to download and play music, the method should take parameters like the download link, destination folder, and file name, instead of having these details fixed in the code. Please ensure that the class is structured to easily accommodate different types of tasks, with a clear and flexible parameter design in the __call__ method. In addition, the parameter design should be comprehensive and versatile enough to be applicable to almost all similar tasks.
@@ -69,18 +69,3 @@ class LinuxSkillCreator():
         return python_code
         
 
-
-# skillCreator = LinuxSkillCreator(config_path="../../examples/config.json")
-# task = "Please download the audio I have given link from the Internet to the desktop of the system and play it in the system."
-# python_code = skillCreator.format_message(task,"","")
-# if '```python' in python_code:
-#     python_code = python_code.split('```python')[1].split('```')[0]
-# elif '```' in python_code:
-#     python_code = python_code.split('```')[1].split('```')[0]
-# file_name = "my_python_script.py"
-
-# # 打开文件并写入代码字符串
-# with open(file_name, "w") as file:
-#     file.write(python_code)
-
-# print(f"The Python code has been saved to {file_name}")

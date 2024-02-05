@@ -1,1 +1,0 @@
-Calculate the ISBN-10 check digits for the provided 9-digit numbers.

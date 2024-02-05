@@ -1,24 +1,24 @@
 import os
 
 from fastapi import FastAPI
-from jarvis.core.server_config import ConfigManager
+from friday.core.server_config import ConfigManager
 
 app = FastAPI()
 
 # Import your services
-from jarvis.api.python.interpreter import router as python_router
-from jarvis.api.arxiv.arxiv import router as arxiv_router
-from jarvis.api.bing.bing_service import router as bing_router
-from jarvis.api.calculator.calculator import router as calculator_router
-from jarvis.api.chemical.chemical import router as chemical_router
-from jarvis.api.ppt.ppt import router as ppt_router
-from jarvis.api.shell.shell import router as shell_router
-from jarvis.api.database.database import router as db_router
-from jarvis.api.wolfram_alpha.wolfram_alpha import router as wa_router
-from jarvis.api.weather.weather import router as weather_router  # 新增这一行
-from jarvis.api.google_calendar.calendar_service import router as calendar_router
-from jarvis.api.gmail.gmail import router as gmail_router  # 新增这一行
-from jarvis.api.markdown.markdown_service import router as markdown_router  # 新增这一行
+from friday.api.python.interpreter import router as python_router
+from friday.api.arxiv.arxiv import router as arxiv_router
+from friday.api.bing.bing_service import router as bing_router
+from friday.api.calculator.calculator import router as calculator_router
+from friday.api.chemical.chemical import router as chemical_router
+from friday.api.ppt.ppt import router as ppt_router
+from friday.api.shell.shell import router as shell_router
+from friday.api.database.database import router as db_router
+from friday.api.wolfram_alpha.wolfram_alpha import router as wa_router
+from friday.api.weather.weather import router as weather_router 
+from friday.api.google_calendar.calendar_service import router as calendar_router
+from friday.api.gmail.gmail import router as gmail_router
+from friday.api.markdown.markdown_service import router as markdown_router
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request

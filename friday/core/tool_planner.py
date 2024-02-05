@@ -1,9 +1,8 @@
 import requests
 import json
 import os
-from langchain.utilities import BingSearchAPIWrapper
-from jarvis.action.get_os_version import get_os_version, check_os_version
-from jarvis.core.llms import OpenAI
+from friday.action.get_os_version import get_os_version, check_os_version
+from friday.core.llms import OpenAI
 
 sys_prompt = '''
 You are a helpful assistant that can answer the user's questions with the help of tools.You are provided with the following tools:

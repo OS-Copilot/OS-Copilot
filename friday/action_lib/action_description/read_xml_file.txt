@@ -1,1 +1,0 @@
-Read the full text content of the specified XML file.

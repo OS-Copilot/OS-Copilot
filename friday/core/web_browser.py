@@ -1,11 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
 import re
-import json
 from typing import Tuple
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+
 # url = "https://en.wikipedia.org/wiki/Mercedes_Sosa"
 # with open("../../examples/config.json") as f:
 #     config = json.load(f)
@@ -53,7 +50,7 @@ def web_browser( url: str, max_retry: int = 3) -> Tuple[bool, str]:
 url = "https://zhuanlan.zhihu.com/p/541484549"
 page_detail = web_browser(url=url)
 print(page_detail)
-print("共{}个字符".format(len(page_detail)))
+print("{} token".format(len(page_detail)))
 
 # with open("test.json", "w", encoding="utf-8") as f:
 #     json.dump(page_detail, f, ensure_ascii=False, indent=4)

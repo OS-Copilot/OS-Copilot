@@ -1,4 +1,4 @@
-from jarvis.core.tool_request_util import ToolRequestUtil
+from friday.core.tool_request_util import ToolRequestUtil
 
 # Initialize the ToolRequestUtil
 tool_request_util = ToolRequestUtil()

@@ -177,18 +177,15 @@ if __name__ == '__main__':
     # print(res[0])
 
     # Delete
-    
-    # actionManager.delete_action("plot_bar_chart")
     # actionManager.delete_action("zip_files")
-    # print(actionManager.action_code('zip_files'))
 
     # Add
     # code = ''
-    # with open("/home/heroding/桌面/Jarvis/working_dir/code/temp.py", 'r') as file:
+    # with open("working_dir/code/temp.py", 'r') as file:
     #     code = file.read()
     # info = {
-    #     "task_name" : "create_excel_horizontal_bar_chart",
+    #     "task_name" : "XXX",
     #     "code" : code,
-    #     "description" : "Create a horizontal bar chart in an Excel file."
+    #     "description" : "XXX"
     # }
     # actionManager.add_new_action(info)

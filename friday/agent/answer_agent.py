@@ -1,5 +1,5 @@
-from jarvis.core.llms import OpenAI
-import json
+from friday.core.llms import OpenAI
+
 QA_SYS_PROMPT='''
 You are a helpful ai assistant that can answer the questions asked by the user
 with the help of the context provided by the user in a step by step manner.

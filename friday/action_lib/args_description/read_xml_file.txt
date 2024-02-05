@@ -1,7 +1,0 @@
-Read the content of the specified XML file and return its content.
-
-        Args:
-            file_path (str): The absolute path to the XML file to be read.
-
-        Returns:
-            str: The content of the XML file, or None if an error occurs.

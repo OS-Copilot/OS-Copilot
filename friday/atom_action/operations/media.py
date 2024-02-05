@@ -1,7 +1,7 @@
 import sys
 
 sys.dont_write_bytecode = True
-from jarvis.atom_action.src import *
+from friday.atom_action.src import *
 
 def view_document(file_path) -> None:
     return evince(file_path)

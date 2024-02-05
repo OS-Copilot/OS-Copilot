@@ -1,5 +1,5 @@
-from jarvis.action.get_os_version import get_os_version, check_os_version
-from jarvis.core.llms import OpenAI
+from friday.action.get_os_version import get_os_version, check_os_version
+from friday.core.llms import OpenAI
 import json
 _LINUX_SYSTEM_Judger_PROMPT = '''
 You are an AI programmed to verify Python code against a user's task requirements.
@@ -61,7 +61,7 @@ class LinuxTaskJudger():
 
 # judger = LinuxTaskJudger(config_path="../../examples/config.json")
 # current_code='''
-# from jarvis.action.base_action import BaseAction
+# from friday.action.base_action import BaseAction
 # import os
 
 # class create_folder(BaseAction):
@@ -91,7 +91,7 @@ class LinuxTaskJudger():
 # '''
 # task="create a folder which is named test2 under the working directory"
 # code_output =""
-# working_dir ="/home/wengzhenmin/Projects/jarvis/working_dir"
+# working_dir ="/home/wengzhenmin/Projects/friday/working_dir"
 # files_and_folders ="ss\n"
 # res = judger.judge(current_code=current_code,code_output=code_output,task=task,working_dir=working_dir,files_and_folders=files_and_folders)
 # print(res)

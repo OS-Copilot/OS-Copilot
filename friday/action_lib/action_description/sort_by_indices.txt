@@ -1,1 +1,0 @@
-Sorts an array based on the order defined in a separate list of indices.

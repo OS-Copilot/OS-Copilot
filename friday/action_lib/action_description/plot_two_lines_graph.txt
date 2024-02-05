@@ -1,1 +1,0 @@
-Use matplotlib to plot the data into a line graph with 'x' as the horizontal axis and 'y1' and 'y2' as the vertical axes, then save the graph as 'lines.png' in the working directory.

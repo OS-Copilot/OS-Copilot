@@ -1,9 +1,6 @@
-import openai
 from openai import OpenAI
 from utils import cosine_similarity
 import json
-
-
 
 """
     Use to generate embedding of the text

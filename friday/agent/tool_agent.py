@@ -1,5 +1,5 @@
-from jarvis.core.llms import OpenAI
-from jarvis.environment.py_env import PythonEnv
+from friday.core.llms import OpenAI
+from friday.environment.py_env import PythonEnv
 import json
 '''
 让大模型根据目标工具的API文档做网络请求，获取到响应数据并返回
@@ -28,7 +28,7 @@ Please begin your code completion:
 '''
 
 TOOL_USER_PROMPT='''
-from jarvis.core.tool_request_util import ToolRequestUtil
+from friday.core.tool_request_util import ToolRequestUtil
 tool_request_util = ToolRequestUtil()
 # TODO: your code here
 '''

@@ -41,5 +41,5 @@ class ActionNode:
 
 
 if __name__ == '__main__':
-    node = ActionNode('dzc','xxx')
+    node = ActionNode('temp','xxx')
     print(node.name)

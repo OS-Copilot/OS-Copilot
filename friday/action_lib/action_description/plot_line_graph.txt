@@ -1,1 +1,0 @@
-Use matplotlib to plot the data into a line graph.

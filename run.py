@@ -2,66 +2,31 @@ import os
 import argparse
 import logging
 from datasets import load_dataset
-from jarvis.agent.jarvis_agent import JarvisAgent
+from friday.agent.friday_agent import FridayAgent
 
-class GAIALoader:
-    def __init__(self, cache_dir=None):
-        if cache_dir != None:
-            assert os.path.exists(cache_dir), f"Cache directory {cache_dir} does not exist."
-            self.cache_dir = cache_dir
-            try:
-                self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level2", cache_dir=self.cache_dir)
-            except Exception as e:
-                raise Exception(f"Failed to load GAIA dataset: {e}")
-        else:
-            self.dataset = load_dataset("gaia-benchmark/GAIA", "2023_level2")
-            
-        
-    def get_data_by_task_id(self, task_id, type):
-        if self.dataset is None or type not in self.dataset:
-            raise ValueError("Dataset not loaded or data set not available.")
-
-        data_set = self.dataset[type]
-        for record in data_set:
-            if record['task_id'] == task_id:
-                return record
-        return None
 
 def main():
     parser = argparse.ArgumentParser(description='Inputs')
-    parser.add_argument('--action_lib_path', type=str, default='../jarvis/action_lib', help='tool repo path')
+    parser.add_argument('--action_lib_path', type=str, default='friday/action_lib', help='tool repo path')
     parser.add_argument('--config_path', type=str, default='config.json', help='openAI config file path')
     parser.add_argument('--query', type=str, default='''What is China's GDP in each year from 2010 to 2022? Please retrieve the relevant data, analyze and organize it into a structured format, use matplotlib to draw it into a bar chart and save it to the working directory as bar.png.''', help='user query')
-    parser.add_argument('--query_file_path', type=str, default=None, help='user query file path')
-    parser.add_argument('--task_id', type=str, default=None, help='GAIA dataset task_id')
-    parser.add_argument('--cache_dir', type=str, default=None, help='GAIA dataset cache dir path')
-    parser.add_argument('--logging_filedir', type=str, default='log/case', help='GAIA dataset cache dir path')
+    parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
+    parser.add_argument('--logging_filedir', type=str, default='log', help='log path')
+    parser.add_argument('--logging_filename', type=str, default='temp.log', help='log file name')
+    parser.add_argument('--score', type=int, default=8, help='')
     args = parser.parse_args()
-
-    task_id = args.task_id
-    query = args.query
     
-    # logging.basicConfig(filename=os.path.join(args.logging_filedir, "{}.log".format(task_id)), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    logging.basicConfig(filename=os.path.join(args.logging_filedir, "bar.log"), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename=os.path.join(args.logging_filedir, args.logging_filename), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-    jarvis_agent = JarvisAgent(config_path=args.config_path, action_lib_dir=args.action_lib_path)
-    planning_agent = jarvis_agent.planner
-    retrieve_agent = jarvis_agent.retriever
-    execute_agent = jarvis_agent.executor
+    friday_agent = FridayAgent(config_path=args.config_path, action_lib_dir=args.action_lib_path)
+    planning_agent = friday_agent.planner
+    retrieve_agent = friday_agent.retriever
+    execute_agent = friday_agent.executor
 
-    if task_id:
-        print('Use the task_id {} to get the corresponding question in the GAIA dataset.'.format(task_id))
-        data = GAIALoader(args.cache_dir).get_data_by_task_id(task_id, "test")
-        # task = 'Your task is: {0}\nThe path of the files you need to use(if exists): {1}'.format(data['Question'], data['file_path'])
-        task = 'Your task is: {0}'.format(data['Question'])
-        if data['file_name'] != '':
-            task = task + '\nThe path of the files you need to use: {0}.{1}'.format(data['file_path'], data['file_name'].split('.')[-1])
-    elif task_id == None and query != '':
-        task = 'Your task is: {0}'.format(args.query)
-        if args.query_file_path != None:
-            task = task + '\nThe path of the files you need to use: {0}'.format(args.query_file_path)
-    else:
-        raise ValueError("Task_id and query cannot be both None or both not None.")
+    task = 'Your task is: {0}'.format(args.query)
+    if args.query_file_path != '':
+        task = task + '\nThe path of the files you need to use: {0}'.format(args.query_file_path)
+
     print('Task:\n'+task)
     logging.info(task)
 

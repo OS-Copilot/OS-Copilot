@@ -1,1 +1,0 @@
-Open the terminal interface and view the system's CPU usage.

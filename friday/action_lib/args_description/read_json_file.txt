@@ -1,7 +1,0 @@
-Read the content of the specified JSON file and return its content.
-
-        Args:
-            json_file_path (str): The absolute path to the JSON file to be read.
-
-        Returns:
-            dict: The content of the JSON file.

@@ -1,1 +1,0 @@
-Implement Newton's Method to find a root of the function f(x).

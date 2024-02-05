@@ -1,7 +1,0 @@
-Extract the full text content of the specified JSON Lines file and return its content.
-
-        Args:
-            jsonl_file_path (str): The absolute path to the JSON Lines file to be read.
-
-        Returns:
-            list: A list of dictionaries, each representing a line in the JSON Lines file.

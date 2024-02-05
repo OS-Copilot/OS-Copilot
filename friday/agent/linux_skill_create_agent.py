@@ -1,6 +1,6 @@
-from jarvis.action.get_os_version import get_os_version, check_os_version
-from jarvis.core.llms import OpenAI
-from jarvis.agent.prompt import prompt_dict
+from friday.action.get_os_version import get_os_version, check_os_version
+from friday.core.llms import OpenAI
+from friday.agent.prompt import prompt_dict
 import re
 import json
 
@@ -166,31 +166,3 @@ class LinuxSkillCreateAgent():
         action_match = re.search(init_pattern, class_code, re.DOTALL)
         action_description = action_match.group(1).strip() if action_match else None
         return action_description
-    
-# skill_create_agent = LinuxSkillCreateAgent(config_path='../../examples/config.json')
-# action_description = skill_create_agent.extract_action_description('''
-# class view_cpu_usage(BaseAction):
-#     def __init__(self):
-#         self._description = "Open the terminal interface and view the system's CPU usage."
-
-#     def __call__(self, working_directory=None, *args, **kwargs):
-#         """
-#         Open the terminal interface and view the system's CPU usage.
-
-#         Args:
-#         working_directory (str): The working directory path. If not provided, the default working directory will be used.
-
-#         Returns:
-#         None
-#         """
-#         try:
-#             # If working_directory is provided, change the current working directory to the specified path
-#             if working_directory:
-#                 subprocess.run(["top"], cwd=working_directory, shell=True)
-#             else:
-#                 subprocess.run(["top"])
-#         except Exception as e:
-#             print(f"An error occurred: {e}")
-
-# ''')
-# print(action_description)

@@ -1,7 +1,7 @@
-from langchain.tools import BaseTool, StructuredTool, Tool, tool
-from jarvis.core.web_browser import web_browser
+from langchain.tools import Tool
+from friday.core.web_browser import web_browser
 from langchain.utilities import BingSearchAPIWrapper
-from jarvis.core.tools_args_schema import *
+from friday.core.tools_args_schema import *
 import os
 os.environ["BING_SUBSCRIPTION_KEY"] = "885e62a126554fb390af88ae31d2c8ff"
 os.environ["BING_SEARCH_URL"] = "https://api.bing.microsoft.com/v7.0/search"

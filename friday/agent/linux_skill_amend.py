@@ -1,5 +1,5 @@
-from jarvis.action.get_os_version import get_os_version, check_os_version
-from jarvis.core.llms import OpenAI
+from friday.action.get_os_version import get_os_version, check_os_version
+from friday.core.llms import OpenAI
 
 _LINUX_SYSTEM_AMEND_PROMPT = '''
 You are an AI expert in Python programming, with a focus on diagnosing and resolving code issues.
@@ -67,42 +67,3 @@ class LinuxSkillAmend():
         elif '```' in python_code:
             python_code = response.split('```')[1].split('```')[0]
         return python_code
-
-# amender = LinuxSkillAmend("../../examples/config.json")
-# original_code='''
-# from jarvis.action.base_action import BaseAction
-# import os
-
-# class create_folder(BaseAction):
-#     def __init__(self):
-#         self._description = "Create a folder under the working directory"
-
-#     def __call__(self, *args, **kwargs):
-#         # Get the working directory
-#         working_dir = os.getcwd()
-
-#         # Create the folder path
-#         folder_name = "ss"
-#         folder_path = os.path.join(working_dir, folder_name)
-
-#         # Check if the folder already exists
-#         if os.path.exists(folder_path):
-#             print(f"The folder '{folder_name}' already exists.")
-#         else:
-#             # Create the folder
-#             os.makedirs(folder_path)
-#             print(f"The folder '{folder_name}' has been created under the working directory.")
-
-# # Example usage
-# # create_folder_action = create_folder()
-# # create_folder_action()
-# '''
-
-# error=""
-# task="create a folder which is named test2 under the working directory"
-# code_output =""
-# working_dir ="/home/wengzhenmin/Projects/jarvis/working_dir"
-# files_and_folders ="ss\n"
-# critique="The code provided defines a class called 'create_folder' which inherits from 'BaseAction'. The 'create_folder' class has an '__init__' method that sets the description of the action. The '__call__' method is the main method that is called when the action is executed. Within this method, the code gets the current working directory using 'os.getcwd()'. It then creates the folder path by joining the working directory with the folder name 'ss'. It checks if the folder already exists using 'os.path.exists()'. If the folder exists, it prints a message indicating that the folder already exists. If the folder does not exist, it creates the folder using 'os.makedirs()' and prints a message indicating that the folder has been created. The code does not take any input parameters or return any values."
-# res = amender.amend_code(original_code=original_code,task=task,error=error,code_output=code_output,working_dir=working_dir,files_and_folders=files_and_folders,critique=critique)
-# print(res)

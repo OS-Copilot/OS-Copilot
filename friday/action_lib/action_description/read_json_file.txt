@@ -1,1 +1,0 @@
-Read the content of the specified JSON file.

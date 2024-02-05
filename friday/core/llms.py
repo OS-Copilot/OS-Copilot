@@ -1,9 +1,6 @@
-import os
 import openai
-import time
 import json
 import logging
-
 
 class OpenAI:
     """

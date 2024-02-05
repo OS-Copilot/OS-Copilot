@@ -34,5 +34,5 @@ class ToolRequestUtil:
                 return None
             return result
         except Exception as e:
-            print("http request error：%s" % e)
+            print("http request error: %s" % e)
             return None

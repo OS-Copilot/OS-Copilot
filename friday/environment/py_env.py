@@ -1,9 +1,7 @@
 import subprocess
-import time
 import os
-from typing import Optional, Union
-from jarvis.core.schema import ActionReturn, ActionStatusCode, EnvState
-from jarvis.environment.env import Env
+from friday.core.schema import EnvState
+from friday.environment.env import Env
 from tempfile import NamedTemporaryFile
 
 
@@ -23,7 +21,7 @@ class PythonEnv(Env):
 
     def step(self, _command: str, args: list[str] | str = []) -> EnvState:
         tmp_code_file = NamedTemporaryFile("w", dir=self.working_dir, suffix=".py", encoding="utf-8")
-        # wzm修改，解决拿不到最后一行输出的当前工作目录问题
+        # Solving the issue of not being able to retrieve the current working directory of the last line of output
         _command = _command.strip() + "\n"  + "import os" + "\n" + "print(os.getcwd())"
         tmp_code_file.write(_command)
         tmp_code_file.flush()
@@ -39,7 +37,7 @@ class PythonEnv(Env):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
-            # wzm修改：如果有标准化输出
+            # If there is standard output.
             if results.stdout:
                 stout = results.stdout.strip().split('\n')
                 self.env_state.result = "\n".join(stout[:-1])

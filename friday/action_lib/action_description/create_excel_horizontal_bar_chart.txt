@@ -1,1 +1,0 @@
-Create a horizontal bar chart in an Excel file.

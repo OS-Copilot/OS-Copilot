@@ -1,1 +1,0 @@
-Zip all the files in a specified folder and name the zip file with a specified filename.

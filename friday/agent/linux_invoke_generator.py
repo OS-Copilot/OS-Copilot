@@ -1,6 +1,6 @@
-from jarvis.action.get_os_version import get_os_version, check_os_version
+from friday.action.get_os_version import get_os_version, check_os_version
 import re
-from jarvis.core.llms import OpenAI
+from friday.core.llms import OpenAI
 
 _LINUX_SYSTEM_INVOKE_GENERATOR_PROMPT = '''
 You are an AI trained to assist with Python programming tasks, with a focus on class and method usage.
@@ -98,41 +98,3 @@ class LinuxInvokeGenerator():
         call_method_docstring = call_method_docstring_match.group(1).strip() if call_method_docstring_match else None
 
         return class_name, call_method_docstring
-
-    
-
-# class_code = '''
-                       
-# from jarvis.action.base_action import BaseAction
-# import os
-
-# class create_folder(BaseAction):
-#     def __init__(self):
-#         self._description = "Create a folder under the working directory"
-
-#     def __call__(self, folder_name):
-#         """
-#         :param folder_name: The name of the folder to be created
-#         """
-#         # Change the current working directory to the specified path
-#         os.chdir("/home/wengzhenmin/Projects/jarvis/working_dir")
-
-#         # Create the folder
-#         os.makedirs(folder_name)
-
-# # Example usage:
-# # create_folder_action = create_folder()
-# # create_folder_action("test2")
-
-# '''
-# # task_description = '''
-# # download music from the Internet to the DeskTop, and play it.
-# # '''
-
-# test = LinuxInvokeGenerator(config_path="../../examples/config.json")
-# print(test.extract_class_name_and_args_description(class_code))
-
-# file_path = 'invoke.txt'
-# res = test.invoke_generator(class_code, task_description)
-# with open(file_path, 'w', encoding='utf-8') as file:
-#     file.write(res)

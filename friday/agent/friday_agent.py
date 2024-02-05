@@ -1,17 +1,17 @@
-from jarvis.agent.base_agent import BaseAgent
-from jarvis.core.action_node import ActionNode
+from friday.agent.base_agent import BaseAgent
+from friday.core.action_node import ActionNode
 from collections import defaultdict, deque
-from jarvis.environment.py_env import PythonEnv
-from jarvis.core.llms import OpenAI
-from jarvis.core.action_manager import ActionManager
-from jarvis.action.get_os_version import get_os_version, check_os_version
-from jarvis.agent.prompt import prompt
-from jarvis.core.utils import get_open_api_description_pair, get_open_api_doc_path
+from friday.environment.py_env import PythonEnv
+from friday.core.llms import OpenAI
+from friday.core.action_manager import ActionManager
+from friday.action.get_os_version import get_os_version, check_os_version
+from friday.agent.prompt import prompt
+from friday.core.utils import get_open_api_description_pair, get_open_api_doc_path
 import re
 import json
 import logging
 
-class JarvisAgent(BaseAgent):
+class FridayAgent(BaseAgent):
     """ AI agent class, including planning, retrieval and execution modules """
 
     def __init__(self, config_path=None, action_lib_dir=None, max_iter=3):
@@ -31,7 +31,7 @@ class JarvisAgent(BaseAgent):
 
     def run(self, task):
         """
-        Run JarvisAgent to execute task.
+        Run FridayAgent to execute task.
         """
         # relevant action 
         retrieve_action_name = self.retriever.retrieve_action_name(task)
@@ -898,5 +898,5 @@ class ExecutionModule(BaseAgent):
 
 
 if __name__ == '__main__':
-    agent = JarvisAgent(config_path='../../examples/config.json', action_lib_dir="../../jarvis/action_lib")
+    agent = FridayAgent(config_path='../../examples/config.json', action_lib_dir="friday/action_lib")
     print(agent.executor.extract_API_Path('''Use the "/tools/arxiv' API to search for the autogen paper and retrieve its summary.'''))

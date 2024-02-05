@@ -1,5 +1,5 @@
 from action.get_os_version import get_os_version, check_os_version
-from jarvis.core.llms import OpenAI
+from friday.core.llms import OpenAI
 
 _MAC_SYSTEM_PROMPT = '''
 You are a helpful assistant that writes AppleScript code to complete any task specified by me.
@@ -26,7 +26,7 @@ System Version: {system_version}
 Task: {task}
 You should only respond in the format as described below:
 
-from jarvis.action.base_action import BaseAction
+from friday.action.base_action import BaseAction
 
 # TODO: you should write a class in the following format, and the class name should be the same as the task name,besides,you can design the parameters of __call__ as you want.
 class task_name(BaseAction):
