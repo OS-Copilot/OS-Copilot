@@ -4,6 +4,12 @@ import logging
 from datasets import load_dataset
 from friday.agent.friday_agent import FridayAgent
 
+def random_string(length):
+    import string
+    import random
+    characters = string.ascii_letters + string.digits
+    random_string = ''.join(random.choice(characters) for _ in range(length))
+    return random_string
 
 def main():
     parser = argparse.ArgumentParser(description='Inputs')
@@ -13,13 +19,18 @@ def main():
     parser.add_argument('--query_file_path', type=str, default='', help='user query file path')
     parser.add_argument('--logging_filedir', type=str, default='log', help='log path')
     parser.add_argument('--logging_filename', type=str, default='temp.log', help='log file name')
+    parser.add_argument('--logging_prefix', type=str, default=random_string(16), help='log file prefix')
     parser.add_argument('--score', type=int, default=8, help='critic score > score => store the tool')
     args = parser.parse_args()
 
     if not os.path.exists(args.logging_filedir):
         os.mkdir(args.logging_filedir)
 
-    logging.basicConfig(filename=os.path.join(args.logging_filedir, args.logging_filename), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(
+        filename=os.path.join(args.logging_filedir, args.logging_filename),
+        level=logging.INFO,
+        format=f'[{args.logging_prefix}] %(asctime)s - %(levelname)s - %(message)s'
+    )
 
     friday_agent = FridayAgent(config_path=args.config_path, action_lib_dir=args.action_lib_path)
     planning_agent = friday_agent.planner

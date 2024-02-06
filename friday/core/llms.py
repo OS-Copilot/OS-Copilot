@@ -22,7 +22,7 @@ class OpenAI:
             messages=messages,
             temperature=temperature
         )
-        logging.info(response.choices[0].message.content)
+        logging.info(f"Response: {response.choices[0].message.content}")
 
         # time.sleep(sleep_time)
         # return response['choices'][0]['message']

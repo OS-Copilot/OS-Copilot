@@ -77,6 +77,11 @@ class FridayAgent(BaseAgent):
                 state = self.executor.execute_action(code, invoke, type)   
                 result = state.result 
                 logging.info(state) 
+                output = {
+                    "result": state.result,
+                    "error": state.error
+                }
+                logging.info(f"The subtask result is: {json.dumps(output)}")
             # Check whether the code runs correctly, if not, amend the code
             if type == 'Code':
                 need_mend = False
@@ -160,6 +165,7 @@ class PlanningModule(BaseAgent):
         files_and_folders = self.environment.list_working_dir()
         action_description_pair = json.dumps(action_description_pair)
         response = self.task_decompose_format_message(task, action_description_pair, files_and_folders)
+        logging.info(f"The overall response is: {response}")
         decompose_json = self.extract_json_from_string(response)
         # Building action graph and topological ordering of actions
         self.create_action_graph(decompose_json)
