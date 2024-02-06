@@ -76,12 +76,7 @@ class FridayAgent(BaseAgent):
                 # Execute python tool class code
                 state = self.executor.execute_action(code, invoke, type)   
                 result = state.result 
-                logging.info(state) 
-                output = {
-                    "result": state.result,
-                    "error": state.error
-                }
-                logging.info(f"The subtask result is: {json.dumps(output)}")
+                logging.info(state)
             # Check whether the code runs correctly, if not, amend the code
             if type == 'Code':
                 need_mend = False

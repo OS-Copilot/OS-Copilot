@@ -87,7 +87,12 @@ def main():
             # Execute python tool class code
             state = execute_agent.execute_action(code, invoke, type)   
             result = state.result 
-            logging.info(state) 
+            logging.info(state)
+            output = {
+                "result": state.result,
+                "error": state.error
+            }
+            logging.info(f"The subtask result is: {json.dumps(output)}")
         # Check whether the code runs correctly, if not, amend the code
         if type == 'Code':
             need_mend = False
