@@ -1,3 +1,4 @@
+from __future__ import annotations
 import subprocess
 import os
 from friday.core.schema import EnvState
@@ -35,7 +36,8 @@ class PythonEnv(Env):
                 encoding="utf8",
                 check=True, cwd=self.working_dir, timeout=self.timeout,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.PIPE,
+                env={ "PYTHONPATH": os.getcwd() }
             )
             # If there is standard output.
             if results.stdout:
