@@ -15,7 +15,10 @@ def main():
     parser.add_argument('--logging_filename', type=str, default='temp.log', help='log file name')
     parser.add_argument('--score', type=int, default=8, help='critic score > score => store the tool')
     args = parser.parse_args()
-    
+
+    if not os.path.exists(args.logging_filedir):
+        os.mkdir(args.logging_filedir)
+
     logging.basicConfig(filename=os.path.join(args.logging_filedir, args.logging_filename), level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
     friday_agent = FridayAgent(config_path=args.config_path, action_lib_dir=args.action_lib_path)

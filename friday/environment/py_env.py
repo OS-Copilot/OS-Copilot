@@ -1,3 +1,4 @@
+from __future__ import annotations
 import subprocess
 import os
 from friday.core.schema import EnvState

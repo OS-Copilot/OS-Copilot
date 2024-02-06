@@ -4,6 +4,7 @@ Auto-GPT/
 Agents/
 utils/
 
+/log
 /examples/log/*
 working_dir/*.log
 .vs/
