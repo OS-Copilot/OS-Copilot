@@ -1,11 +1,20 @@
 # OS-Copilot: Towards Generalist Computer Agents with Self-Improvement
 
+<div align="center">
+
+[[Website]](https://os-copilot.github.io/)
+[[Arxiv]]()
+[[PDF]]()
+<!-- [[Tweet]](https://twitter.com/DrJimFan/status/1662115266933972993?s=20) -->
+
 [![Static Badge](https://img.shields.io/badge/MIT-License-green)](https://github.com/OS-Copilot/FRIDAY/blob/main/LICENSE)
 ![Static Badge](https://img.shields.io/badge/python-3.10-blue)
 
 <p align="center">
   <img src='pic/demo.png' width=550>
 </p>
+______________________________________________________________________
+</div>
 
 ## 📖 Overview
 
