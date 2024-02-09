@@ -11,7 +11,7 @@
 ![Static Badge](https://img.shields.io/badge/python-3.10-blue)
 
 <p align="center">
-  <img src='pic/demo.png' width=550>
+  <img src='pic/demo.png' width="100%">
 </p>
 
 </div>
@@ -21,13 +21,13 @@
 - **OS-Copilot** is a pioneering conceptual framework for building generalist computer agents on Linux and MacOS, which provides a unified interface for app interactions in the heterogeneous OS ecosystem.
   
 <p align="center">
-  <img src='pic/framework.png' width=550>
+  <img src='pic/framework.png' width="75%">
 </p>
 
 - Leveraging OS-Copilot, we built **FRIDAY**, a self-improving AI assistant capable of solving general computer tasks.
 
 <p align="center">
-  <img src='pic/FRIDAY.png' width=550>
+  <img src='pic/FRIDAY.png' width="75%">
 </p>
 
 ## ⚡️ Quickstart
