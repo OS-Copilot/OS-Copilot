@@ -126,7 +126,7 @@ You can run the server in localhost,or deploy it on your web server:
 ```
 python api_server.py
 ```
-3. **Modify API documentation:** 
+4. **Modify API documentation:** 
 
 Modify the content of API documentation([friday/core/openapi.json](friday/core/openapi.json)).You can find the openapi document of
 your apis in [http://localhost:8079/openapi.json](http://localhost:8079/openapi.json) after you run the api server.
@@ -204,7 +204,7 @@ An example:
 }
 ```
 
-4. **Change the base url of tool_request_util.py:** FRIDAY use [friday/core/tool_request_util.py](friday/core/tool_request_util.py) to request to your api tools.
+5. **Change the base url of tool_request_util.py:** FRIDAY use [friday/core/tool_request_util.py](friday/core/tool_request_util.py) to request to your api tools.
 So after you deploy the apis, change the base url of that file to the url of your api server:
 ```python
 import requests
