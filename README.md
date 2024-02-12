@@ -60,8 +60,192 @@
    ```
    python run.py --query [query]
    ```
+## ✨ Deploy your own API tools with FastAPI
+All FastAPIs are under： [friday/api](friday/api)
+1. **Prepare your FastAPI file:** Create a new api folder under [friday/api](friday/api) and put your FastAPi python files under that folder.
+2. **Import your FastAPI in API server:** Import your apis in [friday/core/api_server.py](friday/core/api_server.py)：
+```python
+import os
+
+from fastapi import FastAPI
+from friday.core.server_config import ConfigManager
+
+app = FastAPI()
 
 
+from friday.api.bing.bing_service import router as bing_router
+#[TODO] Import your own api here
+
+
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
+
+
+class LoggingMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        print(f"Incoming request: {request.method} {request.url}")
+        try:
+            response = await call_next(request)
+        except Exception as e:
+            print(f"Request error: {str(e)}")
+            raise e from None
+        else:
+            print(f"Outgoing response: {response.status_code}")
+        return response
+
+
+app.add_middleware(LoggingMiddleware)
+
+# Create a dictionary that maps service names to their routers
+services = {
+    "bing": bing_router,
+    # [TODO] Add your api router here
+
+}
+
+server_list = [
+    "bing",
+    # [TODO] Add your api's service name here.
+]
+
+# Include only the routers for the services listed in server_list
+for service in server_list:
+    if service in services:
+        app.include_router(services[service])
+
+# proxy_manager = ConfigManager()
+# proxy_manager.apply_proxies()
+
+if __name__ == "__main__":
+    import uvicorn
+    # you can change your port anyway
+    uvicorn.run(app, host="0.0.0.0", port=8079)
+```
+3. **Run API server:**
+You can run the server in localhost,or deploy it on your web server:
+```
+python api_server.py
+```
+3. **Modify API documentation:** 
+
+Modify the content of API documentation([friday/core/openapi.json](friday/core/openapi.json)).You can find the openapi document of
+your apis in [http://localhost:8079/openapi.json](http://localhost:8079/openapi.json) after you run the api server.
+
+Remember to modify the summary of each API to describe in detail what the API does and how it is used, otherwise FRIDAY may not know what the API is used for.
+
+An example:
+```json
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FastAPI",
+    "version": "0.1.0"
+  },
+  "paths": {  
+    "/tools/audio2text": {
+      "post": {
+        // [TODO] change the summary to describe the usage of your api.
+        "summary": "A tool that converts audio to natural language text",
+        "operationId": "audio2text_tools_audio2text_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_audio2text_tools_audio2text_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    
+  },
+  "components": {
+    "schemas": {
+      "Body_audio2text_tools_audio2text_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_audio2text_tools_audio2text_post"
+      },
+      
+      
+    }
+  }
+}
+```
+
+4. **Change the base url of tool_request_util.py:** FRIDAY use [friday/core/tool_request_util.py](friday/core/tool_request_util.py) to request to your api tools.
+So after you deploy the apis, change the base url of that file to the url of your api server:
+```python
+import requests
+class ToolRequestUtil:
+    def __init__(self):
+        self.session = requests.session()
+        self.headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML like Gecko) Chrome/52.0.2743.116 Safari/537.36'}
+        # [TODO] Change the base url
+        self.base_url = "http://localhost:8079"
+
+    def request(self, api_path, method, params=None, files=None, content_type="application/json"):
+        """
+        :param api_path: the path of the api
+        :param method: get/post
+        :param params: the params of the api, can be None
+        :param files: files to be uploaded, can be None
+        :param content_type: the content_type of api, e.g., application/json, multipart/form-data, can be None
+        :return: the return of the api
+        """
+        url = self.base_url + api_path
+        try:
+            if method.lower() == "get":
+                if content_type == "application/json":
+                    result = self.session.get(url=url, json=params, headers=self.headers, timeout=60).json()
+                else: 
+                    result = self.session.get(url=url, params=params, headers=self.headers, timeout=60).json()
+            elif method.lower() == "post":
+                if content_type == "multipart/form-data":
+                    result = self.session.post(url=url, files=files, data=params, headers=self.headers).json()
+                elif content_type == "application/json":
+                    result = self.session.post(url=url, json=params, headers=self.headers).json()
+                else:
+                    result = self.session.post(url=url, data=params, headers=self.headers).json()
+            else:
+                print("request method error!")
+                return None
+            return result
+        except Exception as e:
+            print("http request error: %s" % e)
+            return None
+```
 <!-- ## 👨‍💻‍ Contributors
 
 <a href="">
