@@ -11,10 +11,11 @@ from langchain.chains.summarize import load_summarize_chain
 from langchain import OpenAI
 import os
 
-os.environ["BING_SUBSCRIPTION_KEY"] = "885e62a126554fb390af88ae31d2c8ff"
+# Set bing search and OpenAPI Key
+os.environ["BING_SUBSCRIPTION_KEY"] = ""
 os.environ["BING_SEARCH_URL"] = "https://api.bing.microsoft.com/v7.0/search"
-os.environ["OPENAI_API_KEY"] = "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"
-os.environ["OPENAI_ORGANIZATION"] = "org-fSyygvftM73W0pK4VjoK395W"
+os.environ["OPENAI_API_KEY"] = ""
+os.environ["OPENAI_ORGANIZATION"] = ""
 
 SEARCH_RESULT_LIST_CHUNK_SIZE = 3
 RESULT_TARGET_PAGE_PER_TEXT_COUNT = 500

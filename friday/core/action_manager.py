@@ -184,7 +184,7 @@ if __name__ == '__main__':
 
     # Add
     # code = ''
-    # with open("working_dir/code/temp.py", 'r') as file:
+    # with open("temp.py", 'r') as file:
     #     code = file.read()
     # info = {
     #     "task_name" : "XXX",

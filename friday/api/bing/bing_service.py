@@ -6,6 +6,9 @@ from .bing_api_v2 import BingAPIV2
 from .image_search_api import ImageSearchAPI
 import tiktoken
 
+BING_API = ""  # set bing API
+
+
 # 计算网页内容对gpt4来说的token数，如果token太多就用3.5做摘要或者用向量数据库检索最相关的片段
 def num_tokens_from_string(string: str) -> int:
     """Returns the number of tokens in a text string."""
@@ -15,9 +18,9 @@ def num_tokens_from_string(string: str) -> int:
 
 router = APIRouter()
 
-bing_api = BingAPI('885e62a126554fb390af88ae31d2c8ff')
+bing_api = BingAPI(BING_API) 
 bing_api_v2 = BingAPIV2()
-image_search_api = ImageSearchAPI('885e62a126554fb390af88ae31d2c8ff')
+image_search_api = ImageSearchAPI(BING_API) 
 
 # class QueryItem(BaseModel):
 #     query: str

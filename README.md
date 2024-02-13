@@ -9,6 +9,9 @@
 
 [![Static Badge](https://img.shields.io/badge/MIT-License-green)](https://github.com/OS-Copilot/FRIDAY/blob/main/LICENSE)
 ![Static Badge](https://img.shields.io/badge/python-3.10-blue)
+[![Static Badge](https://img.shields.io/badge/FRIDAY-Frontend-yellow)](https://github.com/OS-Copilot/FRIDAY-front)
+
+
 
 <p align="center">
   <img src='pic/demo.png' width="100%">
@@ -60,6 +63,11 @@
    ```
    python run.py --query [query]
    ```
+
+## 💻 User Interface (UI)
+
+**Enhance Your Experience with Our Intuitive Frontend!** This interface is crafted for effortless control of your agents. For more details, visit [FRIDAY Frontend](https://github.com/OS-Copilot/FRIDAY-front).
+
 ## ✨ Deploy your own API tools with FastAPI
 All FastAPIs are under： [friday/api](friday/api)
 1. **Prepare your FastAPI file:** Create a new api folder under [friday/api](friday/api) and put your FastAPi python files under that folder.
@@ -251,6 +259,10 @@ class ToolRequestUtil:
 </a>
 
 Made with [contrib.rocks](https://contrib.rocks). -->
+
+## 🛡 Disclaimer
+
+OS-Copilot is provided "as is" without warranty of any kind. Users assume full responsibility for any risks associated with its use, including **potential data loss** or **changes to system settings**. The developers of OS-Copilot are not liable for any damages or losses resulting from its use. Users must ensure their actions comply with applicable laws and regulations.
 
 
 ## 🔎 Citation
