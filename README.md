@@ -122,18 +122,17 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8079)
 ```
 3. **Run API server:**
-You can run the server in localhost,or deploy it on your web server:
+Run the server in localhost,or deploy it on your web server:
 ```
 python api_server.py
 ```
-4. **Modify API documentation:** 
+4. **Update API documentation:** 
 
-Modify the content of API documentation([friday/core/openapi.json](friday/core/openapi.json)).You can find the openapi document of
-your apis in [http://localhost:8079/openapi.json](http://localhost:8079/openapi.json) after you run the api server.
+Update the API documentation located in `friday/core/openapi.json`. After launching the API server, you can access the current OpenAPI documentation at `http://localhost:8079/openapi.json`.
 
-Remember to modify the summary of each API to describe in detail what the API does and how it is used, otherwise FRIDAY may not know what the API is used for.
+Ensure to thoroughly update each API's summary in the documentation to clearly explain its functionality and usage. This is crucial as FRIDAY relies on these descriptions to understand the purpose of each API.
 
-An example:
+For example:
 ```json
 {
   "openapi": "3.1.0",
@@ -204,8 +203,7 @@ An example:
 }
 ```
 
-5. **Change the base url of tool_request_util.py:** FRIDAY use [friday/core/tool_request_util.py](friday/core/tool_request_util.py) to request to your api tools.
-So after you deploy the apis, change the base url of that file to the url of your api server:
+5. **Change the base url of tool_request_util.py:** FRIDAY utilizes the script located at [friday/core/tool_request_util.py](friday/core/tool_request_util.py) to interface with your API tools. After deploying your APIs, make sure to update the base URL in this file to match your API server's URL.
 ```python
 import requests
 class ToolRequestUtil:
@@ -258,11 +256,17 @@ Made with [contrib.rocks](https://contrib.rocks). -->
 ## 🔎 Citation
 
 ```
-@misc{
+@misc{wu2024oscopilot,
+      title={OS-Copilot: Towards Generalist Computer Agents with Self-Improvement}, 
+      author={Zhiyong Wu and Chengcheng Han and Zichen Ding and Zhenmin Weng and Zhoumianze Liu and Shunyu Yao and Tao Yu and Lingpeng Kong},
+      year={2024},
+      eprint={2402.07456},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI}
 }
 ```
 
 
 ## 📬 Contact
 
-If you have any inquiries, suggestions, or wish to contact us for any reason, we warmly invite you to email us at .
+If you have any inquiries, suggestions, or wish to contact us for any reason, we warmly invite you to email us at wuzhiyong@pjlab.org.cn.
