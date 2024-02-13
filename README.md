@@ -3,8 +3,8 @@
 <div align="center">
 
 [[Website]](https://os-copilot.github.io/)
-[[Arxiv]]()
-[[PDF]]()
+[[Arxiv]](https://arxiv.org/abs/2402.07456)
+[[PDF]](https://arxiv.org/pdf/2402.07456.pdf)
 <!-- [[Tweet]](https://twitter.com/DrJimFan/status/1662115266933972993?s=20) -->
 
 [![Static Badge](https://img.shields.io/badge/MIT-License-green)](https://github.com/OS-Copilot/FRIDAY/blob/main/LICENSE)
@@ -54,7 +54,7 @@
    pip install -r requirements.txt
    ```
 
-4. **Set OpenAI API Key:** Configure your OpenAI API key in `config.json` and select the model you wish to use.
+4. **Set OpenAI API Key:** Configure your OpenAI API key in [config.json](config.json) and select the model you wish to use.
 
 5. **Execute Your Task:** Run the following command to start FRIDAY. Replace `[query]` with your task as needed. By default, the task is *"Move the text files containing the word 'agent' from the folder named 'document' to the path 'working_dir/agent'"*.  If the task requires using related files, you can use `--query_file_path [file_path]`.
    ```
@@ -128,7 +128,7 @@ python api_server.py
 ```
 4. **Update API documentation:** 
 
-Update the API documentation located in `friday/core/openapi.json`. After launching the API server, you can access the current OpenAPI documentation at `http://localhost:8079/openapi.json`.
+Update the API documentation located in [friday/core/openapi.json](friday/core/openapi.json). After launching the API server, you can access the current OpenAPI documentation at `http://localhost:8079/openapi.json`.
 
 Ensure to thoroughly update each API's summary in the documentation to clearly explain its functionality and usage. This is crucial as FRIDAY relies on these descriptions to understand the purpose of each API.
 
