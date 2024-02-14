@@ -10,6 +10,7 @@ from friday.core.utils import get_open_api_description_pair, get_open_api_doc_pa
 import re
 import json
 import logging
+from pathlib import Path
 
 class FridayAgent(BaseAgent):
     """ AI agent class, including planning, retrieval and execution modules """
@@ -801,6 +802,7 @@ class ExecutionModule(BaseAgent):
         """
         save str content to the specified path. 
         """
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
         with open(path, 'w', encoding='utf-8') as f:
             lines = content.strip().splitlines()
             content = '\n'.join(lines)
