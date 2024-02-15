@@ -3,6 +3,14 @@ from friday.core.llms import OpenAI
 from friday.agent.base_agent import BaseAgent
 from friday.core.schema import EnvState
 from friday.core.action_manager import ActionManager
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+MODEL_NAME = os.getenv('MODEL_NAME')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION')
+
 
 
 a = "{action_input} the input to the action, could be any valid input for python programs or shell commands, such numbers, strings, or path to a file, etc."
