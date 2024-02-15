@@ -57,12 +57,26 @@
    pip install -r requirements.txt
    ```
 
-4. **Set OpenAI API Key:** Configure your OpenAI API key in [config.json](config.json) and select the model you wish to use.
+4. **Set OpenAI API Key:** Configure your OpenAI API key in [.env](.env) and select the model you wish to use.
 
 5. **Execute Your Task:** Run the following command to start FRIDAY. Replace `[query]` with your task as needed. By default, the task is *"Move the text files containing the word 'agent' from the folder named 'document' to the path 'working_dir/agent'"*.  If the task requires using related files, you can use `--query_file_path [file_path]`.
    ```
    python run.py --query [query]
    ```
+
+## 🛠️ FRIDAY-Gizmos
+We maintain an open-source library of toolkits for FRIDAY, which includes tools that can be directly utilized within FRIDAY.
+For a detailed list of tools, please see [FRIDAY-Gizmos](https://github.com/OS-Copilot/FRIDAY-Gizmos). The usage methods are as follows:
+
+1. Find the tool you want to use in [FRIDAY-Gizmos](https://github.com/OS-Copilot/FRIDAY-Gizmos) and download its tool code.
+2. Add the tool to FRIDAY's toolkit:
+```shell
+python friday/core/action_manager.py --add --tool_name [tool_name] --tool_path [tool_path]
+```
+3. If you wish to remove a tool, you can run:
+```shell
+python friday/core/action_manager.py --delete --tool_name [tool_name]
+```
 
 ## 💻 User Interface (UI)
 

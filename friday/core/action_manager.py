@@ -4,8 +4,10 @@ sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 from langchain.vectorstores import Chroma
 from langchain.embeddings.openai import OpenAIEmbeddings
+import argparse
 import json
 import os
+import re
 from dotenv import load_dotenv
 load_dotenv()
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
@@ -178,8 +180,65 @@ class ActionManager:
             )                
     
 
-if __name__ == '__main__':
+def print_error_and_exit(message):
+    print(f"Error: {message}")
+    sys.exit(1)
+
+
+def add_tool(actionManager, tool_name, tool_path):
+    # Add your logic here to add the tool
+    # code = ''
+    with open(tool_path, 'r') as file:
+        code = file.read()
+    
+    pattern = r'self\._description = "(.*?)"'
+    match = re.search(pattern, code)
+    if match:
+        description = match.group(1)
+        # print(description)
+        # print(type(description))
+        info = {
+            "task_name" : tool_name,
+            "code" : code,
+            "description" : description
+        }
+        actionManager.add_new_action(info)
+        print(f"Successfully add the tool: {tool_name} with path: {tool_path}")
+    else:
+        print_error_and_exit("No description found")
+
+
+def delete_tool(actionManager, tool_name):
+    actionManager.delete_action(tool_name)
+    print(f"Successfully Delete the tool: {tool_name}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Manage actions for FRIDAY')
+    
+    parser.add_argument('--add', action='store_true',
+                        help='Flag to add a new tool')
+    parser.add_argument('--delete', action='store_true',
+                        help='Flag to delete a tool')
+    parser.add_argument('--tool_name', type=str, 
+                        help='Name of the tool to be added or deleted')
+    parser.add_argument('--tool_path', type=str,
+                        help='Path of the tool to be added', required='--add' in sys.argv)
+
+    args = parser.parse_args()
+
     actionManager = ActionManager(config_path=".env", action_lib_dir="friday/action_lib")
+
+    if args.add:
+        add_tool(actionManager, args.tool_name, args.tool_path)
+    elif args.delete:
+        delete_tool(actionManager, args.tool_name)
+    else:
+        print_error_and_exit("Please specify an operation type (add or del)")
+
+
+if __name__ == "__main__":
+    main()
 
     # Retrieval
     # res = actionManager.retrieve_action_name("Open the specified text file in the specified folder using the default text viewer on Ubuntu.")
