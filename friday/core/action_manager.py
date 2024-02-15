@@ -6,14 +6,18 @@ from langchain.vectorstores import Chroma
 from langchain.embeddings.openai import OpenAIEmbeddings
 import json
 import os
+from dotenv import load_dotenv
+load_dotenv()
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION')
+
 
 class ActionManager:
     def __init__(self, config_path=None, action_lib_dir=None):
         # actions: Store the mapping relationship between descriptions and code (associated through task names)
         self.actions = {}
         self.action_lib_dir = action_lib_dir
-        with open(config_path) as f:
-            config = json.load(f)
+
         with open(f"{self.action_lib_dir}/actions.json") as f2:
             self.actions = json.load(f2)
         self.vectordb_path = f"{action_lib_dir}/vectordb"
@@ -26,8 +30,8 @@ class ActionManager:
         self.vectordb = Chroma(
             collection_name="action_vectordb",
             embedding_function=OpenAIEmbeddings(
-                openai_api_key=config['OPENAI_API_KEY'],
-                openai_organization=config['OPENAI_ORGANIZATION'],
+                openai_api_key=OPENAI_API_KEY,
+                openai_organization=OPENAI_ORGANIZATION,
             ),
             persist_directory=self.vectordb_path,
         )
@@ -175,7 +179,7 @@ class ActionManager:
     
 
 if __name__ == '__main__':
-    actionManager = ActionManager(config_path="config.json", action_lib_dir="friday/action_lib")
+    actionManager = ActionManager(config_path=".env", action_lib_dir="friday/action_lib")
 
     # Retrieval
     # res = actionManager.retrieve_action_name("Open the specified text file in the specified folder using the default text viewer on Ubuntu.")

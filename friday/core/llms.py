@@ -1,19 +1,27 @@
 import openai
 import json
 import logging
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
+MODEL_NAME = os.getenv('MODEL_NAME')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION')
+
 
 class OpenAI:
     """
       OPEN AI Chat Models
     """
     def __init__(self, config_path=None):
-        with open(config_path) as f:
-            config = json.load(f)
-        self.model_name = config['model_name']
-        openai.api_key = config['OPENAI_API_KEY']
-        openai.organization = config['OPENAI_ORGANIZATION']
-        print(openai.api_key)
-        print(openai.organization)
+
+        self.model_name = MODEL_NAME
+        openai.api_key = OPENAI_API_KEY
+        openai.organization = OPENAI_ORGANIZATION
+        # print(openai.api_key)
+        # print(openai.organization)
         # openai.proxy = proxy
 
     def chat(self, messages, temperature=0, sleep_time=2):
