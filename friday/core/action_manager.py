@@ -28,7 +28,7 @@ class ActionManager:
             os.makedirs(self.vectordb_path)
         os.makedirs(f"{action_lib_dir}/code", exist_ok=True)
         os.makedirs(f"{action_lib_dir}/action_description", exist_ok=True)
-        # Utilize the Chroma database and employ OpenAI Embeddings for vectorization (defaul: text-embedding-ada-002)
+        # Utilize the Chroma database and employ OpenAI Embeddings for vectorization (default: text-embedding-ada-002)
         self.vectordb = Chroma(
             collection_name="action_vectordb",
             embedding_function=OpenAIEmbeddings(
