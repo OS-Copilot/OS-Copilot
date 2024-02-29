@@ -32,16 +32,11 @@ class PythonEnv(Env):
         self.env_state = EnvState(command=_command)
         try:
             results = subprocess.run(
-                [
-                    subprocess.run(["which", "python"], stdout=subprocess.PIPE).stdout.decode().strip(),
-                    '-B',
-                    str(filename)
-                ],
+                ["python", '-B', str(filename)],
                 encoding="utf8",
                 check=True, cwd=self.working_dir, timeout=self.timeout,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                env={ "PYTHONPATH": os.getcwd() }
+                stderr=subprocess.PIPE
             )
             # If there is standard output.
             if results.stdout:
