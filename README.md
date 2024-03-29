@@ -5,7 +5,7 @@
 [[Website]](https://os-copilot.github.io/)
 [[Arxiv]](https://arxiv.org/abs/2402.07456)
 [[PDF]](https://arxiv.org/pdf/2402.07456.pdf)
-[[Documentation]]()
+[[Documentation]](https://os-copilot.readthedocs.io/en/latest/)
 <!-- [[Tweet]](https://twitter.com/DrJimFan/status/1662115266933972993?s=20) -->
 
 [![Static Badge](https://img.shields.io/badge/MIT-License-green)](https://github.com/OS-Copilot/OS-Copilot/blob/main/LICENSE)
@@ -87,7 +87,7 @@ python friday/tool_repository/manager/tool_manager.py --delete --tool_name [tool
 
 ## ✨ Deploy API Services
 
-For comprehensive guidelines on deploying API services, please refer to the [OS-Copilot documentation](). 
+For comprehensive guidelines on deploying API services, please refer to the [OS-Copilot documentation](https://os-copilot.readthedocs.io/en/latest/). 
 
 ## 🏫 Community
 
