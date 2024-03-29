@@ -1,0 +1,33 @@
+name: Build and Deploy Sphinx Documentation
+
+on:
+  push:
+    branches:
+      - main  # 或者是你用于开发的分支
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'  # 设定 Python 版本
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install sphinx==7.2.6
+          pip install sphinx-rtd-theme==2.0.0
+          # pip install -r requirements.txt  # 如果你有额外的依赖
+      - name: Build Sphinx Documentation
+        run: |
+          cd docs
+          make html
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/build/html
+          branch: main
+
