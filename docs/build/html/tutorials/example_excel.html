@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example: Automating Excel Tasks with FRIDAY &mdash; OS-Copilot  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Enhancing FRIDAY with Self-Learning for Excel Task Automation" href="self_learning.html" />
+    <link rel="prev" title="Designing New API Tools" href="design_new_api_tool.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            OS-Copilot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="add_tool.html">Adding Your Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deploy_api_service.html">Deploying API Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_new_api_tool.html">Designing New API Tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example: Automating Excel Tasks with FRIDAY</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#task-overview">Task Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-by-step-guide">Step-by-Step Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="self_learning.html">Enhancing FRIDAY with Self-Learning for Excel Task Automation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../agent.html">FridayAgent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tool_repository.html">Tool Repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OS-Copilot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Example: Automating Excel Tasks with FRIDAY</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/example_excel.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="example-automating-excel-tasks-with-friday">
+<h1>Example: Automating Excel Tasks with FRIDAY<a class="headerlink" href="#example-automating-excel-tasks-with-friday" title="Link to this heading">¶</a></h1>
+<p>In this tutorial, we’ll showcase how FRIDAY can be utilized for manipulating Excel files, automating tasks that would otherwise be tedious and time-consuming. We’ll take on a specific task involving Excel file operations as an example.</p>
+<section id="task-overview">
+<h2>Task Overview<a class="headerlink" href="#task-overview" title="Link to this heading">¶</a></h2>
+<p>You are required to perform several tasks related to Excel manipulation involving an experiment’s data recorded in a sheet named “Sheet1”. The tasks include:</p>
+<ul class="simple">
+<li><p>Applying a formula across rows in column B.</p></li>
+<li><p>Creating a scatter chart within “Sheet1” that plots acceleration (y-axis) against the hanging mass (x-axis).</p></li>
+<li><p>Labeling the chart axes with the appropriate column headers.</p></li>
+</ul>
+<p>The Excel file for this task is located in <cite>working_dir</cite> and is named “Dragging.xlsx”.</p>
+</section>
+<section id="step-by-step-guide">
+<h2>Step-by-Step Guide<a class="headerlink" href="#step-by-step-guide" title="Link to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p><strong>Preparing the Necessary Tools</strong>:</p>
+<p>Locate the following tools within <cite>FRIDAY-Gizmos/Excel</cite> directory:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">apply_formula_to_column_B</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">create_new_sheet_for_chart</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">insert_scatter_chart</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">read_excel_sheet</span></code></p></li>
+</ul>
+<p>Follow the steps outlined in the “Adding Your First Tool” tutorial to add these four tools to FRIDAY’s tool repository.</p>
+</li>
+<li><p><strong>Executing the Task</strong>:</p>
+<p>To perform the Excel manipulation task, run the following command in your terminal. This command instructs FRIDAY to apply the necessary operations on the “Dragging.xlsx” file based on the provided task description.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>quick_start.py<span class="w"> </span>--query<span class="w"> </span><span class="s2">&quot;You need to do some tasks related to excel manipulation.\n My sheet records data from an experiment where one hanging block (m2) drags a block (m1=0.75 kg) on a frictionless table via a rope around a frictionless and massless pulley. It has a sheet called Sheet1. \n Your task is: Fill out the rest rows in column B using the formula in B2. Create a scatter chart in Sheet1 with acceleration on the y-axis and the hanging mass on the x-axis. Add the corresponding column headers as the axis labels. \n You should complete the task and save the result directly in this excel file.&quot;</span><span class="w"> </span>--query_file_path<span class="w"> </span><span class="s2">&quot;working_dir/Dragging.xlsx&quot;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">¶</a></h2>
+<p>Upon completion, the “Dragging.xlsx” file will have the specified formula applied across rows in column B, and a scatter chart will be created in “Sheet1” as requested. This example illustrates how FRIDAY can automate complex Excel operations, saving time and reducing the potential for manual errors.</p>
+<p>Ensure to adjust file paths and names as per your specific setup. This tutorial demonstrates the power and flexibility of FRIDAY in handling and automating tasks within Excel, showcasing its capability to significantly streamline such processes.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="design_new_api_tool.html" class="btn btn-neutral float-left" title="Designing New API Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="self_learning.html" class="btn btn-neutral float-right" title="Enhancing FRIDAY with Self-Learning for Excel Task Automation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, OS-Copilot.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

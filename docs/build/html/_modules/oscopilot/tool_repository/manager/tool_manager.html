@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>oscopilot.tool_repository.manager.tool_manager &mdash; OS-Copilot  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            OS-Copilot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quick_start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/add_tool.html">Adding Your Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/deploy_api_service.html">Deploying API Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/design_new_api_tool.html">Designing New API Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/example_excel.html">Example: Automating Excel Tasks with FRIDAY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/self_learning.html">Enhancing FRIDAY with Self-Learning for Excel Task Automation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../agent.html">FridayAgent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tool_repository.html">Tool Repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils.html">Utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">OS-Copilot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">oscopilot.tool_repository.manager.tool_manager</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for oscopilot.tool_repository.manager.tool_manager</h1><div class="highlight"><pre>
+<span></span><span class="c1"># __import__(&#39;pysqlite3&#39;)</span>
+<span class="c1"># import sys</span>
+<span class="c1"># sys.modules[&#39;sqlite3&#39;] = sys.modules.pop(&#39;pysqlite3&#39;)</span>
+
+<span class="kn">from</span> <span class="nn">langchain.vectorstores</span> <span class="kn">import</span> <span class="n">Chroma</span>
+<span class="kn">from</span> <span class="nn">langchain.embeddings.openai</span> <span class="kn">import</span> <span class="n">OpenAIEmbeddings</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="n">load_dotenv</span><span class="p">(</span><span class="n">override</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">OPENAI_API_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;OPENAI_API_KEY&#39;</span><span class="p">)</span>
+<span class="n">OPENAI_ORGANIZATION</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;OPENAI_ORGANIZATION&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ToolManager">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.ToolManager">[docs]</a>
+<span class="k">class</span> <span class="nc">ToolManager</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Manages tools within a repository, including adding, deleting, and retrieving tool information.</span>
+
+<span class="sd">    The `ToolManager` class provides a comprehensive interface for managing a collection</span>
+<span class="sd">    of tools, where each tool is associated with its code, description, and other metadata.</span>
+<span class="sd">    It supports operations such as adding new tools, checking for the existence of tools,</span>
+<span class="sd">    retrieving tool names, descriptions, and codes, and deleting tools from the collection.</span>
+<span class="sd">    It leverages a vector database for efficient retrieval of tools based on similarity searches.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        generated_tools (dict): Stores the mapping relationship between tool names and their</span>
+<span class="sd">                                information (code, description).</span>
+<span class="sd">        generated_tool_repo_dir (str): The directory path where the tools&#39; information is stored,</span>
+<span class="sd">                                       including code files, description files, and a JSON file</span>
+<span class="sd">                                       containing the tools&#39; metadata.</span>
+<span class="sd">        vectordb_path (str): The path to the vector database used for storing and retrieving</span>
+<span class="sd">                             tool descriptions based on similarity.</span>
+<span class="sd">        vectordb (Chroma): An instance of the Chroma class for managing the vector database.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        The class uses OpenAI&#39;s `text-embedding-ada-002` model by default for generating embeddings</span>
+<span class="sd">        via the `OpenAIEmbeddings` wrapper. Ensure that the `OPENAI_API_KEY` and `OPENAI_ORGANIZATION`</span>
+<span class="sd">        are correctly set for OpenAI API access.</span>
+
+<span class="sd">    This class is designed to facilitate the management of a dynamic collection of tools, providing</span>
+<span class="sd">    functionalities for easy addition, retrieval, and deletion of tools. It ensures that the tools&#39;</span>
+<span class="sd">    information is synchronized across a local repository and a vector database for efficient</span>
+<span class="sd">    retrieval based on content similarity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">generated_tool_repo_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># generated_tools: Store the mapping relationship between descriptions and tools (associated through task names)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generated_tool_repo_dir</span> <span class="o">=</span> <span class="n">generated_tool_repo_dir</span>
+        
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tool_repo_dir</span><span class="si">}</span><span class="s2">/generated_tools.json&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vectordb_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">generated_tool_repo_dir</span><span class="si">}</span><span class="s2">/vectordb&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vectordb_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vectordb_path</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">generated_tool_repo_dir</span><span class="si">}</span><span class="s2">/tool_code&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">generated_tool_repo_dir</span><span class="si">}</span><span class="s2">/tool_description&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Utilize the Chroma database and employ OpenAI Embeddings for vectorization (default: text-embedding-ada-002)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vectordb</span> <span class="o">=</span> <span class="n">Chroma</span><span class="p">(</span>
+            <span class="n">collection_name</span><span class="o">=</span><span class="s2">&quot;tool_vectordb&quot;</span><span class="p">,</span>
+            <span class="n">embedding_function</span><span class="o">=</span><span class="n">OpenAIEmbeddings</span><span class="p">(</span>
+                <span class="n">openai_api_key</span><span class="o">=</span><span class="n">OPENAI_API_KEY</span><span class="p">,</span>
+                <span class="n">openai_organization</span><span class="o">=</span><span class="n">OPENAI_ORGANIZATION</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">persist_directory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vectordb_path</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectordb</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span><span class="p">),</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Tool Manager&#39;s vectordb is not synced with generated_tools.json.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vectordb</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2"> tools in vectordb but </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span><span class="p">)</span><span class="si">}</span><span class="s2"> tools in generated_tools.json.</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">programs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve all the code from the code repository as a single string.</span>
+
+<span class="sd">        This property concatenates the code of all tools stored in the generated_tools</span>
+<span class="sd">        dictionary, separating each tool&#39;s code with two newlines.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: A string containing the code of all tools, each separated by two newlines.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">programs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">programs</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">entry</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">programs</span>
+    
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the descriptions of all tools in a dictionary.</span>
+
+<span class="sd">        This property constructs a dictionary where each key is a tool name and its value</span>
+<span class="sd">        is the description of that tool, extracted from the generated_tools dictionary.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: A dictionary mapping each tool name to its description.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">descriptions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">tool_name</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">descriptions</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">tool_name</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]})</span>
+        <span class="k">return</span> <span class="n">descriptions</span>
+    
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tool_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve all tool class names from the generated tools.</span>
+
+<span class="sd">        This property provides access to the names of all tools stored in the</span>
+<span class="sd">        generated_tools dictionary, facilitating enumeration over tool names.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            KeysView[str]: A view of the dictionary&#39;s keys which are the names of the tools.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    
+
+<div class="viewcode-block" id="ToolManager.get_tool_code">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.ToolManager.get_tool_code">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_tool_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the code of a specific tool by its name.</span>
+
+<span class="sd">        Given a tool name, this method fetches and returns the code associated with</span>
+<span class="sd">        that tool from the generated_tools dictionary. If the tool does not exist,</span>
+<span class="sd">        a KeyError will be raised.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tool_name (str): The name of the tool for which the code is requested.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The code of the specified tool.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            KeyError: If the tool_name does not exist in the generated_tools dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span><span class="p">[</span><span class="n">tool_name</span><span class="p">][</span><span class="s1">&#39;code&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">code</span>    </div>
+
+
+
+<div class="viewcode-block" id="ToolManager.add_new_tool">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.ToolManager.add_new_tool">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_new_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a new tool to the tool manager, including updating the vector database</span>
+<span class="sd">        and tool repository with the provided information.</span>
+
+<span class="sd">        This method processes the given tool information, which includes the task name,</span>
+<span class="sd">        code, and description. It prints out the task name and description, checks if</span>
+<span class="sd">        the tool already exists (rewriting it if so), and updates both the vector</span>
+<span class="sd">        database and the tool dictionary. Finally, it persists the new tool&#39;s code and</span>
+<span class="sd">        description in the repository and ensures the vector database is synchronized</span>
+<span class="sd">        with the generated tools.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            info (dict): A dictionary containing the tool&#39;s information, which must</span>
+<span class="sd">                         include &#39;task_name&#39;, &#39;code&#39;, and &#39;description&#39;.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: If the vector database&#39;s count does not match the length</span>
+<span class="sd">                            of the generated_tools dictionary after adding the new tool,</span>
+<span class="sd">                            indicating a synchronization issue.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">program_name</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;task_name&quot;</span><span class="p">]</span>
+        <span class="n">program_code</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">]</span>
+        <span class="n">program_description</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[33m </span><span class="si">{</span><span class="n">program_name</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{</span><span class="n">program_description</span><span class="si">}</span><span class="se">\033</span><span class="s2">[0m&quot;</span>
+        <span class="p">)</span>
+        <span class="c1"># If this task code already exists in the tool library, delete it and rewrite</span>
+        <span class="k">if</span> <span class="n">program_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[33mTool </span><span class="si">{</span><span class="n">program_name</span><span class="si">}</span><span class="s2"> already exists. Rewriting!</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vectordb</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="n">program_name</span><span class="p">])</span>
+        <span class="c1"># Store the new task code in the vector database and the tool dictionary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vectordb</span><span class="o">.</span><span class="n">add_texts</span><span class="p">(</span>
+            <span class="n">texts</span><span class="o">=</span><span class="p">[</span><span class="n">program_description</span><span class="p">],</span>
+            <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="n">program_name</span><span class="p">],</span>
+            <span class="n">metadatas</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">program_name</span><span class="p">}],</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span><span class="p">[</span><span class="n">program_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">program_code</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">program_description</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectordb</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span>
+        <span class="p">),</span> <span class="s2">&quot;vectordb is not synced with generated_tools.json&quot;</span>
+        <span class="c1"># Store the new task code and description in the tool repo, and enter the mapping relationship into the dictionary</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tool_repo_dir</span><span class="si">}</span><span class="s2">/tool_code/</span><span class="si">{</span><span class="n">program_name</span><span class="si">}</span><span class="s2">.py&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fa</span><span class="p">:</span>
+            <span class="n">fa</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">program_code</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tool_repo_dir</span><span class="si">}</span><span class="s2">/tool_description/</span><span class="si">{</span><span class="n">program_name</span><span class="si">}</span><span class="s2">.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fb</span><span class="p">:</span>
+            <span class="n">fb</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">program_description</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tool_repo_dir</span><span class="si">}</span><span class="s2">/generated_tools.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fc</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span><span class="p">,</span><span class="n">fc</span><span class="p">,</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vectordb</span><span class="o">.</span><span class="n">persist</span><span class="p">()</span></div>
+
+        <span class="c1"># with open(f&quot;{self.generated_tool_repo_dir}/generated_tools.json&quot;) as f2:</span>
+        <span class="c1">#     self.generated_tools = json.load(f2)</span>
+
+
+<div class="viewcode-block" id="ToolManager.exist_tool">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.ToolManager.exist_tool">[docs]</a>
+    <span class="k">def</span> <span class="nf">exist_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if a tool exists in the tool manager based on the tool name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tool (str): The name of the tool to check.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the tool exists, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tool</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tool_names</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="ToolManager.retrieve_tool_name">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.ToolManager.retrieve_tool_name">[docs]</a>
+    <span class="k">def</span> <span class="nf">retrieve_tool_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves related tool names based on a similarity search against a query.</span>
+
+<span class="sd">        This method performs a similarity search in the vector database for the given</span>
+<span class="sd">        query and retrieves the names of the top `k` most similar tools. It prints the</span>
+<span class="sd">        number of tools being retrieved and their names.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query (str): The query string to search for similar tools.</span>
+<span class="sd">            k (int, optional): The maximum number of similar tools to retrieve.</span>
+<span class="sd">                               Defaults to 10.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: A list of tool names that are most similar to the query,</span>
+<span class="sd">                       up to `k` tools. Returns an empty list if no tools are found</span>
+<span class="sd">                       or if `k` is 0.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vectordb</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span> <span class="n">k</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[33mTool Manager retrieving for </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> Tools</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">)</span>
+        <span class="c1"># Retrieve descriptions of the top k related tasks.</span>
+        <span class="n">docs_and_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectordb</span><span class="o">.</span><span class="n">similarity_search_with_score</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[33mTool Manager retrieved tools: &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">doc</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">doc</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">docs_and_scores</span><span class="p">])</span><span class="si">}</span><span class="se">\033</span><span class="s2">[0m&quot;</span>
+        <span class="p">)</span>
+        <span class="n">tool_name</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">docs_and_scores</span><span class="p">:</span>
+            <span class="n">tool_name</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">tool_name</span></div>
+
+    
+
+<div class="viewcode-block" id="ToolManager.retrieve_tool_description">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.ToolManager.retrieve_tool_description">[docs]</a>
+    <span class="k">def</span> <span class="nf">retrieve_tool_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the descriptions of specified tools based on their names.</span>
+
+<span class="sd">        This method iterates over a list of tool names and retrieves the description</span>
+<span class="sd">        for each tool from the generated_tools dictionary. It compiles and returns</span>
+<span class="sd">        a list of these descriptions.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tool_name (list[str]): A list of tool names for which descriptions are requested.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: A list containing the descriptions of the specified tools.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tool_description</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tool_name</span><span class="p">:</span>
+            <span class="n">tool_description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;description&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">tool_description</span>    </div>
+
+
+
+<div class="viewcode-block" id="ToolManager.retrieve_tool_code">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.ToolManager.retrieve_tool_code">[docs]</a>
+    <span class="k">def</span> <span class="nf">retrieve_tool_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the code of specified tools based on their names.</span>
+
+<span class="sd">        Similar to retrieving tool descriptions, this method iterates over a list</span>
+<span class="sd">        of tool names and retrieves the code for each tool from the generated_tools</span>
+<span class="sd">        dictionary. It then compiles and returns a list of these codes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tool_name (list[str]): A list of tool names for which code snippets are requested.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[str]: A list containing the code of the specified tools.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tool_code</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tool_name</span><span class="p">:</span>
+            <span class="n">tool_code</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;code&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">tool_code</span></div>
+
+
+
+<div class="viewcode-block" id="ToolManager.delete_tool">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.ToolManager.delete_tool">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tool</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes all information related to a specified tool from the tool manager.</span>
+
+<span class="sd">        This method removes the tool&#39;s information from the vector database, the</span>
+<span class="sd">        generated_tools.json file, and also deletes the tool&#39;s code and description</span>
+<span class="sd">        files from the repository. It performs the deletion only if the tool exists</span>
+<span class="sd">        in the respective storage locations and provides console feedback for each</span>
+<span class="sd">        successful deletion action.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tool (str): The name of the tool to be deleted.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This method assumes that the tool&#39;s information is stored in a structured</span>
+<span class="sd">            manner within the tool manager&#39;s repository, including a separate code file</span>
+<span class="sd">            (.py), a description text file (.txt), and an arguments description text file</span>
+<span class="sd">            (.txt), all named after the tool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tool</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">generated_tools</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vectordb</span><span class="o">.</span><span class="n">_collection</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="n">tool</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[33m delete </span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2"> from vectordb successfully! </span><span class="se">\033</span><span class="s2">[0m&quot;</span>
+            <span class="p">)</span>              
+        <span class="c1"># Delete the task from generated_tools.json</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tool_repo_dir</span><span class="si">}</span><span class="s2">/generated_tools.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">tool_infos</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tool</span> <span class="ow">in</span> <span class="n">tool_infos</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">tool_infos</span><span class="p">[</span><span class="n">tool</span><span class="p">]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tool_repo_dir</span><span class="si">}</span><span class="s2">/generated_tools.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tool_infos</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[33m delete </span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2"> info from JSON successfully! </span><span class="se">\033</span><span class="s2">[0m&quot;</span>
+            <span class="p">)</span>            
+        <span class="c1"># del code</span>
+        <span class="n">code_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tool_repo_dir</span><span class="si">}</span><span class="s2">/tool_code/</span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2">.py&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">code_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">code_path</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[33m delete </span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2"> code successfully! </span><span class="se">\033</span><span class="s2">[0m&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># del description</span>
+        <span class="n">description_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">generated_tool_repo_dir</span><span class="si">}</span><span class="s2">/tool_description/</span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2">.txt&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">description_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">description_path</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\033</span><span class="s2">[33m delete </span><span class="si">{</span><span class="n">tool</span><span class="si">}</span><span class="s2"> description txt successfully! </span><span class="se">\033</span><span class="s2">[0m&quot;</span>
+            <span class="p">)</span>   </div>
+</div>
+
+        <span class="c1"># del args description</span>
+        <span class="c1"># args_path = f&quot;{self.generated_tool_repo_dir}/args_description/{tool}.txt&quot;</span>
+        <span class="c1"># if os.path.exists(args_path):</span>
+        <span class="c1">#     os.remove(args_path)</span>
+        <span class="c1">#     print(</span>
+        <span class="c1">#     f&quot;\033[33m delete {tool} args description txt successfully! \033[0m&quot;</span>
+        <span class="c1">#     )                </span>
+    
+
+<div class="viewcode-block" id="print_error_and_exit">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.print_error_and_exit">[docs]</a>
+<span class="k">def</span> <span class="nf">print_error_and_exit</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints an error message to standard output and exits the program with a status code of 1.</span>
+
+<span class="sd">    This function is typically used to handle critical errors from which the program cannot</span>
+<span class="sd">    recover. It ensures that the error message is visible to the user before the program</span>
+<span class="sd">    terminates.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        message (str): The error message to be printed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="add_tool">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.add_tool">[docs]</a>
+<span class="k">def</span> <span class="nf">add_tool</span><span class="p">(</span><span class="n">toolManager</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">,</span> <span class="n">tool_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a new tool to the tool manager with the given name and code loaded from the specified path.</span>
+
+<span class="sd">    This function reads the tool&#39;s code from a file, extracts a description from the code using</span>
+<span class="sd">    a predefined pattern, and then adds the tool to the tool manager using the extracted information.</span>
+<span class="sd">    If the tool&#39;s description is not found within the code, the function will print an error message</span>
+<span class="sd">    and exit.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        toolManager (ToolManager): The instance of ToolManager to which the tool will be added.</span>
+<span class="sd">        tool_name (str): The name of the tool to be added.</span>
+<span class="sd">        tool_path (str): The file system path to the source code of the tool.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        The function expects the tool&#39;s code to contain a description defined as a string literal</span>
+<span class="sd">        assigned to `self._description` within the code. The description must be enclosed in double</span>
+<span class="sd">        quotes for it to be successfully extracted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tool_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;self\._description = &quot;(.*?)&quot;&#39;</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># print(description)</span>
+        <span class="c1"># print(type(description))</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;task_name&quot;</span> <span class="p">:</span> <span class="n">tool_name</span><span class="p">,</span>
+            <span class="s2">&quot;code&quot;</span> <span class="p">:</span> <span class="n">code</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span> <span class="p">:</span> <span class="n">description</span>
+        <span class="p">}</span>
+        <span class="n">toolManager</span><span class="o">.</span><span class="n">add_new_tool</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully add the tool: </span><span class="si">{</span><span class="n">tool_name</span><span class="si">}</span><span class="s2"> with path: </span><span class="si">{</span><span class="n">tool_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">print_error_and_exit</span><span class="p">(</span><span class="s2">&quot;No description found&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="delete_tool">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.delete_tool">[docs]</a>
+<span class="k">def</span> <span class="nf">delete_tool</span><span class="p">(</span><span class="n">toolManager</span><span class="p">,</span> <span class="n">tool_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deletes a tool from the tool manager and prints a success message.</span>
+
+<span class="sd">    This function calls the `delete_tool` method of the given ToolManager instance</span>
+<span class="sd">    to remove the specified tool. Upon successful deletion, it prints a message</span>
+<span class="sd">    indicating the operation was successful.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        toolManager (ToolManager): An instance of the ToolManager class.</span>
+<span class="sd">        tool_name (str): The name of the tool to be deleted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">toolManager</span><span class="o">.</span><span class="n">delete_tool</span><span class="p">(</span><span class="n">tool_name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully Delete the tool: </span><span class="si">{</span><span class="n">tool_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_open_api_doc_path">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.get_open_api_doc_path">[docs]</a>
+<span class="k">def</span> <span class="nf">get_open_api_doc_path</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines the file system path to the &#39;openapi.json&#39; file located in the same directory as this script.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The absolute path to the &#39;openapi.json&#39; file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="n">open_api_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="s1">&#39;openapi.json&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">open_api_path</span></div>
+
+
+
+<div class="viewcode-block" id="get_open_api_description_pair">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.get_open_api_description_pair">[docs]</a>
+<span class="k">def</span> <span class="nf">get_open_api_description_pair</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts and returns a mapping of OpenAPI path names to their descriptions.</span>
+
+<span class="sd">    This function loads the OpenAPI specification from a &#39;openapi.json&#39; file located</span>
+<span class="sd">    in the same directory as this script. It then iterates over the paths defined</span>
+<span class="sd">    in the OpenAPI specification, creating a dictionary that maps each path name</span>
+<span class="sd">    to its description (summary). If a path supports both &#39;get&#39; and &#39;post&#39; operations,</span>
+<span class="sd">    the description for the &#39;post&#39; operation is preferred.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: A dictionary mapping OpenAPI path names to their summary descriptions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="n">open_api_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="s1">&#39;openapi.json&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">open_api_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">open_api_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">open_api_dict</span> <span class="o">=</span> <span class="n">open_api_json</span><span class="p">[</span><span class="s1">&#39;paths&#39;</span><span class="p">]</span>
+    <span class="n">open_api_description_pair</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">open_api_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s1">&#39;post&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">open_api_description_pair</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;post&#39;</span><span class="p">][</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">open_api_description_pair</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s1">&#39;get&#39;</span><span class="p">][</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">open_api_description_pair</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../../../tool_repository_doc/tool_manager.html#oscopilot.tool_repository.manager.tool_manager.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The main entry point for managing generated tools for the FRIDAY project.</span>
+
+<span class="sd">    This function sets up a command-line interface for adding or deleting tools</span>
+<span class="sd">    within the FRIDAY project. It supports flags for adding a new tool, deleting</span>
+<span class="sd">    an existing tool, and specifies the name and path of the tool for the</span>
+<span class="sd">    respective operations. Based on the arguments provided, it initializes</span>
+<span class="sd">    a ToolManager instance and performs the requested add or delete operation.</span>
+
+<span class="sd">    The &#39;--add&#39; flag requires the &#39;--tool_name&#39; and &#39;--tool_path&#39; arguments to</span>
+<span class="sd">    specify the name and the path of the tool to be added. The &#39;--delete&#39; flag</span>
+<span class="sd">    requires only the &#39;--tool_name&#39; argument.</span>
+
+<span class="sd">    Usage:</span>
+<span class="sd">        python script.py --add --tool_name &lt;name&gt; --tool_path &lt;path&gt;</span>
+<span class="sd">        python script.py --delete --tool_name &lt;name&gt;</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        SystemExit: If no operation type is specified or required arguments are missing,</span>
+<span class="sd">                    the program will print an error message and exit with a status code of 1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Manage generated tools for FRIDAY&#39;</span><span class="p">)</span>
+    
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--generated_tool_repo_path&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;oscopilot/tool_repository/generated_tools&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;generated tool repo path&#39;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--add&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Flag to add a new tool&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--delete&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Flag to delete a tool&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tool_name&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Name of the tool to be added or deleted&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--tool_path&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Path of the tool to be added&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="s1">&#39;--add&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">toolManager</span> <span class="o">=</span> <span class="n">ToolManager</span><span class="p">(</span><span class="n">generated_tool_repo_dir</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">generated_tool_repo_path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">add</span><span class="p">:</span>
+        <span class="n">add_tool</span><span class="p">(</span><span class="n">toolManager</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">tool_name</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">tool_path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">delete</span><span class="p">:</span>
+        <span class="n">delete_tool</span><span class="p">(</span><span class="n">toolManager</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">tool_name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">print_error_and_exit</span><span class="p">(</span><span class="s2">&quot;Please specify an operation type (add or del)&quot;</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+
+    <span class="c1"># Retrieval</span>
+    <span class="c1"># res = toolManager.retrieve_tool_name(&quot;Open the specified text file in the specified folder using the default text viewer on Ubuntu.&quot;)</span>
+    <span class="c1"># print(res[0])</span>
+
+    <span class="c1"># Delete</span>
+    <span class="c1"># toolManager.delete_tool(&quot;zip_files&quot;)</span>
+
+    <span class="c1"># Add</span>
+    <span class="c1"># code = &#39;&#39;</span>
+    <span class="c1"># with open(&quot;temp.py&quot;, &#39;r&#39;) as file:</span>
+    <span class="c1">#     code = file.read()</span>
+    <span class="c1"># info = {</span>
+    <span class="c1">#     &quot;task_name&quot; : &quot;XXX&quot;,</span>
+    <span class="c1">#     &quot;code&quot; : code,</span>
+    <span class="c1">#     &quot;description&quot; : &quot;XXX&quot;</span>
+    <span class="c1"># }</span>
+    <span class="c1"># toolManager.add_new_tool(info)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, OS-Copilot.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

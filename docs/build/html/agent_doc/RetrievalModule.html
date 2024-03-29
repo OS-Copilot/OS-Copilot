@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RetrievalModule &mdash; OS-Copilot  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ExecutionModule" href="ExecutionModule.html" />
+    <link rel="prev" title="PlanningModule" href="PlanningModule.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            OS-Copilot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/add_tool.html">Adding Your Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/deploy_api_service.html">Deploying API Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/design_new_api_tool.html">Designing New API Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/example_excel.html">Example: Automating Excel Tasks with FRIDAY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/self_learning.html">Enhancing FRIDAY with Self-Learning for Excel Task Automation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../agent.html">FridayAgent</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base_agent.html">Base Agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="friday_agent.html">Friday Agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_module.html">Base Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PlanningModule.html">PlanningModule</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">RetrievalModule</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever"><code class="docutils literal notranslate"><span class="pre">FridayRetriever</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.delete_tool"><code class="docutils literal notranslate"><span class="pre">FridayRetriever.delete_tool()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_code"><code class="docutils literal notranslate"><span class="pre">FridayRetriever.retrieve_tool_code()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_code_pair"><code class="docutils literal notranslate"><span class="pre">FridayRetriever.retrieve_tool_code_pair()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_description"><code class="docutils literal notranslate"><span class="pre">FridayRetriever.retrieve_tool_description()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_description_pair"><code class="docutils literal notranslate"><span class="pre">FridayRetriever.retrieve_tool_description_pair()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_name"><code class="docutils literal notranslate"><span class="pre">FridayRetriever.retrieve_tool_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.tool_code_filter"><code class="docutils literal notranslate"><span class="pre">FridayRetriever.tool_code_filter()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ExecutionModule.html">ExecutionModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prompts.html">Prompts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tool_repository.html">Tool Repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OS-Copilot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../agent.html">FridayAgent</a></li>
+      <li class="breadcrumb-item active">RetrievalModule</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/agent_doc/RetrievalModule.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="retrievalmodule">
+<h1>RetrievalModule<a class="headerlink" href="#retrievalmodule" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="oscopilot.modules.retriever.vector_retriever.FridayRetriever">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">oscopilot.modules.retriever.vector_retriever.</span></span><span class="sig-name descname"><span class="pre">FridayRetriever</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prompt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool_manager</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/oscopilot/modules/retriever/vector_retriever.html#FridayRetriever"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base_module.html#oscopilot.modules.base_module.BaseModule" title="oscopilot.modules.base_module.BaseModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModule</span></code></a></p>
+<p>A modules within the system responsible for retrieving and managing available tools from the tool library.</p>
+<p>The RetrievalModule extends the BaseModule class, focusing on the retrieval of tools
+based on specific prompts or queries. It interacts with a language learning model (LLM)
+and utilizes the execution environments and tool library to fulfill its responsibilities.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="oscopilot.modules.retriever.vector_retriever.FridayRetriever.delete_tool">
+<span class="sig-name descname"><span class="pre">delete_tool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/oscopilot/modules/retriever/vector_retriever.html#FridayRetriever.delete_tool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.delete_tool" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes the specified tool from the tool library.</p>
+<p>This method calls the tool library’s delete method to remove an tool by its name. It
+encompasses deleting the tool’s code, description, parameters, and any other associated
+information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tool</strong> (<em>str</em>) – The name of the tool to be deleted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_code">
+<span class="sig-name descname"><span class="pre">retrieve_tool_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tool_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/oscopilot/modules/retriever/vector_retriever.html#FridayRetriever.retrieve_tool_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_code" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the code for a specified tool from the tool library.</p>
+<p>This method accesses the tool library to get the executable code associated with
+an tool identified by its name. This code defines how the tool is performed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tool_name</strong> (<em>str</em>) – The name of the tool whose code is to be retrieved.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The code of the specified tool.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_code_pair">
+<span class="sig-name descname"><span class="pre">retrieve_tool_code_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retrieve_tool_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/oscopilot/modules/retriever/vector_retriever.html#FridayRetriever.retrieve_tool_code_pair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_code_pair" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a mapping of tool names to their respective codes for a list of tools.</p>
+<p>This method processes a list of tool names, retrieving the code for each and
+compiling a dictionary that maps each tool name to its code. This is useful for
+tasks that require both the identification and the execution details of tools.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>retrieve_tool_name</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – A list of tool names for which codes are to be retrieved.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary mapping each tool name to its code.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_description">
+<span class="sig-name descname"><span class="pre">retrieve_tool_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tool_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/oscopilot/modules/retriever/vector_retriever.html#FridayRetriever.retrieve_tool_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_description" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves the description for a specified tool from the tool library.</p>
+<p>This method queries the tool library for the description of an tool identified
+by its name. It is designed to fetch detailed descriptions that explain what the
+tool does.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tool_name</strong> (<em>str</em>) – The name of the tool whose description is to be retrieved.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The description of the specified tool.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_description_pair">
+<span class="sig-name descname"><span class="pre">retrieve_tool_description_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">retrieve_tool_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/oscopilot/modules/retriever/vector_retriever.html#FridayRetriever.retrieve_tool_description_pair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_description_pair" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a mapping of tool names to their descriptions for a list of tools.</p>
+<p>By processing a list of tool names, this method fetches their descriptions and
+forms a dictionary that associates each tool name with its description. This
+facilitates understanding the purpose and functionality of multiple tools at once.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>retrieve_tool_name</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – A list of tool names for which descriptions are to be retrieved.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary mapping each tool name to its description.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_name">
+<span class="sig-name descname"><span class="pre">retrieve_tool_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/oscopilot/modules/retriever/vector_retriever.html#FridayRetriever.retrieve_tool_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.retrieve_tool_name" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a list of tool names relevant to the specified task.</p>
+<p>This method interacts with the tool library to retrieve names of tools that are most
+relevant to a given task. The number of tool names returned is limited by the parameter k.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task</strong> (<em>str</em>) – The task for which relevant tool names are to be retrieved.</p></li>
+<li><p><strong>k</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum number of tool names to retrieve. Defaults to 10.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of the top k tool names relevant to the specified task.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="oscopilot.modules.retriever.vector_retriever.FridayRetriever.tool_code_filter">
+<span class="sig-name descname"><span class="pre">tool_code_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tool_code_pair</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/oscopilot/modules/retriever/vector_retriever.html#FridayRetriever.tool_code_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#oscopilot.modules.retriever.vector_retriever.FridayRetriever.tool_code_filter" title="Link to this definition">¶</a></dt>
+<dd><p>Filters and retrieves the code for an tool relevant to the specified task.</p>
+<p>This method formats a message for filtering tool codes based on a given task, sends
+the message to the tool library for processing, and retrieves the filtered tool’s
+code. If an tool name is successfully identified, its corresponding code is fetched
+from the tool library.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tool_code_pair</strong> (<em>dict</em>) – A dictionary mapping tool names to their codes.</p></li>
+<li><p><strong>task</strong> (<em>str</em>) – The task based on which the tool code needs to be filtered.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The code of the tool relevant to the specified task, or an empty string
+if no relevant tool is found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="PlanningModule.html" class="btn btn-neutral float-left" title="PlanningModule" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ExecutionModule.html" class="btn btn-neutral float-right" title="ExecutionModule" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, OS-Copilot.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

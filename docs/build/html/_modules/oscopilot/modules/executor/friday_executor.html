@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>oscopilot.modules.executor.friday_executor &mdash; OS-Copilot  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            OS-Copilot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quick_start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/add_tool.html">Adding Your Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/deploy_api_service.html">Deploying API Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/design_new_api_tool.html">Designing New API Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/example_excel.html">Example: Automating Excel Tasks with FRIDAY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/self_learning.html">Enhancing FRIDAY with Self-Learning for Excel Task Automation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../agent.html">FridayAgent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tool_repository.html">Tool Repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils.html">Utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">OS-Copilot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">oscopilot.modules.executor.friday_executor</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for oscopilot.modules.executor.friday_executor</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">oscopilot.modules.base_module</span> <span class="kn">import</span> <span class="n">BaseModule</span>
+<span class="kn">from</span> <span class="nn">oscopilot.tool_repository.manager.tool_manager</span> <span class="kn">import</span> <span class="n">get_open_api_doc_path</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">oscopilot.utils.utils</span> <span class="kn">import</span> <span class="n">send_chat_prompts</span>
+
+
+
+<div class="viewcode-block" id="FridayExecutor">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor">[docs]</a>
+<span class="k">class</span> <span class="nc">FridayExecutor</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A modules within the system responsible for executing tools based on prompts and maintaining the tool library.</span>
+
+<span class="sd">    The ExecutionModule extends the BaseAgent class, focusing on the practical execution of tools determined</span>
+<span class="sd">    by the system. It utilizes a language learning model (LLM) in conjunction with an execution environments and</span>
+<span class="sd">    an tool library to carry out tools. Additionally, it manages system versioning and prompts initialization</span>
+<span class="sd">    for tool execution guidance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">tool_manager</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="n">prompt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool_manager</span> <span class="o">=</span> <span class="n">tool_manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">=</span> <span class="n">max_iter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">open_api_doc_path</span> <span class="o">=</span> <span class="n">get_open_api_doc_path</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">open_api_doc</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">open_api_doc_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open_api_doc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> 
+    
+<div class="viewcode-block" id="FridayExecutor.generate_tool">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.generate_tool">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">task_description</span><span class="p">,</span> <span class="n">pre_tasks_info</span><span class="p">,</span> <span class="n">relevant_code</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates executable code and invocation logic for a specified tool.</span>
+
+<span class="sd">        This method constructs a message to generate tool code capable of completing the specified task,</span>
+<span class="sd">        taking into account any prerequisite task information and relevant code snippets. It then formats</span>
+<span class="sd">        this message for processing by the language learning model (LLM) to generate the tool code. The</span>
+<span class="sd">        method extracts the executable Python code and the specific invocation logic from the LLM&#39;s response.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task_name (str): The name of the task for which tool code is being generated.</span>
+<span class="sd">            task_description (str): A description of the task, detailing what the tool aims to accomplish.</span>
+<span class="sd">            pre_tasks_info (dict): Information about tasks that are prerequisites for the current task, including their descriptions and return values.</span>
+<span class="sd">            relevant_code (dict): A dictionary of code snippets relevant to the current task, possibly including code from prerequisite tasks.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: A tuple containing two elements:</span>
+<span class="sd">                - code (str): The generated Python code for the tool.</span>
+<span class="sd">                - invoke (str): The specific logic or command to invoke the generated tool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">relevant_code</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">relevant_code</span><span class="p">)</span>
+
+        <span class="n">sys_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[</span><span class="s1">&#39;_SYSTEM_SKILL_CREATE_AND_INVOKE_PROMPT&#39;</span><span class="p">]</span>
+        <span class="n">user_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[</span><span class="s1">&#39;_USER_SKILL_CREATE_AND_INVOKE_PROMPT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">system_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">system_version</span><span class="p">,</span>
+            <span class="n">task_description</span><span class="o">=</span><span class="n">task_description</span><span class="p">,</span>
+            <span class="n">working_dir</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">working_dir</span><span class="p">,</span>
+            <span class="n">task_name</span><span class="o">=</span><span class="n">task_name</span><span class="p">,</span>
+            <span class="n">pre_tasks_info</span><span class="o">=</span><span class="n">pre_tasks_info</span><span class="p">,</span>
+            <span class="n">relevant_code</span><span class="o">=</span><span class="n">relevant_code</span>
+        <span class="p">)</span>
+
+        <span class="n">create_msg</span> <span class="o">=</span> <span class="n">send_chat_prompts</span><span class="p">(</span><span class="n">sys_prompt</span><span class="p">,</span> <span class="n">user_prompt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">)</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_python_code</span><span class="p">(</span><span class="n">create_msg</span><span class="p">)</span>
+        <span class="n">invoke</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_information</span><span class="p">(</span><span class="n">create_msg</span><span class="p">,</span> <span class="n">begin_str</span><span class="o">=</span><span class="s1">&#39;&lt;invoke&gt;&#39;</span><span class="p">,</span> <span class="n">end_str</span><span class="o">=</span><span class="s1">&#39;&lt;/invoke&gt;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">code</span><span class="p">,</span> <span class="n">invoke</span></div>
+
+
+<div class="viewcode-block" id="FridayExecutor.execute_tool">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.execute_tool">[docs]</a>
+    <span class="k">def</span> <span class="nf">execute_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">invoke</span><span class="p">,</span> <span class="n">node_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes a given tool code and returns the execution state.</span>
+
+<span class="sd">        This method handles the execution of tool code based on its node_type. For code tools, it appends</span>
+<span class="sd">        additional instructions to print the execution result within designated markers. It then passes</span>
+<span class="sd">        the modified code for execution in the environments. The method captures and prints the execution</span>
+<span class="sd">        state, including any results or errors, and returns this state.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            code (str): The Python code to be executed as part of the tool.</span>
+<span class="sd">            invoke (str): The specific command or function call that triggers the tool within the code.</span>
+<span class="sd">            node_type (str): The type of the tool, determining how the tool is executed. Currently supports &#39;Code&#39; type.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            state: The state object returned by the environments after executing the tool. This object contains</span>
+<span class="sd">                   details about the execution&#39;s outcome, including any results or errors.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The execution logic is currently tailored for tools of type &#39;Code&#39;, where the code is directly executable</span>
+<span class="sd">            Python code. The method is designed to be extensible for other tool types as needed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># print result info</span>
+        <span class="k">if</span> <span class="n">node_type</span> <span class="o">==</span> <span class="s1">&#39;Code&#39;</span><span class="p">:</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s1">&#39;&#39;&#39;print(&quot;&lt;return&gt;&quot;)&#39;&#39;&#39;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;print(result)&quot;</span> <span class="o">+</span>  <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s1">&#39;&#39;&#39;print(&quot;&lt;/return&gt;&quot;)&#39;&#39;&#39;</span>
+            <span class="n">code</span> <span class="o">=</span> <span class="n">code</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">result=&#39;</span> <span class="o">+</span> <span class="n">invoke</span> <span class="o">+</span> <span class="n">info</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;************************&lt;code&gt;**************************&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;************************&lt;/code&gt;*************************&quot;</span><span class="p">)</span>  
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;************************&lt;state&gt;**************************&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="c1"># print(&quot;error: &quot; + state.error + &quot;\nresult: &quot; + state.result + &quot;\npwd: &quot; + state.pwd + &quot;\nls: &quot; + state.ls)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;************************&lt;/state&gt;*************************&quot;</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">state</span></div>
+
+
+<div class="viewcode-block" id="FridayExecutor.judge_tool">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.judge_tool">[docs]</a>
+    <span class="k">def</span> <span class="nf">judge_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">task_description</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">next_action</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluates the outcome of an executed tool to determine its success in completing a task.</span>
+
+<span class="sd">        This method formulates and sends a judgment request to the language learning model (LLM) based on the</span>
+<span class="sd">        executed tool&#39;s code, the task description, the execution state, and the expected next tool. It</span>
+<span class="sd">        then parses the LLM&#39;s response to determine the tool&#39;s success, providing reasoning, a judgment (boolean),</span>
+<span class="sd">        and a score that quantifies the tool&#39;s effectiveness.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            code (str): The code of the tool that was executed.</span>
+<span class="sd">            task_description (str): The description of the task the tool was intended to complete.</span>
+<span class="sd">            state: The state object returned by the environments after executing the tool, containing execution results.</span>
+<span class="sd">            next_action (str): The name of the next expected tool in the sequence.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: A tuple containing:</span>
+<span class="sd">                - reasoning (str): The LLM&#39;s reasoning behind the judgment.</span>
+<span class="sd">                - judge (bool): The LLM&#39;s judgment on whether the tool successfully completed the task.</span>
+<span class="sd">                - score (float): A score representing the effectiveness of the tool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">next_action</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">next_action</span><span class="p">)</span>
+        <span class="n">sys_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[</span><span class="s1">&#39;_SYSTEM_TASK_JUDGE_PROMPT&#39;</span><span class="p">]</span>
+        <span class="n">user_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[</span><span class="s1">&#39;_USER_TASK_JUDGE_PROMPT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">current_code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>
+            <span class="n">task</span><span class="o">=</span><span class="n">task_description</span><span class="p">,</span>
+            <span class="n">code_output</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">,</span>
+            <span class="n">current_working_dir</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">pwd</span><span class="p">,</span>
+            <span class="n">working_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">working_dir</span><span class="p">,</span>
+            <span class="n">files_and_folders</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">ls</span><span class="p">,</span>
+            <span class="n">next_action</span><span class="o">=</span><span class="n">next_action</span>
+        <span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">send_chat_prompts</span><span class="p">(</span><span class="n">sys_prompt</span><span class="p">,</span> <span class="n">user_prompt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">)</span>
+        <span class="n">judge_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_json_from_string</span><span class="p">(</span><span class="n">response</span><span class="p">)</span> 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;************************&lt;judge_json&gt;**************************&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">judge_json</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;************************&lt;/judge_json&gt;*************************&quot;</span><span class="p">)</span>      
+        <span class="n">reasoning</span> <span class="o">=</span> <span class="n">judge_json</span><span class="p">[</span><span class="s1">&#39;reasoning&#39;</span><span class="p">]</span>
+        <span class="n">judge</span> <span class="o">=</span> <span class="n">judge_json</span><span class="p">[</span><span class="s1">&#39;judge&#39;</span><span class="p">]</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">judge_json</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">reasoning</span><span class="p">,</span> <span class="n">judge</span><span class="p">,</span> <span class="n">score</span></div>
+
+
+<div class="viewcode-block" id="FridayExecutor.repair_tool">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.repair_tool">[docs]</a>
+    <span class="k">def</span> <span class="nf">repair_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_code</span><span class="p">,</span> <span class="n">task_description</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">critique</span><span class="p">,</span> <span class="n">pre_tasks_info</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Modifies or corrects the code of an tool based on feedback to better complete a task.</span>
+
+<span class="sd">        This method sends an amendment request to the LLM, including details about the current code, task description,</span>
+<span class="sd">        execution state, critique of the tool&#39;s outcome, and information about prerequisite tasks. It aims to generate</span>
+<span class="sd">        a revised version of the code that addresses any identified issues or incomplete aspects of the task. The method</span>
+<span class="sd">        extracts and returns both the amended code and the specific logic or command to invoke the amended tool.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            current_code (str): The original code of the tool that requires amendment.</span>
+<span class="sd">            task_description (str): The description of the task the tool is intended to complete.</span>
+<span class="sd">            state: The state object containing details about the tool&#39;s execution outcome.</span>
+<span class="sd">            critique (str): Feedback or critique on the tool&#39;s execution, used to guide the amendment.</span>
+<span class="sd">            pre_tasks_info (dict): Information about tasks that are prerequisites for the current task.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: A tuple containing:</span>
+<span class="sd">                - new_code (str): The amended code for the tool.</span>
+<span class="sd">                - invoke (str): The command or logic to invoke the amended tool.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sys_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[</span><span class="s1">&#39;_SYSTEM_SKILL_AMEND_AND_INVOKE_PROMPT&#39;</span><span class="p">]</span>
+        <span class="n">user_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[</span><span class="s1">&#39;_USER_SKILL_AMEND_AND_INVOKE_PROMPT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">original_code</span> <span class="o">=</span> <span class="n">current_code</span><span class="p">,</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">task_description</span><span class="p">,</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+            <span class="n">code_output</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">result</span><span class="p">,</span>
+            <span class="n">current_working_dir</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">pwd</span><span class="p">,</span>
+            <span class="n">working_dir</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">working_dir</span><span class="p">,</span>
+            <span class="n">files_and_folders</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">ls</span><span class="p">,</span>
+            <span class="n">critique</span> <span class="o">=</span> <span class="n">critique</span><span class="p">,</span>
+            <span class="n">pre_tasks_info</span> <span class="o">=</span> <span class="n">pre_tasks_info</span>
+        <span class="p">)</span>
+        <span class="n">amend_msg</span> <span class="o">=</span> <span class="n">send_chat_prompts</span><span class="p">(</span><span class="n">sys_prompt</span><span class="p">,</span> <span class="n">user_prompt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">)</span>
+        <span class="n">new_code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_python_code</span><span class="p">(</span><span class="n">amend_msg</span><span class="p">)</span>
+        <span class="n">invoke</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_information</span><span class="p">(</span><span class="n">amend_msg</span><span class="p">,</span> <span class="n">begin_str</span><span class="o">=</span><span class="s1">&#39;&lt;invoke&gt;&#39;</span><span class="p">,</span> <span class="n">end_str</span><span class="o">=</span><span class="s1">&#39;&lt;/invoke&gt;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">new_code</span><span class="p">,</span> <span class="n">invoke</span></div>
+
+
+<div class="viewcode-block" id="FridayExecutor.analysis_tool">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.analysis_tool">[docs]</a>
+    <span class="k">def</span> <span class="nf">analysis_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">task_description</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Analyzes the execution outcome of an tool to determine the nature of any errors.</span>
+
+<span class="sd">        This method evaluates the execution state of an tool, specifically looking for errors. Based on the</span>
+<span class="sd">        analysis, it determines whether the error is environmental and requires new operations (handled by the</span>
+<span class="sd">        planning modules) or is amendable via the `repair_tool` method. The analysis results, including the reasoning</span>
+<span class="sd">        and error type, are returned in JSON format.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            code (str): The code that was executed for the tool.</span>
+<span class="sd">            task_description (str): The description of the task associated with the tool.</span>
+<span class="sd">            state: The state object containing the result of the tool&#39;s execution, including any errors.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: A tuple containing:</span>
+<span class="sd">                - reasoning (str): The analysis&#39;s reasoning regarding the nature of the error.</span>
+<span class="sd">                - type (str): The type of error identified (&#39;environmental&#39; for new operations, &#39;amendable&#39; for corrections).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sys_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[</span><span class="s1">&#39;_SYSTEM_ERROR_ANALYSIS_PROMPT&#39;</span><span class="p">]</span>
+        <span class="n">user_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[</span><span class="s1">&#39;_USER_ERROR_ANALYSIS_PROMPT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">current_code</span><span class="o">=</span><span class="n">code</span><span class="p">,</span>
+            <span class="n">task</span><span class="o">=</span><span class="n">task_description</span><span class="p">,</span>
+            <span class="n">code_error</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+            <span class="n">current_working_dir</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">pwd</span><span class="p">,</span>
+            <span class="n">working_dir</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">working_dir</span><span class="p">,</span>
+            <span class="n">files_and_folders</span><span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">ls</span>
+        <span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">send_chat_prompts</span><span class="p">(</span><span class="n">sys_prompt</span><span class="p">,</span> <span class="n">user_prompt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">)</span>
+        <span class="n">analysis_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_json_from_string</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>   
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;************************&lt;analysis_json&gt;**************************&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">analysis_json</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;************************&lt;/analysis_json&gt;*************************&quot;</span><span class="p">)</span>   
+
+        <span class="n">reasoning</span> <span class="o">=</span> <span class="n">analysis_json</span><span class="p">[</span><span class="s1">&#39;reasoning&#39;</span><span class="p">]</span>
+        <span class="n">error_type</span> <span class="o">=</span> <span class="n">analysis_json</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">reasoning</span><span class="p">,</span> <span class="n">error_type</span></div>
+
+        
+<div class="viewcode-block" id="FridayExecutor.store_tool">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.store_tool">[docs]</a>
+    <span class="k">def</span> <span class="nf">store_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tool</span><span class="p">,</span> <span class="n">code</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stores the provided tool and its code in the tool library.</span>
+
+<span class="sd">        If the specified tool does not already exist in the tool library, this method proceeds to store the tool&#39;s</span>
+<span class="sd">        code, arguments description, and other relevant information. It involves saving these details into JSON files and</span>
+<span class="sd">        updating the tool library database. If the tool already exists, it outputs a notification indicating so.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tool (str): The name of the tool to be stored.</span>
+<span class="sd">            code (str): The executable code associated with the tool.</span>
+
+<span class="sd">        Side Effects:</span>
+<span class="sd">            - Adds a new tool to the tool library if it doesn&#39;t already exist.</span>
+<span class="sd">            - Saves tool details to the filesystem and updates the tool library&#39;s database.</span>
+<span class="sd">            - Outputs a message if the tool already exists in the library.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If tool not in db.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">tool_manager</span><span class="o">.</span><span class="n">exist_tool</span><span class="p">(</span><span class="n">tool</span><span class="p">):</span>
+            <span class="c1"># Implement tool storage logic and store new tools</span>
+            <span class="c1"># args_description = self.extract_args_description(code)</span>
+            <span class="n">tool_description</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_tool_description</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+            <span class="c1"># Save tool name, code, and description to JSON</span>
+            <span class="n">tool_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_tool_info_to_json</span><span class="p">(</span><span class="n">tool</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">tool_description</span><span class="p">)</span>
+            <span class="c1"># Save code and descriptions to databases and JSON files</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tool_manager</span><span class="o">.</span><span class="n">add_new_tool</span><span class="p">(</span><span class="n">tool_info</span><span class="p">)</span>
+            <span class="c1"># # Parameter description save path</span>
+            <span class="c1"># args_description_file_path = self.tool_manager.generated_tool_repo_dir + &#39;/args_description/&#39; + tool + &#39;.txt&#39;      </span>
+            <span class="c1"># # save args_description</span>
+            <span class="c1"># self.save_str_to_path(args_description, args_description_file_path)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;tool already exists!&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FridayExecutor.api_tool">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.api_tool">[docs]</a>
+    <span class="k">def</span> <span class="nf">api_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">api_path</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s2">&quot;No context provided.&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes a task by calling an API tool with the provided description and context.</span>
+
+<span class="sd">        This method formats a message to generate executable code for an API call based on the</span>
+<span class="sd">        provided description and context. It sends this message to the language learning model (LLM),</span>
+<span class="sd">        extracts the executable Python code from the LLM&#39;s response, and returns this code.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            description (str): A description of the task to be performed by the API call.</span>
+<span class="sd">            api_path (str): The path or endpoint of the API to be called.</span>
+<span class="sd">            context (str, optional): Additional context to be included in the API call. Defaults to &quot;No context provided.&quot;.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The generated Python code to execute the API call.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sys_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[</span><span class="s1">&#39;_SYSTEM_TOOL_USAGE_PROMPT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">openapi_doc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_openapi_doc</span><span class="p">(</span><span class="n">api_path</span><span class="p">)),</span>
+            <span class="n">tool_sub_task</span> <span class="o">=</span> <span class="n">description</span><span class="p">,</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[</span><span class="s1">&#39;_USER_TOOL_USAGE_PROMPT&#39;</span><span class="p">]</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">send_chat_prompts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sys_prompt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_prompt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">)</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_python_code</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">code</span> </div>
+
+    
+<div class="viewcode-block" id="FridayExecutor.question_and_answer_tool">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.question_and_answer_tool">[docs]</a>
+    <span class="k">def</span> <span class="nf">question_and_answer_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">question</span><span class="p">,</span> <span class="n">current_question</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">sys_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[</span><span class="s1">&#39;_SYSTEM_QA_PROMPT&#39;</span><span class="p">]</span>
+        <span class="n">user_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">[</span><span class="s1">&#39;_USER_QA_PROMPT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="n">context</span><span class="p">,</span>
+            <span class="n">question</span> <span class="o">=</span> <span class="n">question</span><span class="p">,</span>
+            <span class="n">current_question</span> <span class="o">=</span> <span class="n">current_question</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">send_chat_prompts</span><span class="p">(</span><span class="n">sys_prompt</span><span class="p">,</span> <span class="n">user_prompt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">)</span>  </div>
+
+
+<div class="viewcode-block" id="FridayExecutor.extract_python_code">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.extract_python_code">[docs]</a>
+    <span class="k">def</span> <span class="nf">extract_python_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extracts Python code snippets from a response string that includes code block markers.</span>
+
+<span class="sd">        This method parses a response string to extract Python code enclosed within &#39;```python&#39; and &#39;```&#39; markers.</span>
+<span class="sd">        It&#39;s designed to retrieve executable Python code snippets from formatted responses, such as those returned</span>
+<span class="sd">        by a language learning model after processing a code generation or analysis prompts.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            response (str): The response string containing the Python code block to be extracted.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The extracted Python code snippet, or an empty string if no code block is found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">python_code</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;```python&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="n">python_code</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;```python&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;```&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s1">&#39;```&#39;</span> <span class="ow">in</span> <span class="n">python_code</span><span class="p">:</span>
+            <span class="n">python_code</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;```&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;```&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">python_code</span>    </div>
+
+
+<div class="viewcode-block" id="FridayExecutor.extract_class_name_and_args_description">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.extract_class_name_and_args_description">[docs]</a>
+    <span class="k">def</span> <span class="nf">extract_class_name_and_args_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_code</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extracts the class name and arguments description from a given Python class code.</span>
+
+<span class="sd">        This method searches the provided class code for the class name and the documentation string</span>
+<span class="sd">        of the `__call__` method, which typically includes descriptions of the arguments. It uses regular</span>
+<span class="sd">        expressions to locate these elements within the code.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            class_code (str): The Python code of the class from which information is to be extracted.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: A tuple containing:</span>
+<span class="sd">                - class_name (str): The name of the class extracted from the code.</span>
+<span class="sd">                - args_description (str): The arguments description extracted from the `__call__` method&#39;s docstring, if available; otherwise, None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">class_name_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;class (\w+)&quot;</span>
+        <span class="n">class_name_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">class_name_pattern</span><span class="p">,</span> <span class="n">class_code</span><span class="p">)</span>
+        <span class="n">class_name</span> <span class="o">=</span> <span class="n">class_name_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">class_name_match</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="c1"># Extracting the __call__ method&#39;s docstring</span>
+        <span class="n">call_method_docstring_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;def __call__\([^)]*\):\s+</span><span class="se">\&quot;\&quot;\&quot;</span><span class="s2">(.*?)</span><span class="se">\&quot;\&quot;\&quot;</span><span class="s2">&quot;</span>
+        <span class="n">call_method_docstring_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">call_method_docstring_pattern</span><span class="p">,</span> <span class="n">class_code</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+        <span class="n">args_description</span> <span class="o">=</span> <span class="n">call_method_docstring_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">call_method_docstring_match</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">args_description</span></div>
+
+    
+<div class="viewcode-block" id="FridayExecutor.extract_args_description">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.extract_args_description">[docs]</a>
+    <span class="k">def</span> <span class="nf">extract_args_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_code</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extracts the arguments description from the `__call__` method&#39;s docstring within Python class code.</span>
+
+<span class="sd">        This method specifically targets the docstring of the `__call__` method in a class, which is conventionally</span>
+<span class="sd">        used to describe the method&#39;s parameters. The extraction is performed using a regular expression that</span>
+<span class="sd">        captures the content of the docstring.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            class_code (str): The Python code of the class from which the arguments description is to be extracted.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The extracted arguments description from the `__call__` method&#39;s docstring, or None if the docstring is not found or does not contain descriptions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Extracting the __call__ method&#39;s docstring</span>
+        <span class="n">call_method_docstring_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;def __call__\([^)]*\):\s+</span><span class="se">\&quot;\&quot;\&quot;</span><span class="s2">(.*?)</span><span class="se">\&quot;\&quot;\&quot;</span><span class="s2">&quot;</span>
+        <span class="n">call_method_docstring_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">call_method_docstring_pattern</span><span class="p">,</span> <span class="n">class_code</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+        <span class="n">args_description</span> <span class="o">=</span> <span class="n">call_method_docstring_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">call_method_docstring_match</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">args_description</span></div>
+
+
+<div class="viewcode-block" id="FridayExecutor.extract_tool_description">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.extract_tool_description">[docs]</a>
+    <span class="k">def</span> <span class="nf">extract_tool_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_code</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extracts the description of an tool from the class&#39;s initialization method in Python code.</span>
+
+<span class="sd">        This method looks for the tool&#39;s description assigned to `self._description` within the `__init__` method</span>
+<span class="sd">        of a class. It uses regular expressions to find this assignment and extracts the description string. This</span>
+<span class="sd">        approach assumes that the tool&#39;s description is directly assigned as a string literal to `self._description`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            class_code (str): The complete Python code of the class from which the tool description is to be extracted.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The extracted description of the tool if found; otherwise, None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">init_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;def __init__\s*\(self[^)]*\):\s*(?:.|\n)*?self\._description\s*=\s*</span><span class="se">\&quot;</span><span class="s2">([^</span><span class="se">\&quot;</span><span class="s2">]+)</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+        <span class="n">tool_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">init_pattern</span><span class="p">,</span> <span class="n">class_code</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+        <span class="n">tool_description</span> <span class="o">=</span> <span class="n">tool_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">tool_match</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">tool_description</span></div>
+
+    
+<div class="viewcode-block" id="FridayExecutor.save_str_to_path">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.save_str_to_path">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_str_to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves a string content to a file at the specified path, ensuring the directory exists.</span>
+
+<span class="sd">        This method takes a string and a file path, creating any necessary parent directories before</span>
+<span class="sd">        writing the content to the file. It ensures that the content is written with proper encoding and</span>
+<span class="sd">        that any existing content in the file is overwritten. The content is processed to remove extra</span>
+<span class="sd">        whitespace at the beginning and end of each line before saving.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            content (str): The string content to be saved to the file.</span>
+<span class="sd">            path (str): The filesystem path where the content should be saved. If the directory does not exist,</span>
+<span class="sd">                        it will be created.</span>
+
+<span class="sd">        Side Effects:</span>
+<span class="sd">            - Creates the directory path if it does not exist.</span>
+<span class="sd">            - Writes the content to a file at the specified path, potentially overwriting existing content.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span></div>
+
+                 
+<div class="viewcode-block" id="FridayExecutor.save_tool_info_to_json">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.save_tool_info_to_json">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_tool_info_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tool</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">description</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructs a dictionary containing tool information suitable for JSON serialization.</span>
+
+<span class="sd">        This method packages the name, code, and description of an tool into a dictionary, making it ready</span>
+<span class="sd">        for serialization or further processing. This structured format is useful for saving tool details</span>
+<span class="sd">        in a consistent manner, facilitating easy storage and retrieval.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tool (str): The name of the tool.</span>
+<span class="sd">            code (str): The executable code associated with the tool.</span>
+<span class="sd">            description (str): A textual description of what the tool does.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: A dictionary containing the tool&#39;s name, code, and description.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;task_name&quot;</span> <span class="p">:</span> <span class="n">tool</span><span class="p">,</span>
+            <span class="s2">&quot;code&quot;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">info</span></div>
+
+
+<div class="viewcode-block" id="FridayExecutor.extract_API_Path">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.extract_API_Path">[docs]</a>
+    <span class="k">def</span> <span class="nf">extract_API_Path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extracts both UNIX-style and Windows-style file paths from the provided text string.</span>
+
+<span class="sd">        This method applies regular expressions to identify and extract file paths that may be present in</span>
+<span class="sd">        the input text. It is capable of recognizing paths that are enclosed within single or double quotes</span>
+<span class="sd">        and supports both UNIX-style paths (e.g., `/home/user/docs`) and Windows-style paths (e.g., `C:\\Users\\user\\docs`).</span>
+<span class="sd">        If multiple paths are found, only the first match is returned, following the function&#39;s current implementation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text (str): The string from which file paths are to be extracted.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The first file path found in the input text, with any enclosing quotes removed. If no paths are</span>
+<span class="sd">                found, an empty string is returned.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The current implementation returns only the first extracted path. If multiple paths are present in the</span>
+<span class="sd">            input text, consider modifying the method to return all found paths if the use case requires it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Regular expression for UNIX-style and Windows-style paths</span>
+        <span class="n">unix_path_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;/[^/\s]+(?:/[^/\s]*)*&quot;</span>
+        <span class="n">windows_path_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;[a-zA-Z]:</span><span class="se">\\</span><span class="s2">(?:[^</span><span class="se">\\</span><span class="s2">\/\s]+</span><span class="se">\\</span><span class="s2">)*[^</span><span class="se">\\</span><span class="s2">\/\s]+&quot;</span>
+
+        <span class="c1"># Combine both patterns</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">unix_path_pattern</span><span class="si">}</span><span class="s2">)|(</span><span class="si">{</span><span class="n">windows_path_pattern</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+        <span class="c1"># Find all matches</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="c1"># Extract paths from the tuples returned by findall</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">match</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">match</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">]</span>
+
+        <span class="c1"># Remove enclosing quotes (single or double) from the paths</span>
+        <span class="n">stripped_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">stripped_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+    
+
+<div class="viewcode-block" id="FridayExecutor.generate_openapi_doc">
+<a class="viewcode-back" href="../../../../agent_doc/ExecutionModule.html#oscopilot.modules.executor.friday_executor.FridayExecutor.generate_openapi_doc">[docs]</a>
+    <span class="k">def</span> <span class="nf">generate_openapi_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tool_api_path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Format openapi document.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># init current api&#39;s doc</span>
+        <span class="n">curr_api_doc</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">curr_api_doc</span><span class="p">[</span><span class="s2">&quot;openapi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_api_doc</span><span class="p">[</span><span class="s2">&quot;openapi&quot;</span><span class="p">]</span>
+        <span class="n">curr_api_doc</span><span class="p">[</span><span class="s2">&quot;info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_api_doc</span><span class="p">[</span><span class="s2">&quot;info&quot;</span><span class="p">]</span>
+        <span class="n">curr_api_doc</span><span class="p">[</span><span class="s2">&quot;paths&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">curr_api_doc</span><span class="p">[</span><span class="s2">&quot;components&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;schemas&quot;</span><span class="p">:{}}</span>
+        <span class="n">api_path_doc</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1">#extract path and schema</span>
+        <span class="k">if</span> <span class="n">tool_api_path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_api_doc</span><span class="p">[</span><span class="s2">&quot;paths&quot;</span><span class="p">]:</span>
+            <span class="n">curr_api_doc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;The api is not existed&quot;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="n">curr_api_doc</span>
+        <span class="n">api_path_doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_api_doc</span><span class="p">[</span><span class="s2">&quot;paths&quot;</span><span class="p">][</span><span class="n">tool_api_path</span><span class="p">]</span>
+        <span class="n">curr_api_doc</span><span class="p">[</span><span class="s2">&quot;paths&quot;</span><span class="p">][</span><span class="n">tool_api_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">api_path_doc</span>
+        <span class="n">find_ptr</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="s2">&quot;get&quot;</span> <span class="ow">in</span> <span class="n">api_path_doc</span><span class="p">:</span>
+            <span class="n">findptr</span>  <span class="o">=</span> <span class="n">api_path_doc</span><span class="p">[</span><span class="s2">&quot;get&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s2">&quot;post&quot;</span> <span class="ow">in</span> <span class="n">api_path_doc</span><span class="p">:</span>
+            <span class="n">findptr</span> <span class="o">=</span> <span class="n">api_path_doc</span><span class="p">[</span><span class="s2">&quot;post&quot;</span><span class="p">]</span>
+        <span class="n">api_params_schema_ref</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="c1"># json格式</span>
+        <span class="k">if</span> <span class="p">((</span><span class="s2">&quot;requestBody&quot;</span> <span class="ow">in</span> <span class="n">findptr</span><span class="p">)</span> <span class="ow">and</span> 
+        <span class="p">(</span><span class="s2">&quot;content&quot;</span> <span class="ow">in</span> <span class="n">findptr</span><span class="p">[</span><span class="s2">&quot;requestBody&quot;</span><span class="p">])</span> <span class="ow">and</span> 
+        <span class="p">(</span><span class="s2">&quot;application/json&quot;</span> <span class="ow">in</span> <span class="n">findptr</span><span class="p">[</span><span class="s2">&quot;requestBody&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">])</span> <span class="ow">and</span> 
+        <span class="p">(</span><span class="s2">&quot;schema&quot;</span> <span class="ow">in</span> <span class="n">findptr</span><span class="p">[</span><span class="s2">&quot;requestBody&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">][</span><span class="s2">&quot;application/json&quot;</span><span class="p">])</span> <span class="ow">and</span> 
+        <span class="p">(</span><span class="s2">&quot;$ref&quot;</span> <span class="ow">in</span> <span class="n">findptr</span><span class="p">[</span><span class="s2">&quot;requestBody&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">][</span><span class="s2">&quot;application/json&quot;</span><span class="p">][</span><span class="s2">&quot;schema&quot;</span><span class="p">])):</span>
+            <span class="n">api_params_schema_ref</span> <span class="o">=</span> <span class="n">findptr</span><span class="p">[</span><span class="s2">&quot;requestBody&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">][</span><span class="s2">&quot;application/json&quot;</span><span class="p">][</span><span class="s2">&quot;schema&quot;</span><span class="p">][</span><span class="s2">&quot;$ref&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="p">((</span><span class="s2">&quot;requestBody&quot;</span> <span class="ow">in</span> <span class="n">findptr</span><span class="p">)</span> <span class="ow">and</span> 
+        <span class="p">(</span><span class="s2">&quot;content&quot;</span> <span class="ow">in</span> <span class="n">findptr</span><span class="p">[</span><span class="s2">&quot;requestBody&quot;</span><span class="p">])</span> <span class="ow">and</span> 
+        <span class="p">(</span><span class="s2">&quot;multipart/form-data&quot;</span> <span class="ow">in</span> <span class="n">findptr</span><span class="p">[</span><span class="s2">&quot;requestBody&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">])</span> <span class="ow">and</span> 
+        <span class="p">(</span><span class="s2">&quot;schema&quot;</span> <span class="ow">in</span> <span class="n">findptr</span><span class="p">[</span><span class="s2">&quot;requestBody&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">][</span><span class="s2">&quot;multipart/form-data&quot;</span><span class="p">])</span> <span class="ow">and</span> 
+        <span class="p">(</span><span class="s2">&quot;allOf&quot;</span> <span class="ow">in</span> <span class="n">findptr</span><span class="p">[</span><span class="s2">&quot;requestBody&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">][</span><span class="s2">&quot;multipart/form-data&quot;</span><span class="p">][</span><span class="s2">&quot;schema&quot;</span><span class="p">])</span> <span class="ow">and</span> 
+        <span class="p">(</span><span class="s2">&quot;$ref&quot;</span> <span class="ow">in</span> <span class="n">findptr</span><span class="p">[</span><span class="s2">&quot;requestBody&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">][</span><span class="s2">&quot;multipart/form-data&quot;</span><span class="p">][</span><span class="s2">&quot;schema&quot;</span><span class="p">][</span><span class="s2">&quot;allOf&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="n">api_params_schema_ref</span> <span class="o">=</span> <span class="n">findptr</span><span class="p">[</span><span class="s2">&quot;requestBody&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">][</span><span class="s2">&quot;multipart/form-data&quot;</span><span class="p">][</span><span class="s2">&quot;schema&quot;</span><span class="p">][</span><span class="s2">&quot;allOf&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;$ref&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">api_params_schema_ref</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">api_params_schema_ref</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">curr_api_doc</span><span class="p">[</span><span class="s2">&quot;components&quot;</span><span class="p">][</span><span class="s2">&quot;schemas&quot;</span><span class="p">][</span><span class="n">api_params_schema_ref</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_api_doc</span><span class="p">[</span><span class="s2">&quot;components&quot;</span><span class="p">][</span><span class="s2">&quot;schemas&quot;</span><span class="p">][</span><span class="n">api_params_schema_ref</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">curr_api_doc</span></div>
+</div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, OS-Copilot.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

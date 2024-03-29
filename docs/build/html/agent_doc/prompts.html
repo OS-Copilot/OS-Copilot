@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompts &mdash; OS-Copilot  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tool Repository" href="../tool_repository.html" />
+    <link rel="prev" title="ExecutionModule" href="ExecutionModule.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            OS-Copilot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quick_start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/add_tool.html">Adding Your Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/deploy_api_service.html">Deploying API Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/design_new_api_tool.html">Designing New API Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/example_excel.html">Example: Automating Excel Tasks with FRIDAY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/self_learning.html">Enhancing FRIDAY with Self-Learning for Excel Task Automation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../agent.html">FridayAgent</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base_agent.html">Base Agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="friday_agent.html">Friday Agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base_module.html">Base Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PlanningModule.html">PlanningModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RetrievalModule.html">RetrievalModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExecutionModule.html">ExecutionModule</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Prompts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tool_repository.html">Tool Repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">OS-Copilot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../agent.html">FridayAgent</a></li>
+      <li class="breadcrumb-item active">Prompts</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/agent_doc/prompts.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="prompts">
+<h1>Prompts<a class="headerlink" href="#prompts" title="Link to this heading">¶</a></h1>
+<p>This section of the documentation covers the prompts used by the AI agent across its various components.
+The prompts are defined within a Python dictionary and are crucial for guiding the AI’s interaction with its environment and users.</p>
+<p id="module-oscopilot.prompts.friday_pt">This modules contains a comprehensive <cite>prompts</cite> dictionary that serves as a repository of prompts for guiding the AI agents’s interactions across various operational scenarios, including execution, planning, and information retrieval tasks. These prompts are meticulously crafted to instruct the AI in performing its duties, ranging from code generation and amendment to task decomposition and planning, as well as error analysis and tool usage.</p>
+<p>The dictionary is segmented into three main categories:</p>
+<ol class="arabic simple">
+<li><p><strong>execute_prompt</strong>: Contains prompts for execution-related tasks, such as code generation, invocation, amendment, and error judgment. These are further detailed for system actions and user interactions, facilitating a diverse range of programming and troubleshooting tasks.</p></li>
+<li><p><strong>planning_prompt</strong>: Focuses on task planning and re-planning, decomposing complex tasks into manageable sub-tasks, and adapting plans based on unforeseen issues, ensuring that the AI can assist in project management and task organization effectively.</p></li>
+<li><p><strong>retrieve_prompt</strong>: Dedicated to information retrieval, including filtering code snippets based on specific criteria, aiding the AI in sourcing and suggesting code solutions efficiently.</p></li>
+</ol>
+<p>Each category comprises system and user prompts, where system prompts define the AI’s task or query in detail, and user prompts typically include placeholders for dynamic information insertion, reflecting the context or specific requirements of the task at hand.</p>
+<p>Usage:
+The <cite>prompts</cite> dictionary is utilized by the AI agents to dynamically select appropriate prompts based on the current context or task, ensuring relevant and precise guidance for each operation. This dynamic approach allows the AI to adapt its interactions and responses to suit a wide array of programming and operational needs, enhancing its utility and effectiveness in assisting users.</p>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Accessing a specific prompts for task execution</span>
+<span class="n">execute_prompt</span> <span class="o">=</span> <span class="n">prompts</span><span class="p">[</span><span class="s1">&#39;execute_prompt&#39;</span><span class="p">][</span><span class="s1">&#39;_SYSTEM_SKILL_CREATE_AND_INVOKE_PROMPT&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ExecutionModule.html" class="btn btn-neutral float-left" title="ExecutionModule" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tool_repository.html" class="btn btn-neutral float-right" title="Tool Repository" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, OS-Copilot.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

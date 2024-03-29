@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>oscopilot.environments.py_env &mdash; OS-Copilot  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            OS-Copilot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quick_start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/add_tool.html">Adding Your Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/deploy_api_service.html">Deploying API Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/design_new_api_tool.html">Designing New API Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/example_excel.html">Example: Automating Excel Tasks with FRIDAY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/self_learning.html">Enhancing FRIDAY with Self-Learning for Excel Task Automation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../agent.html">FridayAgent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tool_repository.html">Tool Repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">OS-Copilot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">oscopilot.environments.py_env</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for oscopilot.environments.py_env</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">oscopilot.utils.schema</span> <span class="kn">import</span> <span class="n">EnvState</span>
+<span class="kn">from</span> <span class="nn">oscopilot.environments.env</span> <span class="kn">import</span> <span class="n">Env</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">NamedTemporaryFile</span>
+
+
+<div class="viewcode-block" id="PythonEnv">
+<a class="viewcode-back" href="../../../environment_doc/py_env.html#oscopilot.environments.py_env.PythonEnv">[docs]</a>
+<span class="k">class</span> <span class="nc">PythonEnv</span><span class="p">(</span><span class="n">Env</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class representing a Python execution environments for actions.</span>
+
+<span class="sd">    This class provides a structured way to execute Python code snippets within a</span>
+<span class="sd">    specified environments, handling the execution state and any outputs or errors</span>
+<span class="sd">    generated during the execution. It extends the `Env` class, adding Python-specific</span>
+<span class="sd">    execution capabilities.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the Python environments with default values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+<div class="viewcode-block" id="PythonEnv.step">
+<a class="viewcode-back" href="../../../environment_doc/py_env.html#oscopilot.environments.py_env.PythonEnv.step">[docs]</a>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="n">EnvState</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes a Python command in the environments and updates the environments state.</span>
+
+<span class="sd">        This method takes a Python command as input, executes it within the environments&#39;s</span>
+<span class="sd">        working directory, and captures the command&#39;s output, error, and final working directory.</span>
+<span class="sd">        It supports passing arguments to the command and handles execution errors gracefully.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            _command (str): The Python command to execute.</span>
+<span class="sd">            args (list[str] | str, optional): Additional arguments for the command. Can be a list</span>
+<span class="sd">                of arguments or a space-separated string. Defaults to an empty list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            EnvState: An object representing the state of the environments after command execution, including any results, errors, and the current working directory.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The method ensures the last line of the output is always the current working directory</span>
+<span class="sd">            to maintain accurate state tracking.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tmp_code_file</span> <span class="o">=</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">working_dir</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.py&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="c1"># Solving the issue of not being able to retrieve the current working directory of the last line of output</span>
+        <span class="n">_command</span> <span class="o">=</span> <span class="n">_command</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>  <span class="o">+</span> <span class="s2">&quot;import os&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;print(os.getcwd())&quot;</span>
+        <span class="n">tmp_code_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_command</span><span class="p">)</span>
+        <span class="n">tmp_code_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">tmp_code_file</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>  <span class="c1"># Convert space-separated string to a list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env_state</span> <span class="o">=</span> <span class="n">EnvState</span><span class="p">(</span><span class="n">command</span><span class="o">=</span><span class="n">_command</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s1">&#39;-B&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)],</span>
+                <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf8&quot;</span><span class="p">,</span>
+                <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">working_dir</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout</span><span class="p">,</span>
+                <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span>
+            <span class="p">)</span>
+            <span class="c1"># If there is standard output.</span>
+            <span class="k">if</span> <span class="n">results</span><span class="o">.</span><span class="n">stdout</span><span class="p">:</span>
+                <span class="n">stout</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">env_state</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stout</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">stout</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_state</span>
+        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">env_state</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">stderr</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">env_state</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="n">tmp_code_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">working_dir</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_state</span></div>
+
+
+<div class="viewcode-block" id="PythonEnv.observe">
+<a class="viewcode-back" href="../../../environment_doc/py_env.html#oscopilot.environments.py_env.PythonEnv.observe">[docs]</a>
+    <span class="k">def</span> <span class="nf">observe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pwd</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the environments state based on the current working directory.</span>
+
+<span class="sd">        This method sets the environments&#39;s working directory and lists its contents,</span>
+<span class="sd">        updating the `EnvState` object to reflect the current state of the environments.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pwd (str): The path to set as the current working directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env_state</span><span class="o">.</span><span class="n">pwd</span> <span class="o">=</span> <span class="n">pwd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">working_dir</span> <span class="o">=</span> <span class="n">pwd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env_state</span><span class="o">.</span><span class="n">ls</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;ls&#39;</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">working_dir</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">stdout</span></div>
+</div>
+
+
+
+<span class="n">DEFAULT_DESCRIPTION</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;def solution():</span>
+<span class="s2">    print(&quot;hello world!&quot;)</span>
+<span class="s2">    print(&quot;hello world!&quot;)</span>
+<span class="s2">    return &quot;return!&quot;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">env</span> <span class="o">=</span> <span class="n">PythonEnv</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">DEFAULT_DESCRIPTION</span><span class="p">))</span>
+    <span class="c1"># print(env.step(&quot;cd ../../&quot;))</span>
+    <span class="c1"># print(env.step(&quot;gogo&quot;))</span>
+    <span class="c1"># env.reset()</span>
+    <span class="c1"># print(env.step(&quot;sleep 3&quot;))</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, OS-Copilot.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

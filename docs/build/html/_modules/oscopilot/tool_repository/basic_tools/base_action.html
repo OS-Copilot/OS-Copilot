@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>oscopilot.tool_repository.basic_tools.base_action &mdash; OS-Copilot  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            OS-Copilot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quick_start.html">Quick Start</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/add_tool.html">Adding Your Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/deploy_api_service.html">Deploying API Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/design_new_api_tool.html">Designing New API Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/example_excel.html">Example: Automating Excel Tasks with FRIDAY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/self_learning.html">Enhancing FRIDAY with Self-Learning for Excel Task Automation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../agent.html">FridayAgent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tool_repository.html">Tool Repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utils.html">Utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">OS-Copilot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">oscopilot.tool_repository.basic_tools.base_action</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for oscopilot.tool_repository.basic_tools.base_action</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+
+<div class="viewcode-block" id="BaseAction">
+<a class="viewcode-back" href="../../../../tool_repository_doc/base_action.html#oscopilot.tool_repository.basic_tools.base_action.BaseAction">[docs]</a>
+<span class="k">class</span> <span class="nc">BaseAction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A base class for defining actions with optional attributes like description, name, </span>
+<span class="sd">    timeout, and action type.</span>
+
+<span class="sd">    This class serves as a template for defining various actions that can be executed</span>
+<span class="sd">    within a system. It encapsulates common properties that any action would require,</span>
+<span class="sd">    such as a name, description, execution timeout, and the type of action. The class</span>
+<span class="sd">    is designed to be extended by more specific action implementations.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        _name (str): The name of the action. Defaults to the class name if not provided.</span>
+<span class="sd">        _description (Optional[str]): A brief description of what the action does.</span>
+<span class="sd">        _timeout (int): The maximum time in seconds the action is allowed to run. Defaults to 2.</span>
+<span class="sd">        action_type (str): The type of action, must be one of &#39;BASH&#39;, &#39;CODE&#39;, &#39;TOOL&#39;. Defaults to &#39;BASH&#39;.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        AssertionError: If the provided `action_type` is not among the expected types.</span>
+<span class="sd">        NotImplementedError: If the `__call__` method is not implemented by a subclass.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        __call__(*args, **kwargs): Abstract method, intended to be implemented by subclasses</span>
+<span class="sd">                                   to execute the action.</span>
+<span class="sd">        _python(*lines): Constructs a Python command string from the given lines of code.</span>
+<span class="sd">        _import(*packages): Generates an import statement for importing everything from the</span>
+<span class="sd">                            specified jarvis package.</span>
+<span class="sd">        __str__(): Returns the same string representation as `__repr__`.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        This class is abstract and is meant to be subclassed to provide concrete implementations</span>
+<span class="sd">        of actions. The `__call__` method must be overridden by subclasses to define the action&#39;s</span>
+<span class="sd">        behavior when invoked.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+                 <span class="n">action_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;BASH&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+        <span class="k">assert</span> <span class="n">action_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;BASH&#39;</span><span class="p">,</span> <span class="s1">&#39;CODE&#39;</span><span class="p">,</span> <span class="s1">&#39;TOOL&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_type</span> <span class="o">=</span> <span class="n">action_type</span>
+
+<div class="viewcode-block" id="BaseAction.__call__">
+<a class="viewcode-back" href="../../../../tool_repository_doc/base_action.html#oscopilot.tool_repository.basic_tools.base_action.BaseAction.__call__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="BaseAction._python">
+<a class="viewcode-back" href="../../../../tool_repository_doc/base_action.html#oscopilot.tool_repository.basic_tools.base_action.BaseAction._python">[docs]</a>
+    <span class="k">def</span> <span class="nf">_python</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">lines</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;python -Bc &quot;</span><span class="si">{</span><span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot;&#39;</span></div>
+
+
+<div class="viewcode-block" id="BaseAction._import">
+<a class="viewcode-back" href="../../../../tool_repository_doc/base_action.html#oscopilot.tool_repository.basic_tools.base_action.BaseAction._import">[docs]</a>
+    <span class="k">def</span> <span class="nf">_import</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">packages</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;from jarvis.</span><span class="si">{</span><span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">packages</span><span class="p">)</span><span class="si">}</span><span class="s1"> import *&#39;</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The maximum time in seconds the action is allowed to run.</span>
+
+<span class="sd">        This read-only property returns the action&#39;s execution timeout value. It defines</span>
+<span class="sd">        how long an action can take before it should be considered as failed or timed out.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The timeout for the action in seconds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The name of the action.</span>
+
+<span class="sd">        This read-only property returns the name of the action. If not explicitly set</span>
+<span class="sd">        during initialization, it defaults to the name of the subclass implementing</span>
+<span class="sd">        the action.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The name of the action.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A brief description of what the action does.</span>
+
+<span class="sd">        This read-only property provides a short description of the action&#39;s purpose or</span>
+<span class="sd">        functionality. It can be used to give users or developers a quick overview of</span>
+<span class="sd">        what the action is intended to perform.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[str]: The description of the action, or None if not set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="BaseAction.__str__">
+<a class="viewcode-back" href="../../../../tool_repository_doc/base_action.html#oscopilot.tool_repository.basic_tools.base_action.BaseAction.__str__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span></div>
+</div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">BaseAction</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, OS-Copilot.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
