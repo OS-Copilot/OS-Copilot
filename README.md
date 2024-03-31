@@ -3,9 +3,11 @@
 <div align="center">
 
 [[Website]](https://os-copilot.github.io/)
-[[Arxiv]](https://arxiv.org/abs/2402.07456)
 [[PDF]](https://arxiv.org/pdf/2402.07456.pdf)
 [[Documentation]](https://os-copilot.readthedocs.io/en/latest/)
+[[Twitter]](https://twitter.com/oscopilot)
+[[Discord]](https://discord.gg/PDsRrEV27b)
+<!-- [[Arxiv]](https://arxiv.org/abs/2402.07456) -->
 <!-- [[Tweet]](https://twitter.com/DrJimFan/status/1662115266933972993?s=20) -->
 
 [![Static Badge](https://img.shields.io/badge/MIT-License-green)](https://github.com/OS-Copilot/OS-Copilot/blob/main/LICENSE)
