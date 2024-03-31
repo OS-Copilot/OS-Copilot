@@ -1,8 +1,6 @@
 langchain/
 guidance/
 Auto-GPT/
-Agents/
-utils/
 
 /log
 /examples/log/*
