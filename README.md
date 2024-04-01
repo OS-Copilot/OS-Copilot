@@ -22,7 +22,7 @@
 
 </div>
 
-## 📖 Overview
+<!-- ## 📖 Overview
 
 - **OS-Copilot** is a pioneering conceptual framework for building generalist computer agents on Linux and MacOS, which provides a unified interface for app interactions in the heterogeneous OS ecosystem.
   
@@ -34,7 +34,7 @@
 
 <p align="center">
   <img src='pic/FRIDAY.png' width="75%">
-</p>
+</p> -->
 
 ## ⚡️ Quickstart
 
@@ -69,7 +69,20 @@
 
 \* FRIDAY currently only supports single-round conversation.
 
-## 🛠️ FRIDAY-Gizmos
+## 🛠️ Tutorial
+
+| **Level**        | **Tutorial**                                                                                    | **Description**                                                                                                                      |
+|------------------|-------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| **Beginner**     | [Installation](https://os-copilot.readthedocs.io/en/latest/installation.html)| Provides three methods to install FRIDAY: cloning from GitHub, development setup via pip install -e ., and direct pip installation.  |
+| **Beginner**     | [Getting Started](https://os-copilot.readthedocs.io/en/latest/quick_start.html)| Demonstrates how to use FRIDAY with a quick_start.py script, covering module imports, configuration setup, and task execution.       |
+| **Intermediate** | [Adding Your Tools](https://os-copilot.readthedocs.io/en/latest/tutorials/add_tool.html)| Outlines the process for adding and removing tools to the FRIDAY.                                                                    |
+| **Intermediate** | [Deploying API Services](https://os-copilot.readthedocs.io/en/latest/tutorials/deploy_api_service.html)| Explains the deployment of API services for FRIDAY, including environment setup, configuring API tools, and launching the server.    |
+| **Intermediate** | [Example: Automating Excel Tasks](https://os-copilot.readthedocs.io/en/latest/tutorials/example_excel.html)| Demonstrates automating Excel tasks with FRIDAY, including formula application and chart creation within an Excel sheet.             |
+| **Intermediate** | [Enhancing FRIDAY with Self-Learning for Excel Task Automation](https://os-copilot.readthedocs.io/en/latest/tutorials/self_learning.html) | Showcases empowering FRIDAY with self-learning to autonomously learn and execute Excel file manipulations.                           |
+| **Advanced**     | [Designing New API Tools](https://os-copilot.readthedocs.io/en/latest/tutorials/design_new_api_tool.html)| Guides on designing, integrating, and deploying custom API tools for FRIDAY to extend its functionalities.                           |
+
+
+<!-- ## 🛠️ FRIDAY-Gizmos
 We maintain an open-source library of toolkits for FRIDAY, which includes tools that can be directly utilized within FRIDAY.
 For a detailed list of tools, please see [FRIDAY-Gizmos](https://github.com/OS-Copilot/FRIDAY-Gizmos). The usage methods are as follows:
 
@@ -89,7 +102,7 @@ python friday/tool_repository/manager/tool_manager.py --delete --tool_name [tool
 
 ## ✨ Deploy API Services
 
-For comprehensive guidelines on deploying API services, please refer to the [OS-Copilot documentation](https://os-copilot.readthedocs.io/en/latest/). 
+For comprehensive guidelines on deploying API services, please refer to the [OS-Copilot documentation](https://os-copilot.readthedocs.io/en/latest/).  -->
 
 ## 🏫 Community
 
