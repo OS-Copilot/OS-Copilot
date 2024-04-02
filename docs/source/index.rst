@@ -56,7 +56,7 @@ Community
 
 Join our community to connect with other enthusiasts, share your tools and demos, and collaborate on innovative projects. Stay engaged and get the latest updates by following us:
 
-- **Discord**: Join our Discord server for real-time discussions, support, and to share your work with the community. Click here to join: `Discord Server <https://discord.gg/PDsRrEV27b>`_ .
+- **Discord**: Join our Discord server for real-time discussions, support, and to share your work with the community. Click here to join: `Discord Server <https://discord.gg/PCeh4XbhjB>`_ .
 - **Twitter**: Follow us on Twitter `@oscopilot <https://twitter.com/oscopilot>`_ for the latest news, updates, and highlights from our community.
 
 
