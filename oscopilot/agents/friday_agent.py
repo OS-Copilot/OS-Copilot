@@ -51,6 +51,7 @@ class FridayAgent(BaseAgent):
         No explicit return value, but the method controls the flow of task execution and may exit the process in case of irreparable failures.
         """
         self.planner.reset_plan()
+        self.reset_inner_monologue()
         sub_tasks_list = self.planning(task)
         print("The task list obtained after planning is: {}".format(sub_tasks_list))
 
@@ -63,7 +64,8 @@ class FridayAgent(BaseAgent):
                 print("The execution of the current sub task has been successfully completed.")
             else:
                 print("{} not completed in repair round {}".format(sub_task, self.config.max_repair_iterations))
-                sys.exit()
+                # sys.exit()
+                break
 
     def self_refining(self, tool_name, execution_state: ExecutionState):
         """
@@ -112,6 +114,7 @@ class FridayAgent(BaseAgent):
         else:
             isTaskCompleted = True
         if isTaskCompleted:
+            self.inner_monologue.result = result
             self.planner.update_tool(tool_name, result, relevant_code, True, node_type)
         # print("The execution of the current task has been successfully completed.")
         return isTaskCompleted, isReplan
@@ -288,3 +291,6 @@ class FridayAgent(BaseAgent):
             else: # The code still needs to be corrected
                 need_repair = True
         return RepairingResult(not need_repair, code, critique, score, result)
+
+    def reset_inner_monologue(self):
+        self.inner_monologue = InnerMonologue()

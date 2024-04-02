@@ -38,6 +38,7 @@ class InnerMonologue:
     critique: str = ''
     isRePlan: bool = False
     isTaskCompleted: bool = False
+    result: str = ''
 
 
 @dataclass
