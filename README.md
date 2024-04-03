@@ -6,7 +6,7 @@
 [[PDF]](https://arxiv.org/pdf/2402.07456.pdf)
 [[Documentation]](https://os-copilot.readthedocs.io/en/latest/)
 [[Twitter]](https://twitter.com/oscopilot)
-[[Discord]](https://discord.gg/PDsRrEV27b)
+[[Discord]](https://discord.com/invite/rXS2XbgfaD)
 <!-- [[Arxiv]](https://arxiv.org/abs/2402.07456) -->
 <!-- [[Tweet]](https://twitter.com/DrJimFan/status/1662115266933972993?s=20) -->
 
@@ -35,6 +35,10 @@
 <p align="center">
   <img src='pic/FRIDAY.png' width="75%">
 </p> -->
+
+## 🔥 News
+- *2024.3*: 🎉 OS-Copilot is accepted at the [LLM Agents Workshop](https://llmagents.github.io/)@ICLR 2024. 
+
 
 ## ⚡️ Quickstart
 
@@ -71,15 +75,15 @@
 
 ## 🛠️ Tutorial
 
-| **Level**        | **Tutorial**                                                                                    | **Description**                                                                                                                      |
-|------------------|-------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| **Beginner**     | [Installation](https://os-copilot.readthedocs.io/en/latest/installation.html)| Provides three methods to install FRIDAY: cloning from GitHub, development setup via pip install -e ., and direct pip installation.  |
-| **Beginner**     | [Getting Started](https://os-copilot.readthedocs.io/en/latest/quick_start.html)| Demonstrates how to use FRIDAY with a quick_start.py script, covering module imports, configuration setup, and task execution.       |
-| **Intermediate** | [Adding Your Tools](https://os-copilot.readthedocs.io/en/latest/tutorials/add_tool.html)| Outlines the process for adding and removing tools to the FRIDAY.                                                                    |
-| **Intermediate** | [Deploying API Services](https://os-copilot.readthedocs.io/en/latest/tutorials/deploy_api_service.html)| Explains the deployment of API services for FRIDAY, including environment setup, configuring API tools, and launching the server.    |
-| **Intermediate** | [Example: Automating Excel Tasks](https://os-copilot.readthedocs.io/en/latest/tutorials/example_excel.html)| Demonstrates automating Excel tasks with FRIDAY, including formula application and chart creation within an Excel sheet.             |
-| **Intermediate** | [Enhancing FRIDAY with Self-Learning for Excel Task Automation](https://os-copilot.readthedocs.io/en/latest/tutorials/self_learning.html) | Showcases empowering FRIDAY with self-learning to autonomously learn and execute Excel file manipulations.                           |
-| **Advanced**     | [Designing New API Tools](https://os-copilot.readthedocs.io/en/latest/tutorials/design_new_api_tool.html)| Guides on designing, integrating, and deploying custom API tools for FRIDAY to extend its functionalities.                           |
+| **Level**        | **Tutorial**                                                                                    | **Description**                                                                                            |
+|------------------|-------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
+| **Beginner**     | [Installation](https://os-copilot.readthedocs.io/en/latest/installation.html)| Explore three methods to install FRIDAY.                                                                   |
+| **Beginner**     | [Getting Started](https://os-copilot.readthedocs.io/en/latest/quick_start.html)| The simplest demonstration of FRIDAY with a quick_start.py script.                                         |
+| **Intermediate** | [Adding Your Tools](https://os-copilot.readthedocs.io/en/latest/tutorials/add_tool.html)| Adding and removing tools to the FRIDAY.                                                                   |
+| **Intermediate** | [Deploying API Services](https://os-copilot.readthedocs.io/en/latest/tutorials/deploy_api_service.html)| Demonstrate the deployment of API services for FRIDAY.                                                     |
+| **Intermediate** | [Example: Automating Excel Tasks](https://os-copilot.readthedocs.io/en/latest/tutorials/example_excel.html)| Automating Excel control using FRIDAY.                                                                     |
+| **Intermediate** | [Enhancing FRIDAY with Self-Learning for Excel Task Automation](https://os-copilot.readthedocs.io/en/latest/tutorials/self_learning.html) | Improved Excel control with self-directed learning.                                                        |
+| **Advanced**     | [Designing New API Tools](https://os-copilot.readthedocs.io/en/latest/tutorials/design_new_api_tool.html)| Guides on deploying custom API tools for FRIDAY to extend its functionalities. |
 
 
 <!-- ## 🛠️ FRIDAY-Gizmos
@@ -106,12 +110,14 @@ For comprehensive guidelines on deploying API services, please refer to the [OS-
 
 ## 🏫 Community
 
-Join our community to connect with other enthusiasts, share your tools and demos, and collaborate on innovative projects. Stay engaged and get the latest updates by following us:
+Join our community to connect with other enthusiasts, researchers and developers:
 
-- **Discord**: Join our Discord server for real-time discussions, support, and to share your work with the community. Click here to join: [Discord Server](https://discord.gg/PCeh4XbhjB).
-- **Twitter**: Follow us on Twitter [@oscopilot](https://twitter.com/oscopilot) for the latest news, updates, and highlights from our community.
+- **[Discord](https://discord.com/invite/rXS2XbgfaD)**: Join our Discord server for real-time discussions and support.
+- **[Twitter](https://twitter.com/oscopilot)**: Follow our Twitter to get latest new or tag us to share your demos!
 
-## 👨‍💻‍ Contributors
+## 👨‍💻‍ Contributing
+
+**Visit [the roadmap](./docs/roadmap.md) to preview what the community is working on and become a contributor!**
 
 <a href="https://github.com/OS-Copilot/OS-Copilot/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=OS-Copilot/OS-Copilot" />
