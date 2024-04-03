@@ -1,0 +1,1 @@
+At the heart of these assistants lies a natural language user interface (NLUI) that enables users to interact with computers using natural language.

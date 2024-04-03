@@ -1,0 +1,1 @@
+To tackle the first challenge, we introduce OS-Copilot, a framework for OS-level language agents, accompanied by modular implementations for each component to facilitate agent development.
