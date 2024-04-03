@@ -48,30 +48,24 @@
    git clone https://github.com/OS-Copilot/OS-Copilot.git
    ```
 
-2. **Set Up Python Environment:** Ensure you have a version 3.10 or higher Python environment. You can create and
-   activate this environment using the following commands, replacing `oscopilot_env` with your preferred environment
-   name:
+2. **Set Up Python Environment and Install Dependencies:** 
 
    ```
    conda create -n oscopilot_env python=3.10 -y
    conda activate oscopilot_env
-   ```
-
-3. **Install Dependencies:** Move into the `OS-Copilot` directory and install the necessary dependencies by running:
-
-   ```
+   
    cd OS-Copilot
    pip install -e .
    ```
 
-4. **Set OpenAI API Key:** Configure your OpenAI API key in [.env](.env) and select the model you wish to use.
+4. **Set OpenAI API Key:** Configure your OpenAI API key in [.env](.env).
 
-5. **Running the Script:** Run the quick_start.py script, simply execute the following command in your terminal:
+5. **Now you are ready to have fun:**
    ```
    python quick_start.py
    ```
 
-\* FRIDAY currently only supports single-round conversation.
+\* **FRIDAY currently only supports single-round conversation**.
 
 ## 🛠️ Tutorial
 
