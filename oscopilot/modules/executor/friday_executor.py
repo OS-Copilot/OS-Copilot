@@ -2,8 +2,10 @@ from oscopilot.modules.base_module import BaseModule
 from oscopilot.tool_repository.manager.tool_manager import get_open_api_doc_path
 import re
 import json
+import subprocess
 from pathlib import Path
 from oscopilot.utils.utils import send_chat_prompts
+
 
 
 
@@ -27,7 +29,7 @@ class FridayExecutor(BaseModule):
         with open(self.open_api_doc_path) as f:
             self.open_api_doc = json.load(f) 
     
-    def generate_tool(self, task_name, task_description, pre_tasks_info, relevant_code):
+    def generate_tool(self, task_name, task_description, tool_type, pre_tasks_info, relevant_code):
         """
         Generates executable code and invocation logic for a specified tool.
 
@@ -48,20 +50,33 @@ class FridayExecutor(BaseModule):
                 - invoke (str): The specific logic or command to invoke the generated tool.
         """
         relevant_code = json.dumps(relevant_code)
-
-        sys_prompt = self.prompt['_SYSTEM_SKILL_CREATE_AND_INVOKE_PROMPT']
-        user_prompt = self.prompt['_USER_SKILL_CREATE_AND_INVOKE_PROMPT'].format(
-            system_version=self.system_version,
-            task_description=task_description,
-            working_dir= self.environment.working_dir,
-            task_name=task_name,
-            pre_tasks_info=pre_tasks_info,
-            relevant_code=relevant_code
-        )
+        if tool_type == 'Python':
+            sys_prompt = self.prompt['_SYSTEM_PYTHON_SKILL_AND_INVOKE_GENERATE_PROMPT']
+            user_prompt = self.prompt['_USER_PYTHON_SKILL_AND_INVOKE_GENERATE_PROMPT'].format(
+                system_version=self.system_version,
+                task_description=task_description,
+                working_dir= self.environment.working_dir,
+                task_name=task_name,
+                pre_tasks_info=pre_tasks_info,
+                relevant_code=relevant_code
+            )
+        else:
+            sys_prompt = self.prompt['_SYSTEM_SHELL_APPLESCRIPT_GENERATE_PROMPT']
+            user_prompt = self.prompt['_USER_SHELL_APPLESCRIPT_GENERATE_PROMPT'].format(
+                system_version=self.system_version,
+                task_description=task_description,
+                working_dir= self.environment.working_dir,
+                task_name=task_name,
+                pre_tasks_info=pre_tasks_info,
+                Type=tool_type
+            )
 
         create_msg = send_chat_prompts(sys_prompt, user_prompt, self.llm)
-        code = self.extract_python_code(create_msg)
-        invoke = self.extract_information(create_msg, begin_str='<invoke>', end_str='</invoke>')[0]
+        code = self.extract_code(create_msg, tool_type)
+        if tool_type == 'Python':
+            invoke = self.extract_information(create_msg, begin_str='<invoke>', end_str='</invoke>')[0]
+        else:
+            invoke = ''
         return code, invoke
 
     def execute_tool(self, code, invoke, node_type):
@@ -87,13 +102,24 @@ class FridayExecutor(BaseModule):
             Python code. The method is designed to be extensible for other tool types as needed.
         """
         # print result info
-        if node_type == 'Code':
+        if node_type == 'Python':
             info = "\n" + '''print("<return>")''' + "\n" + "print(result)" +  "\n" + '''print("</return>")'''
             code = code + '\nresult=' + invoke + info
+        # state = EnvState(command=code)
         print("************************<code>**************************")
         print(code)
-        print("************************</code>*************************")  
-        state = self.environment.step(code)
+        print("************************</code>*************************")
+        # for output_line_dic in self.environment.step(code):
+        #     if output_line_dic['format'] == 'active_line':
+        #         continue
+        #     content = output_line_dic['content']
+        #     if 'Traceback' in content:
+        #         state.error = (state.error or '') + content
+        #     else:
+        #         state.result += content
+        # state.pwd = self.environment.working_dir
+        # state.ls = subprocess.run(['ls'], cwd=self.environment.working_dir, capture_output=True, text=True).stdout
+        state = self.environment.step(node_type, code)  # node_type
         print("************************<state>**************************")
         print(state)
         # print("error: " + state.error + "\nresult: " + state.result + "\npwd: " + state.pwd + "\nls: " + state.ls)
@@ -286,6 +312,17 @@ class FridayExecutor(BaseModule):
             current_question = current_question
         )
         return send_chat_prompts(sys_prompt, user_prompt, self.llm)  
+
+    def extract_code(self, response, code_type):
+        code = ""
+        code_type_str = '```'+code_type.lower()
+        if code_type_str in response:
+            code = response.split(code_type_str)[1].split('```')[0]
+        elif '```' in code:
+            code = response.split('```')[1].split('```')[0]
+        else:
+            raise NotImplementedError
+        return code.strip()
 
     def extract_python_code(self, response):
         """

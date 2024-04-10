@@ -22,8 +22,8 @@ Example:
 """
 prompt = {
     'execute_prompt': {
-        # Code generate in os
-        '_SYSTEM_SKILL_CREATE_PROMPT': '''
+        # shell/applescript generator
+        '_SYSTEM_SHELL_APPLESCRIPT_GENERATE_PROMPT': '''
         You are a world-class programmer that can complete any task by executing code, your goal is to generate the corresponding code based on the type of code to complete the task.
         You could only respond with a code.
         Shell code output Format:
@@ -40,7 +40,7 @@ prompt = {
         1. You must generate code of the specified 'Code Type' to complete the task.
         2. The code logic should be clear and highly readable, able to meet the requirements of the task.
         ''',
-        '_USER_SKILL_CREATE_PROMPT': '''
+        '_USER_SHELL_APPLESCRIPT_GENERATE_PROMPT': '''
         User's information is as follows:
         System Version: {system_version}
         System language: simplified chinese
@@ -55,8 +55,8 @@ prompt = {
         3, 'Code Type' represents the type of code to be generated.
         ''',        
 
-        # Code generate and invoke prompts in os
-        '_SYSTEM_SKILL_CREATE_AND_INVOKE_PROMPT': '''
+        # Python generate and invoke prompts in os
+        '_SYSTEM_PYTHON_SKILL_AND_INVOKE_GENERATE_PROMPT': '''
         You are a world-class programmer that can complete any task by executing code, your goal is to generate the function code that accomplishes the task, along with the function's invocation.
         You could only respond with a python code and a invocation statement.
         Output Format:
@@ -85,7 +85,7 @@ prompt = {
 
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information.         
         ''',
-        '_USER_SKILL_CREATE_AND_INVOKE_PROMPT': '''
+        '_USER_PYTHON_SKILL_AND_INVOKE_GENERATE_PROMPT': '''
         User's information is as follows:
         System Version: {system_version}
         System language: simplified chinese
@@ -336,6 +336,7 @@ prompt = {
         13. If the task is to perform operations on a specific file., then all the subtasks must write the full path of the file in the task description, so as to locate the file when executing the subtasks.
         14. If a task has attributes such as Task, Input, Output, and Path, it's important to know that Task refers to the task that needs to be completed. Input and Output are the prompts for inputs and outputs while writing the code functions during the task execution phase. Path is the file path that needs to be operated on.
         15. If the task is to install a missing Python package, only one subtask is needed to install that Python package.
+        16. In general, try to **make plans** with as few steps as possible. 
         
         Now you will be provided with the following information, please give the reasoning process and the JSON that stores the subtasks information according to these information:
         ''',
