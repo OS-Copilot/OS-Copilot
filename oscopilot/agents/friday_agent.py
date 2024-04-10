@@ -162,7 +162,7 @@ class FridayAgent(BaseAgent):
         relevant_code = {}
         node_type = tool_node.node_type
         pre_tasks_info = self.planner.get_pre_tasks_info(tool_name)
-        if node_type == 'Code':
+        if node_type == 'Python':
             # retrieve existing tool
             retrieve_name = self.retriever.retrieve_tool_name(description, 3)
             relevant_code = self.retriever.retrieve_tool_code_pair(retrieve_name)
@@ -181,7 +181,7 @@ class FridayAgent(BaseAgent):
                 api_path = self.executor.extract_API_Path(description)
                 code = self.executor.api_tool(description, api_path, pre_tasks_info)
             else:
-                code, invoke = self.executor.generate_tool(tool_name, description, pre_tasks_info, relevant_code)
+                code, invoke = self.executor.generate_tool(tool_name, description, node_type, pre_tasks_info, relevant_code)
             # Execute python tool class code
             state = self.executor.execute_tool(code, invoke, node_type)
             result = state.result
