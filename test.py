@@ -11,6 +11,6 @@ args = setup_config()
 
 prompt = prompt["planning_prompt"]
 planner = FridayPlanner(prompt)
-task, tool_description_pair = "Install pandas package", ""
+task, tool_description_pair = "", ""
 planner.decompose_task(task, tool_description_pair)
 
