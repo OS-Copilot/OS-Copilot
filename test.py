@@ -1,5 +1,5 @@
 from oscopilot import FridayExecutor, ToolManager
-from oscopilot.prompts.friday_pt_new import prompt
+from oscopilot.prompts.friday_pt import prompt
 from oscopilot.utils import setup_config
 
 args = setup_config()
