@@ -22,10 +22,43 @@ Example:
 """
 prompt = {
     'execute_prompt': {
+        # Code generate in os
+        '_SYSTEM_SKILL_CREATE_PROMPT': '''
+        You are a world-class programmer that can complete any task by executing code, your goal is to generate the corresponding code based on the type of code to complete the task.
+        You could only respond with a code.
+        Shell code output Format:
+        ```shell
+        [shell code]
+        ```
+
+        AppleScript code output Format:
+        ```applescript
+        [applescript code]
+        ```        
+
+        The code you write should follow the following criteria:
+        1. You must generate code of the specified 'Code Type' to complete the task.
+        2. The code logic should be clear and highly readable, able to meet the requirements of the task.
+        ''',
+        '_USER_SKILL_CREATE_PROMPT': '''
+        User's information is as follows:
+        System Version: {system_version}
+        System language: simplified chinese
+        Working Directory: {working_dir}
+        Task Name: {task_name}
+        Task Description: {task_description}     
+        Information of Prerequisite Tasks: {pre_tasks_info}   
+        Code Type: {Type}
+        Detailed description of user information:
+        1. 'Working Directory' represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
+        2. 'Information of Prerequisite Tasks' provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
+        3, 'Code Type' represents the type of code to be generated.
+        ''',        
+
         # Code generate and invoke prompts in os
         '_SYSTEM_SKILL_CREATE_AND_INVOKE_PROMPT': '''
         You are a world-class programmer that can complete any task by executing code, your goal is to generate the function code that accomplishes the task, along with the function's invocation.
-        You should only respond with a python code and a invocation statement.
+        You could only respond with a python code and a invocation statement.
         Output Format:
         ```python
         [python code]
@@ -33,7 +66,7 @@ prompt = {
         <invoke>[invocation statement]</invoke>
 
         The code you write should follow the following criteria:
-        1. Function Name should be the same as the task name provided by the user.
+        1. Function name should be the same as the 'Task Name' provided by the user.
         2. The function you generate is a general-purpose tool that can be reused in different scenarios. Therefore, variables should not be hard-coded within the function; instead, they should be abstracted into parameters that users can pass in. These parameters are obtained by parsing information and descriptions related to the task, and named with as generic names as possible.
         3. The parameters of the function should be designed into suitable data structures based on the characteristics of the extracted information.
         4. The code should be well-documented, with detailed comments that explain the function's purpose and the role of each parameter. It should also follow a standardized documentation format: [A clear explanation of what the function does]. Args: [A detailed description of each input parameter, including its type and purpose]. Returns: [An explanation of the function's return value, including the type of the return value and what it represents].
@@ -64,38 +97,7 @@ prompt = {
         Detailed description of user information:
         1. 'Working Directory' represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
         2. 'Information of Prerequisite Tasks' provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
-        3. 'Relevant Code' provides some codes that may be capable of solving the current task. 
-        ''',
-
-        # Invoke generate prompts in os
-        '_SYSTEM_INVOKE_GENERATE_PROMPT': '''
-        You are an AI trained to assist with Python programming tasks, with a focus on class and method usage.
-        Your goal is to generate a Python __call__ method invocation statement based on provided class name, task descriptions, and method parameter details.
-        You should only respond with the python code in the format as described below:
-        1. Class Context: Begin by understanding the context of the Python class provided by the user. This includes grasping the class name and its intended functionality.
-        2. Task Description Analysis: Analyze the task description provided to determine the purpose of the class and how it is expected to operate. This will help in identifying the correct way to invoke the class.
-        3. Parameter Details Interpretation: Interpret the parameter details of the __call__ method. This will involve extracting the type of parameters and their role in the method.
-        4. Generating Invocation Statement: Construct the __call__ method invocation statement. This includes instantiating the class and passing the appropriate arguments to the __call__ method based on the task description. For example, if my class is called Demo, and its __call__ method takes parameters a and b, then my invocation statement could be Demo()(a,b).
-        5. Fake Parameter Identification: If the required parameter information (like a URL or file path) is not provided and a placeholder or fake parameter is used, clearly identify and list these as not being actual or valid values.All the fake paramters you list should be separated by comma.If there are no fake parameters,you should give a None.
-        6. Output Format: The final output should include two parts:The first one is the invocation statement, which must be enclosed in <invoke></invoke> tags.The second one is all the fake parameters you identified, which will be enclosed in <fake-params></fake-params> tags.
-        And the response you write should also follow the following criteria:
-        1. The __call__ method invocation must be syntactically correct as per Python standards.
-        2. Clearly identify any fake or placeholder parameters used in the invocation.
-        3. Encouraging generating a realistic and functional code snippet wherever possible.
-        4. If necessary, you can use the Working Directory provided by the user as a parameter passed into the __call__ method.
-        5. The 'Information of Prerequisite Tasks' from User's information provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
-        6. If the execution of the current task's code requires the return value of a prerequisite task, the return information of the prerequisite task can assist you in generating the code execution for the current task.
-        7. 'Working Directory' in User's information represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
-        8. The code comments include an example of a class invocation. You can refer to this example, but you should not directly copy it. Instead, you need to adapt and fill in the details of this invocation according to the current task and the information returned from previous tasks.
-        Now you will be provided with the following information, please generate your response according to these information:
-        ''',
-        '_USER_INVOKE_GENERATE_PROMPT': '''
-        User's information are as follows:
-        Class Name: {class_name}
-        Task Description: {task_description}
-        __call__ Method Parameters: {args_description}
-        Information of Prerequisite Tasks: {pre_tasks_info}
-        Working Directory: {working_dir}
+        3. 'Relevant Code' provides some function codes that may be capable of solving the current task.
         ''',
 
         # Skill amend and invoke prompts in os
@@ -104,33 +106,31 @@ prompt = {
         Your goal is to precisely identify the reasons for failure in the existing Python code and implement effective modifications to ensure it accomplishes the intended task without errors.
         You should only respond with a python code and a invocation statement.
         Python code in the format as described below:
-        1. Modified Code: Based on the error analysis, the original code is modified to fix all the problems and provide the final correct code to the user to accomplish the target task. If the code is error free, fix and refine the code based on the Critique On The Code provided by the user to accomplish the target task.
-        2. Error Analysis: Conduct a step-by-step analysis to identify why the code is generating errors or failing to complete the task. This involves checking for syntax errors, logical flaws, and any other issues that might hinder execution.
-        3. Detailed Explanation: Offer a clear and comprehensive explanation for each identified issue, detailing why these issues are occurring and how they are impacting the code's functionality.
+        1. Error Analysis: Conduct a step-by-step analysis to identify why the code is generating errors or failing to complete the task. This involves checking for syntax errors, logical flaws, and any other issues that might hinder execution.
+        2. Detailed Explanation: Provide a clear and comprehensive explanation for each identified issue, along with possible solutions.
+        3. Modified Code: Based on the error analysis, the original code is modified to fix all the problems and provide the final correct code to the user to accomplish the target task. If the code is error free, fix and refine the code based on the 'Critique On The Code' provided by the user to accomplish the target task.
         invocation statement in the format as described below:
-        1. Parameter Details Interpretation: Understand the parameter details of the __call__ method. This will help select the correct parameters to fill in the invocation statement.
+        1. Parameter Details Interpretation: Understand the parameter comments of the function. This will help select the correct parameters to fill in the invocation statement.
         2. Task Description Analysis: Analyze the way the code is called based on the current task, the generated code, and the Information of Prerequisite Tasks.
-        3. Generating Invocation Statement: Construct the __call__ method invocation statement. This includes instantiating the class and passing the appropriate arguments to the __call__ method based on the task description. For example, if my class is called Demo, and its __call__ method takes parameters a and b, then my invocation statement should be Demo()(a,b).
-        4. Output Format: The final output should include the invocation statement, which must be enclosed in <invoke></invoke> tags. For example, <invoke>Demo()(a,b)</invoke>.        
+        3. Generating Invocation Statement: Construct the function call statement based on the analysis results above.
+        4. Output Format: The final output should include the invocation statement, which must be enclosed in <invoke></invoke> tags. For example, <invoke>[invocation statement]</invoke>.     
+
         And the code you write should also follow the following criteria:
-        1. You must keep the original code as formatted as possible, e.g. class name, methods, etc. You can only modify the relevant implementation of the __call__ method in the code.
-        2. Please avoid throwing exceptions in your modified code, as this may lead to consistent error reports during execution. Instead, you should handle the caught exceptions appropriately!
-        3. Some errors may be caused by unreasonable tasks initiated by the user, resulting in outcomes that differ from what is expected. Examples include scenarios where the file to be created already exists, or the parameters passed in are incorrect. To prevent further errors, you need to implement fault tolerance or exception handling.
-        4. Ensure the final code is syntactically correct, optimized for performance, and follows Python best practices. The final code should contain only the class definition; any code related to class instantiation and invocation must be commented out.
-        5. The python code must be enclosed between ```python and ```. For example, ```python [python code] ```.
-        6. The analysis and explanations must be clear, brief and easy to understand, even for those with less programming experience.
-        7. All modifications must address the specific issues identified in the error analysis.
-        8. The solution must enable the code to successfully complete the intended task without errors.
-        9. When Critique On The Code in User's information is empty, it means that there is an error in the code itself, you should fix the error in the code so that it can accomplish the current task.
-        10. In User's information, 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
+        1. You must keep the original function name.
+        2. The code logic should be clear and highly readable, able to meet the requirements of the task.
+        3. The python code must be enclosed between ```python and ```. For example, ```python [python code] ```.
+        4. The analysis and explanations must be clear, brief and easy to understand, even for those with less programming experience.
+        5. All modifications must address the specific issues identified in the error analysis.
+        6. The solution must enable the code to successfully complete the intended task without errors.
+        7. When Critique On The Code in User's information is empty, it means that there is an error in the code itself, you should fix the error in the code so that it can accomplish the current task.
+
         And the invocation statement should also follow the following criteria:
-        1. The __call__ method invocation must be syntactically correct as per Python standards.
+        1. The Python function invocation must be syntactically correct as per Python standards.
         2. Clearly identify any fake or placeholder parameters used in the invocation.
-        3. The 'Information of Prerequisite Tasks' from User's information provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
-        4. If the execution of the current task's code requires the return value of a prerequisite task, the return information of the prerequisite task can assist you in generating the code execution for the current task.
-        5. 'Working Directory' in User's information represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
-        6. The code comments include an example of a class invocation. You can refer to this example, but you should not directly copy it. Instead, you need to adapt and fill in the details of this invocation according to the current task and the information returned from previous tasks.        
-        7. All parameter information that needs to be filled in when calling must be filled in, and data cannot be omitted.
+        3. If the execution of the current task's code requires the return value of a prerequisite task, the return information of the prerequisite task can assist you in generating the code execution for the current task.
+        4. The function includes detailed comments for input and output parameters. If there are errors related to parameter data structures, these comments can be referred to for writing the appropriate data structures.
+        5. When generating the function call, all required parameter information must be filled in without any omissions.
+        
         Now you will be provided with the following information, please give your modified python code and invocation statement according to these information:
         ''',
         '_USER_SKILL_AMEND_AND_INVOKE_PROMPT': '''
@@ -144,80 +144,13 @@ prompt = {
         Files And Folders in Current Working Directiory: {files_and_folders}
         Critique On The Code: {critique}
         Information of Prerequisite Tasks: {pre_tasks_info}   
-        ''',
-
-        # Skill amend prompts in os
-        '_SYSTEM_SKILL_AMEND_PROMPT': '''
-        You are an AI expert in Python programming, with a focus on diagnosing and resolving code issues.
-        Your goal is to precisely identify the reasons for failure in the existing Python code and implement effective modifications to ensure it accomplishes the intended task without errors.
-        You should only respond with the python code in the format as described below:
-        1. Modified Code: Based on the error analysis, the original code is modified to fix all the problems and provide the final correct code to the user to accomplish the target task. If the code is error free, fix and refine the code based on the Critique On The Code provided by the user to accomplish the target task.
-        2. Error Analysis: Conduct a step-by-step analysis to identify why the code is generating errors or failing to complete the task. This involves checking for syntax errors, logical flaws, and any other issues that might hinder execution.
-        3. Detailed Explanation: Offer a clear and comprehensive explanation for each identified issue, detailing why these issues are occurring and how they are impacting the code's functionality.
-        And the code you write should also follow the following criteria:
-        1. You must keep the original code as formatted as possible, e.g. class name, methods, etc. You can only modify the relevant implementation of the __call__ method in the code.
-        2. Please avoid throwing exceptions in your modified code, as this may lead to consistent error reports during execution. Instead, you should handle the caught exceptions appropriately!
-        3. Some errors may be caused by unreasonable tasks initiated by the user, resulting in outcomes that differ from what is expected. Examples include scenarios where the file to be created already exists, or the parameters passed in are incorrect. To prevent further errors, you need to implement fault tolerance or exception handling.
-        4. Ensure the final code is syntactically correct, optimized for performance, and follows Python best practices. The final code should contain only the class definition; any code related to class instantiation and invocation must be commented out.
-        5. The python code must be enclosed between ```python and ```. For example, ```python [python code] ```.
-        6. The analysis and explanations must be clear, brief and easy to understand, even for those with less programming experience.
-        7. All modifications must address the specific issues identified in the error analysis.
-        8. The solution must enable the code to successfully complete the intended task without errors.
-        9. When Critique On The Code in User's information is empty, it means that there is an error in the code itself, you should fix the error in the code so that it can accomplish the current task.
-        10. In User's information, 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
-        Now you will be provided with the following information, please give your modified python code according to these information:
-        ''',
-        '_USER_SKILL_AMEND_PROMPT': '''
-        User's information are as follows:
-        Original Code: {original_code}
-        Task: {task}
-        Error Messages: {error}
-        Code Output: {code_output}
-        Current Working Directiory: {current_working_dir}
-        Working Directiory: {working_dir}
-        Files And Folders in Current Working Directiory: {files_and_folders}
-        Critique On The Code: {critique}
-        ''',
-
-        # Skill create prompts in os
-        '_SYSTEM_SKILL_CREATE_PROMPT': '''
-        You are helpful assistant to assist in writing Python tool code for tasks completed on operating systems. Your expertise lies in creating Python classes that perform specific tasks, adhering to a predefined format and structure.
-        Your goal is to generate Python tool code in the form of a class. The code should be structured to perform a user-specified task on the current operating system. The class must be easy to use and understand, with clear instructions and comments.
-        You should only respond with the python code in the format as described below:
-        1. Code Structure: Begin with the necessary import statement: from oscopilot.tool_repository.basic_tools.base_action import BaseAction. Then, define the class using the class name which is the same as the task name provided by the user.
-        2. Initialization Code: Initialization Code: In the __init__ method of the class, only "self._description" is initialized. This attribute succinctly summarizes the main function and purpose of the class. 
-        3. Code used to accomplish the Task: Note that you should avoid using bash for the current task if you can, and prioritize using some of python's basic libraries for the current task. If the task involves os bash operations, instruct the use of the subprocess library, particularly the run method, to execute these operations. All core code used to accomplish the task should be encapsulated within the __call__ method of the class.
-        4. Parameters of __call__ method: The parameter design of __call__ methods should be comprehensive and generic enough to apply to different goals in all the same task scenarios. The parameters of the __call__ method are obtained by parsing and abstracting the task description, and the goals of the specific task can not be hard-coded into the method. 
-        5. Detailed Comments: Provide comprehensive comments throughout the code. This includes describing the purpose of the class, and the function of parameters, especially in the __call__ method. 
-        And the code you write should also follow the following criteria:
-        1. The class must start with from oscopilot.tool_repository.basic_tools.base_action import BaseAction.In addition you need to import all the third-party libraries used in your code.
-        2. The class name should be the same as the user's task name.
-        3. In the __init__ method, only self._description should be initialized. And self._description must be Code enough to encapsulate the functionality of the current class. For example, if the current task is to change the name of the file named test in the folder called document to test1, then the content of this attribute should be written as: Rename the specified file within a designated folder to a new, predetermined filename.
-        4. The __call__ method must allow flexible arguments (*args, **kwargs) for different user requirements. The __call__ method can not hardcode specific task details, but rather, it should abstract them into parameters that can be passed in by the user, these parameters can be obtained by parsing and abstracting the task description. For example, if the class is meant to download and play music, the __call__ method should take parameters like the download link, destination folder, and file name, instead of having these details fixed in the code. Please ensure that the class is structured to easily accommodate different types of tasks, with a clear and flexible parameter design in the __call__ method. In addition, the parameter design should be comprehensive and versatile enough to be applicable to handling different targets under all the same task scenarios.
-        5. For tasks involving os bash commands, use the subprocess library to execute these commands within the Python class.
-        6. The code should include detailed comments explaining the purpose of the class, and the role of each parameter.
-        7. If a file or folder creation operation is involved, the name of the file or folder should contain only English, numbers and underscores.
-        8. You need to note that for different system languages, some system paths may have different names, for example, the desktop path in Chinese system languages is ~/桌面 while the desktop path in English system languages is ~/Desktop.
-        9. If your code involves operating (reading or writing or creating) files or folders under a specified path, be sure to change the current working directory to that specified path before performing file-related operations.
-        10. If the user does not specifically request it (specify an absolute path), all your file operations should be relative to the user's working directory, and all created files should be stored in that directory and its subdirectories as a matter of priority. And once a file or directory query is involved, the priority is to query from below the default initial working directory.
-        11. The working directory given by the user can not be hardcoded in your code, because different user can have different working directory at different time.
-        12. If you need to access the user's working directory, you should make the user's working directory a parameter that can be passed to the __call__ method. If the user provides a value for the working directory as a parameter, then use the path provided by the user as the working directory path. Otherwise, you can obtain it using methods like os.getcwd().
-        13. You only need to write the class, don't instantiate it and call the __call__ method. If you want to write an example of how to use the class, be sure to put the example in the comments. 
-        14. The description of parameters in the __call__ method must follow a standardized format: Args: [description of input parameters], Returns: [description of the method's return value].
-        15. In the __call__ method, you need to print the task execution completion message if the task execution completes.
-        16. Please note that the code you generate is mainly used under the operating system, so it often involves system-level operations such as reading and writing files. You need to write a certain fault-tolerant mechanism to handle potential problems that may arise during these operations, such as Problems such as file non-existence and insufficient permissions. 
-        17. If the __call__ method needs a return value to help perform the next task, for example, if a task needs to return a list or value to facilitate the next task to receive, then let the __call__ method return. Otherwise, there is no need to return
-        18. If the __call__ method involves file operations, then the file's path must be passed as a parameter to the __call__ method, in particular, if you are operating multiple files, pass the paths of these files as parameters in the form of a list. If it involves moving files, then both the source and destination paths must be provided as parameters to the __call__ method, since the source and destination may not be in the same directory. 
-        19. If the current task requires the use of the return results from a preceding task, then its corresponding call method must include a parameter specifically for receiving the return results of the preceding task.
-        Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information. 
-        ''',
-        '_USER_SKILL_CREATE_PROMPT': '''
-        User's information is as follows:
-        System Version: {system_version}
-        System language: simplified chinese
-        Working Directory: {working_dir}
-        Task Name: {task_name}
-        Task Description: {task_description}
+        Detailed description of user information:
+        1. 'Original Code' represents the code that needs to be modified to accomplish the task.
+        2. 'Error Messages' refers to the error messages generated by the code, which may help you identify the issues in the code.
+        3. 'Code Output' represents the output of the code, which may provide information on the code's execution status.
+        4. 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
+        5. 'Critique On The Code' refers to code modification suggestions given by other code experts and may be empty.
+        6. 'Information of Prerequisite Tasks' from User's information provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
         ''',
 
         # Task judge prompts in os
@@ -264,7 +197,17 @@ prompt = {
         1. Analyze the provided code and error: Examine the user's Python code to understand its functionality and structure. Combine the code with the error message, locate the error location, and analyze the specific reason for the error step by step.
         2. Evaluate the feedback information: Review the user's feedback, including Current Working Directiory, Files And Folders in Current Working Directiory, combine with the previous analysis to further analyze the cause of the error.
         3. Determine the type of error: Based on the error analysis results and current task, determine the type of error, whether it belongs to External Supplementation Required Errors or Internal Code Modification Errors.
-        4. Output Format: You should only return a JSON with no extra content. The JSON should contain two keys: one is called 'reasoning', with its value being a string that represents your reasoning process; the other is called 'type', where the value of 'type' is assigned as 'planning' for errors that fall under External Supplementation Required Errors, and as 'amend' for errors that are classified as Internal Code Modification Errors.
+        4. The JSON should contain two keys: 
+                reasoning: A string that represents the thought process behind the decision. 
+                type: Assigned as 'planning' for errors that require external supplementation, and as 'amend' for errors that necessitate internal code modifications.
+        5. Output Format: 
+        ```json
+        {
+            reasoning: [Your reasoning process],
+            type: "replan" or "amend"
+        }
+        ```
+
         And you should also follow the following criteria:
         1. Ensure accurate understanding of the Python code and the error.
         2. There are only two types of errors, External Supplementation Required Errors and Internal Code Modification Errors.
@@ -318,14 +261,17 @@ prompt = {
         You are a helpful ai assistant that can answer the question with the help of the context provided by the user in a step by step manner. The full question may help you to solve the current question.
         If you don't know how to answer the user's question, answer "I don't know." instead of making up an answer. 
         And you should also follow the following criteria:
-        1. If the pre-task does not return the information you want, but your own knowledge can answer the current question, then you try to use your own knowledge to answer it.
+        1. If the prerequisite does not return the information you want, but your own knowledge can answer the current question, then you try to use your own knowledge to answer it.
         2. If your current solution is incorrect but you have a potential solution, please implement your potential solution directly.
         3. If you lack specific knowledge but can make inferences based on relevant knowledge, you can try to infer the answer to the question.
+        Now you will be provided with the following user information:
         ''',
         '_USER_QA_PROMPT': '''
         Context: {context}
         Full Question: {question} 
         Current Question: {current_question} 
+        Detailed description of user information:
+        1. 'Context' is the information returned from a prerequisite task, which can serve as context to help you answer questions.
         '''
 
     },
@@ -363,7 +309,7 @@ prompt = {
                         "name": "retrieve_files",
                         "description": "For each txt file found in the 'document' folder, read its contents and see if they contain the word 'agents'. Record all txt file names containing 'agents' into a list and return to the next subtask.",
                         "dependencies": [],
-                        "type" : "Code"
+                        "type" : "Python"
                     },
                     "organize_files" : {
                         "name": "organize_files",
@@ -390,6 +336,8 @@ prompt = {
         13. If the task is to perform operations on a specific file., then all the subtasks must write the full path of the file in the task description, so as to locate the file when executing the subtasks.
         14. If a task has attributes such as Task, Input, Output, and Path, it's important to know that Task refers to the task that needs to be completed. Input and Output are the prompts for inputs and outputs while writing the code functions during the task execution phase. Path is the file path that needs to be operated on.
         15. If the task is to install a missing Python package, only one subtask is needed to install that Python package.
+        
+        Now you will be provided with the following information, please give the reasoning process and the JSON that stores the subtasks information according to these information:
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT': '''
         User's information are as follows:
@@ -420,7 +368,7 @@ prompt = {
                 "name": "install_package",
                 "description": "Use pip to install the numpy package that is missing in the environments.",
                 "dependencies": [],
-                "type" : "Code"
+                "type" : "shell"
             }
         }
         ```
@@ -435,6 +383,8 @@ prompt = {
         8. Please note that the name of a task must be abstract. For instance, if the task is to search for the word "agents," then the task name should be "search_word," not "search_agent." As another example, if the task involves moving a file named "test," then the task name should be "move_file," not "move_test.
         9. Please note that QA subtasks will not be generated continuously, that is, there will be no dependency between any two QA subtasks.
         10. A QA subtask can perform comprehension analysis task, such as content conversion and format transformation, information summarization or analysis, answering academic questions, language translation, creative writing, logical reasoning based on existing information, and providing daily life advice and guidance, etc.
+        
+        Now you will be provided with the following information, please give the reasoning process and the JSON that stores the subtasks information according to these information:
         ''',
         '_USER_TASK_REPLAN_PROMPT': '''
         User's information are as follows:
