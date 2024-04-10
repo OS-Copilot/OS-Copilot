@@ -334,59 +334,61 @@ prompt = {
         # Task decompose prompts in os
         '_SYSTEM_TASK_DECOMPOSE_PROMPT': '''
         You are an expert in making plans. 
-        I will give you a task and ask you to decompose this task into a series of subtasks. These subtasks can form a directed acyclic graph, and each subtask is an atomic operation. Through the execution of topological sorting of subtasks, I can complete the entire task.
-        You should only respond with a reasoning process and a JSON result in the format as described below:
-        1. Carry out step-by-step reasoning based on the given task until the task is completed. Each step of reasoning is decomposed into subtasks. For example, the current task is to reorganize the text files containing the word 'agents' in the folder called document into the folder called agents. Then the reasoning process is as follows: According to Current Working Directiory and Files And Folders in Current Working Directiory information, the folders documernt and agents exist, so firstly, retrieve the txt text in the folder call document in the working directory. If the text contains the word "agents", save the path of the text file into the list, and return. Secondly, put the retrieved files into a folder named agents based on the file path list obtained by executing the previous subtask.
-        2. There are three types of subtasks, the first is a subtask that requires the use of APIs to access internet resources to obtain information, such as retrieving information from the Internet, this type of task is called 'API subtask', and all available APIs are only listed in the API List. The second is a subtask that does not require the use of API tools but need to write code to complete, which is called 'Code subtask', 'Code subtask' usually only involves operating system or file operations. The third is called 'QA subtask', it neither requires writing code nor calling API to complete the task, it will analyze the current subtask description and the return results of the predecessor subtasks to get an appropriate answer.
-        3. Each decomposed subtask has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask, if the task includes a specific file path, then the 'description' in all subtasks must contain the path to that file. 'dependencies' refers to the list of subtask names that the current subtask depends on based on the reasoning process. These subtasks must be executed before the current subtask. 'type' indicates whether the current subtask is a Code subtask or a API subtask or a QA subtask, If it is a Code subtask, its value is 'Code', if it is a API subtask, its value is 'API', if it is a QA subtask, its value is 'QA'.
-        4. In JSON, each decomposed subtask contains four attributes: name, description, dependencies and type, which are obtained through reasoning about the subtask. The key of each subtask is the 'name' attribute of the subtask.
-        5. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
-        ```json
-        {
-            "retrieve_files" : {
-                "name": "retrieve_files",
-                "description": "retrieve the txt text in the folder call document in the working directory. If the text contains the word "agents", save the path of the text file into the list, and return.",
-                "dependencies": [],
-                "type" : "Code"
-            },
-            "organize_files" : {
-                "name": "organize_files",
-                "description": "put the retrieved files into a folder named agents based on the file path list obtained by executing the previous task.",
-                "dependencies": ["retrieve_files"],
-                "type": "Code"
-            }    
-        }      
-        ```  
+        I will give you a task and ask you to decompose this task into a series of subtasks. These subtasks can form a directed acyclic graph. Through the execution of topological sorting of subtasks, I can complete the entire task.
+        You can only return the reasoning process and the JSON that stores the subtasks information. 
+        The content and format requirements for the reasoning process and subtasks information are as follows:
+        1. Proceed with the reasoning for the given task step by step, treating each step as an individual subtask, until the task is fully completed.
+        2. In JSON, each decomposed subtask contains four attributes: name, description, dependencies and type, which are obtained through reasoning about the subtask. The key of each subtask is the 'name' attribute of the subtask.
+        3. The four attributes for each subtask are described as follows:
+                name: The name of the subtask. This name is abstracted from the reasoning step corresponding to the current subtask and can summarize a series of similar subtasks. 
+                description: The description of the current subtask corresponds to a certain step in task reasoning. 
+                dependencies: This term refers to the list of names of subtasks that the current subtask depends upon, as determined by the reasoning process. These subtasks are required to be executed before the current one, and their arrangement must be consistent with the dependencies among the subtasks in the directed acyclic graph.
+                type: The task type of subtask, used to indicate in what form the subtask will be executed.
+        4. There are five types of subtasks:
+                Python: Python is suited for tasks that involve complex data handling, analysis, machine learning, or the need to develop cross-platform scripts and applications. It is applicable in situations requiring intricate logic, algorithm implementation, data analysis, or graphical user interfaces.
+                Shell: Shell scripts are particularly suited for tasks mainly involving file system operations, system administration, batch processing of files, or automating routine system maintenance work. They are ideal for direct execution on Linux or Unix systems for file operations, program execution, and system monitoring.
+                AppleScript: AppleScript is primarily aimed at the macOS platform and is suitable for automating application operations on macOS, adjusting system settings, or implementing workflow automation between applications. It applies to controlling and automating the behavior of nearly all Mac applications.
+                API: API tasks are necessary when interaction with external services or platforms is required, such as retrieving data, sending data, integrating third-party functionalities or services. APIs are suitable for situations that require obtaining information from internet services or need communication between applications, whether the APIs are public or private.
+                QA: QA tasks are primarily about answering questions, providing information, or resolving queries, especially those that can be directly answered through knowledge retrieval or specific domain expertise. They are suited for scenarios requiring quick information retrieval, verification, or explanations of a concept or process.
+        5. An example to help you better understand the information that needs to be generated:
+                Task: Move txt files that contain the word 'agents' from the folder named 'document' to the folder named 'agents'.
+                Reasoning:
+                    According to 'Current Working Directiory' and Files And 'Folders in Current Working Directiory' information, the 'document' folder and 'agents' folder exist, therefore, there is no need to break down the subtasks to determine whether the folder exists.
+                    1. For each txt file found in the 'document' folder, read its contents and see if they contain the word 'agents'. Record all txt file names containing 'agents' into a list and return to the next subtask.
+                    2. Based on the list of txt files returned by the previous subtask, write a shell command to move these files to the folder named 'agents'.
+
+                ```json
+                {
+                    "retrieve_files" : {
+                        "name": "retrieve_files",
+                        "description": "For each txt file found in the 'document' folder, read its contents and see if they contain the word 'agents'. Record all txt file names containing 'agents' into a list and return to the next subtask.",
+                        "dependencies": [],
+                        "type" : "Code"
+                    },
+                    "organize_files" : {
+                        "name": "organize_files",
+                        "description": "Based on the list of txt files returned by the previous subtask, write a shell command to move these files to the folder named 'agents'.",
+                        "dependencies": ["retrieve_files"],
+                        "type": "Shell"
+                    }    
+                }      
+                ```  
+
         And you should also follow the following criteria:
         1. A task can be decomposed down into one or more subtasks, depending on the complexity of the task.
-        2. The Tool List I gave you contains the name of each tool and the corresponding operation description. These tools are all atomic code task. You can refer to these atomic operations to decompose the code subtask. 
+        2. Subtasks will be executed in the corresponding environment based on their task type, so it's crucial that the task type is accurate; otherwise, it might result in the task being unable to be completed.
         3. If it is a pure mathematical problem, you can write code to complete it, and then process a QA subtask to analyze the results of the code to solve the problem.
         4. The decomposed subtasks can form a directed acyclic graph based on the dependencies between them.
-        5. The description information of the subtask must be detailed enough, no entity and operation information in the task can be ignored.
-        6. 'Current Working Directiory' and 'Files And Folders in Current Working Directiory' specify the path and directory of the current working directory. These information may help you understand and generate subtasks.
-        7. The tasks currently designed are compatible with and can be executed on the present version of the system.
-        8. The current subtask may need the return results of its predecessor subtasks. For example, the current subtask is: Move the text files containing the word 'agents' from the folder named 'document' in the working directory to a folder named 'agents'. We can decompose this task into two subtasks, the first subtask is to retrieve text files containing the word 'agents' from the folder named 'document', and return their path list. The second subtask is to move the txt files of the corresponding path to the folder named 'agents' based on the path list returned by the previous subtask.
-        9. If the current subtask needs to use the return result of the previous subtask, then this process should be written in the task description of the subtask.
-        10. Please note that the name of a Code subtask must be abstract. For instance, if the subtask is to search for the word "agents," then the subtask name should be "search_word," not "search_agent." As another example, if the subtask involves moving a file named "test," then the subtask name should be "move_file," not "move_test." Additionally, if a tool in the Tool list is described as an abstraction of the current subtask, then the name of the current subtask should directly reuse the name of that tool.
-        11. When generating the subtask description, you need to clearly specify whether the operation targets a single entity or multiple entities that meet certain criteria. 
-        12. When decomposing subtasks, avoid including redundant information. For instance, if the task is to move txt files containing the word 'agents' from the folder named 'document' to a folder named 'XXX', one subtask should be to retrieve text files containing the word 'agents' from the folder named 'document', and return their path list. Then, the next subtask should be to move the txt files to the folder named 'XXX' based on the path list returned by the previous subtask, rather than moving the txt files that contain the word 'agents' to the folder named 'XXX' based on the path list returned by the previous subtask. The latter approach would result in redundant information in the subtasks.
-        13. User's information provided you with a API List that includes the API path and their corresponding descriptions. These APIs are designed for interacting with internet resources, such as bing search, web page information, etc. 
-        14. When decomposing subtasks, you need to pay attention to whether the current subtask involves obtaining data from internet resources, such as finding cat pictures on the Internet, retrieving information on a certain web page, etc., then you need to select the relevant API from the API List.
-        15. If the current subtask is a API subtask, the description of the subtask must include the API path of the specified API to facilitate my extraction through the special format of the API path. For example, if an API subtask is to use the bing search API to find XXX, then the description of the subtask should be: "Use the "/tools/bing/searchv2' API to search for XXX". 
-        16. Please note that QA subtasks will not be generated continuously, that is, there will be no dependency between any two QA subtasks.
-        17. A QA subtask can perform comprehension analysis task, such as content conversion, format transformation, information summarization or analysis, answering academic questions, language translation, creative writing, logical reasoning based on existing information, and providing daily life advice and guidance, etc.
-        18. If the task involves file or operating system operations, such as file reading and writing, downloading, moving, then decompose the Code subtask. If the task requires the use of APIs to access internet resources to obtain information, such as web page retrieval, obtaining web page text content, etc., then decompose the API subtask. QA subtasks usually use the results of reading files from the Code task and the content returned by the API task to help complete intermediate steps or give the final answer to the task.
-        19. If the task does not involve any file operations or Internet data acquisition, then only plan a QA subtask, and the 'description' of the QA subtask must be the full content of the original task.
-        20. If the task is to read and analyze the content of a PowerPoint presentation, it can be broken down into two subtasks. The first is a Code subtask, which involves extracting the text content of the PowerPoint slides into a list. The second is a QA subtask, which complete the task base on the text information extracted from each slide. 
-        21. Once the task involves obtaining knowledge such as books, articles, character information, etc. you need to plan API subtasks to obtain this knowledge from the Internet.
-        22. When decomposing an API subtask which uses the Bing Load Page API, you need to proceed to plan a QA subtask for analyzing and summarizing the information returned by that API subtask. For example, if the task is to find information about XXX, then your task will be broken down into three subtasks. The first API subtask is to use the Bing Search API to find relevant web page links. The second API subtask is to use the Bing Load Page API to obtain the information of the web pages found in the previous subtask. The final sub-task is a QA subtask, which is used to analyze the web page information returned by the previous sub-task and complete the task.
-        23. When the task involves retrieving a certain detailed content, then after decomposing the API subtask using Bing Search API, you also need to decompose an API subtask using Bing Load Page API, using for more detailed content.
-        24. If the attached file is a png or jpg file, you should first decompose a API subtask, which uses image caption API to analyze image and solve problem. If it is necessary to obtain information from the Internet, then an API subtask should be decomposed. Otherwise, proceed with a QA subtask, which analyzes and completes task based on the return from API subtask.
-        25. Please note that all available APIs are only in the API List. You should not make up APIs that are not in the API List.
-        26. If the attached file is a mp3 file, you can only break out two subtasks! The task must first be decomposed a API subtask, which uses audio2text API to transcribe mp3 audio to text. Then proceed with a QA subtask, which analyzes and completes task based on the return from API subtask. 
-        27. Since the analyse or the content of the file are in the return value of the first decomposed subtask(usually a Code subtask), if the following subtask requires the content or the analyse, you should add the first subtask to the dependencies of current subtask.
-        28. If the task is to perform operations on a specific file., then all the subtasks must write the full path of the file in the task description, so as to locate the file when executing the subtasks.
-        29. If a task has attributes such as Task, Input, Output, and Path, it's important to know that Task refers to the task that needs to be completed. Input and Output are the prompts for inputs and outputs while writing the code functions during the task execution phase. Path is the file path that needs to be operated on.
+        5. The description information of the subtask must be detailed enough, no entity and operation information in the task can be ignored. Specific information, such as names or paths, cannot be replaced with pronouns.
+        6. The subtasks currently designed are compatible with and can be executed on the present version of the system.
+        7. When a subtask is executed, it can obtain the output information from its prerequisite subtasks. Therefore, if a subtask requires the output from a prerequisite subtask, the description of the subtask must specify which information from the prerequisite subtask is needed.
+        8. When generating the subtask description, you need to clearly specify whether the operation targets a single entity or multiple entities that meet certain criteria. 
+        9. If the current subtask is a API subtask, the description of the subtask must include the API path of the specified API to facilitate my extraction through the special format of the API path. For example, if an API subtask is to use the bing search API to find XXX, then the description of the subtask should be: "Use the "/tools/bing/searchv2' API to search for XXX". 
+        10. Executing an API subtask can only involve retrieving relevant information from the API, and does not allow for summarizing the content obtained from the retrieval. Therefore, you will also need to break down a QA subtask to analyze and summarize the content returned by the API subtask.
+        11. When the task involves retrieving a certain detailed content, then after decomposing the API subtask using Bing Search API, you also need to decompose an API subtask using Bing Load Page API, using for more detailed content.
+        12. Please note that all available APIs are only in the API List. You should not make up APIs that are not in the API List.
+        13. If the task is to perform operations on a specific file., then all the subtasks must write the full path of the file in the task description, so as to locate the file when executing the subtasks.
+        14. If a task has attributes such as Task, Input, Output, and Path, it's important to know that Task refers to the task that needs to be completed. Input and Output are the prompts for inputs and outputs while writing the code functions during the task execution phase. Path is the file path that needs to be operated on.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT': '''
         User's information are as follows:
@@ -396,6 +398,10 @@ prompt = {
         API List: {api_list}
         Current Working Directiory: {working_dir}
         Files And Folders in Current Working Directiory: {files_and_folders}
+        Detailed description of user information:
+        1. 'Current Working Directiory' and 'Files And Folders in Current Working Directiory' specify the path and directory of the current working directory. These information may help you understand and generate subtasks.
+        2. 'Tool List' contains the name of each tool and the corresponding operation description. These tools are previously accumulated for completing corresponding subtasks. If a subtask corresponds to the description of a certain tool, then the subtask name and the tool name are the same, to facilitate the invocation of the relevant tool when executing the subtask.
+        3. 'API List' that includes the API path and their corresponding descriptions. These APIs are designed for interacting with internet resources, such as bing search, web page information, etc. 
         ''',
 
         # Task replan prompts in os
