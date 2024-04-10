@@ -1,3 +1,5 @@
+# This code is based on Open Interpreter. Original source: https://github.com/OpenInterpreter/open-interpreter
+
 import ast
 import os
 import queue
@@ -8,19 +10,20 @@ import traceback
 import logging
 
 from jupyter_client import KernelManager
-# from oscopilot.environments.env import Env
+from oscopilot.environments.base_env import BaseEnv
 
 
 # turn off colors in "terminal"
 # os.environ["ANSI_COLORS_DISABLED"] = "1"
 
 
-class PythonJupyterEnv():
+class PythonJupyterEnv(BaseEnv):
     file_extension = "py"
     name = "Python"
     aliases = ["py"]
 
     def __init__(self):
+        super().__init__()
         ipkernel_logger = logging.getLogger('IPKernelApp')
         # Create a filter using a lambda function
         warning_filter = lambda record: not any(msg in record.getMessage() for msg in [
@@ -68,7 +71,7 @@ class PythonJupyterEnv():
         self.kc.stop_channels()
         self.km.shutdown_kernel()
 
-    def run(self, code):
+    def step(self, code):
         
         # 解析python代码并且将函数体抽取出来存成字典，key是函数名，value是函数体，如果要存的话，就将每个函数存成一个py文件
         # try:

@@ -2,8 +2,10 @@ from oscopilot.modules.base_module import BaseModule
 from oscopilot.tool_repository.manager.tool_manager import get_open_api_doc_path
 import re
 import json
+import subprocess
 from pathlib import Path
 from oscopilot.utils.utils import send_chat_prompts
+
 
 
 
@@ -90,10 +92,21 @@ class FridayExecutor(BaseModule):
         if node_type == 'Code':
             info = "\n" + '''print("<return>")''' + "\n" + "print(result)" +  "\n" + '''print("</return>")'''
             code = code + '\nresult=' + invoke + info
+        # state = EnvState(command=code)
         print("************************<code>**************************")
         print(code)
-        print("************************</code>*************************")  
-        state = self.environment.step(code)
+        print("************************</code>*************************")
+        # for output_line_dic in self.environment.step(code):
+        #     if output_line_dic['format'] == 'active_line':
+        #         continue
+        #     content = output_line_dic['content']
+        #     if 'Traceback' in content:
+        #         state.error = (state.error or '') + content
+        #     else:
+        #         state.result += content
+        # state.pwd = self.environment.working_dir
+        # state.ls = subprocess.run(['ls'], cwd=self.environment.working_dir, capture_output=True, text=True).stdout
+        state = self.environment.step('Python', code)  # node_type
         print("************************<state>**************************")
         print(state)
         # print("error: " + state.error + "\nresult: " + state.result + "\npwd: " + state.pwd + "\nls: " + state.ls)

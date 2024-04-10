@@ -16,7 +16,10 @@ oscopilot/agents/self_learning.py
 oscopilot/environments/__init__.py
 oscopilot/environments/bash_env.py
 oscopilot/environments/env.py
+oscopilot/environments/new_bash_env.py
 oscopilot/environments/py_env.py
+oscopilot/environments/py_jupyter_env.py
+oscopilot/environments/subprocess_env.py
 oscopilot/modules/__init__.py
 oscopilot/modules/base_module.py
 oscopilot/modules/executor/__init__.py
@@ -29,6 +32,7 @@ oscopilot/modules/retriever/__init__.py
 oscopilot/modules/retriever/vector_retriever.py
 oscopilot/prompts/__init__.py
 oscopilot/prompts/friday_pt.py
+oscopilot/prompts/general_pt.py
 oscopilot/tool_repository/__init__.py
 oscopilot/tool_repository/api_tools/__init__.py
 oscopilot/tool_repository/api_tools/audio2text/__init__.py

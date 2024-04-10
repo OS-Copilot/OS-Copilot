@@ -1,12 +1,12 @@
 from __future__ import annotations
 import subprocess
 from oscopilot.utils.schema import EnvState
-from oscopilot.environments.env import Env
+from oscopilot.environments.base_env import BaseEnv
 from tempfile import NamedTemporaryFile
 import sys
 
 
-class PythonEnv(Env):
+class PythonEnv(BaseEnv):
     """
     A base class representing a Python execution environments for actions.
 
@@ -73,7 +73,7 @@ class PythonEnv(Env):
             self.env_state.error = repr(e)
         finally:
             tmp_code_file.close()
-        self.observe(self.working_dir)
+        # self.observe(self.working_dir)
 
         return self.env_state
 

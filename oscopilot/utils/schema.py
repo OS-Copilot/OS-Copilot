@@ -47,10 +47,10 @@ class EnvState:
     Represents the state of an environment in which commands are executed.
     """
     command: List[str] = field(default_factory=list)
-    result: Optional[str] = None
+    result: Optional[str] = ''
     error: Optional[str] = None
-    pwd: Optional[str] = None
-    ls: Optional[str] = None
+    pwd: Optional[str] = ''
+    ls: Optional[str] = ''
 
     def __str__(self):
         return (f"Result: {self.result}\n"
