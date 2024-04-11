@@ -312,17 +312,16 @@ prompt = {
                 dependencies: This term refers to the list of names of subtasks that the current subtask depends upon, as determined by the reasoning process. These subtasks are required to be executed before the current one, and their arrangement must be consistent with the dependencies among the subtasks in the directed acyclic graph.
                 type: The task type of subtask, used to indicate in what form the subtask will be executed.
         4. There are five types of subtasks:
-                Python: Python is suited for tasks that involve complex data handling, analysis, machine learning, or the need to develop cross-platform scripts and applications. It is applicable in situations requiring intricate logic, algorithm implementation, data analysis, graphical user interfaces or file internal operations.
-                Shell: When the task primarily focuses on operating system-level automation, such as quick operations on the file system (creating, moving, deleting files), batch renaming files, system configuration, and monitoring and managing the operating system or system resources, Shell scripts are particularly suitable for quickly executing system-level batch processing tasks. They leverage tools and commands provided by the operating system, enabling efficient handling of log files, monitoring of system status, and simple text processing work.
+                Python: Python is suited for subtasks that involve complex data handling, analysis, machine learning, or the need to develop cross-platform scripts and applications. It is applicable in situations requiring intricate logic, algorithm implementation, data analysis, graphical user interfaces or file internal operations.
+                Shell: When the subtask primarily focuses on operating system-level automation, such as quick operations on the file system (creating, moving, deleting files), batch renaming files, system configuration, and monitoring and managing the operating system or system resources, Shell scripts are particularly suitable for quickly executing system-level batch processing tasks. They leverage tools and commands provided by the operating system, enabling efficient handling of log files, monitoring of system status, and simple text processing work.
                 AppleScript: AppleScript is primarily aimed at the macOS platform and is suitable for automating application operations on macOS, adjusting system settings, or implementing workflow automation between applications. It applies to controlling and automating the behavior of nearly all Mac applications.
-                API: API tasks are necessary when interaction with external services or platforms is required, such as retrieving data, sending data, integrating third-party functionalities or services. APIs are suitable for situations that require obtaining information from internet services or need communication between applications, whether the APIs are public or private.
-                QA: QA tasks are primarily about answering questions, providing information, or resolving queries, especially those that can be directly answered through knowledge retrieval or specific domain expertise. They are suited for scenarios requiring quick information retrieval, verification, or explanations of a concept or process.
-        5. An example to help you better understand the information that needs to be generated:
-                Task: Move txt files that contain the word 'agents' from the folder named 'document' to the folder named 'agents'.
+                API: API subtasks are necessary when interaction with external services or platforms is required, such as retrieving data, sending data, integrating third-party functionalities or services. APIs are suitable for situations that require obtaining information from internet services or need communication between applications, whether the APIs are public or private.
+                QA: QA subtasks are primarily about answering questions, providing information, or resolving queries, especially those that can be directly answered through knowledge retrieval or specific domain expertise. They are suited for scenarios requiring quick information retrieval, verification, or explanations of a concept or process.
+        5. An example to help you better understand the information that needs to be generated: The task is: Move txt files that contain the word 'agents' from the folder named 'document' to the folder named 'agents'. Then the reasoning process and JSON that stores the subtasks information are as follows: 
                 Reasoning:
                     According to 'Current Working Directiory' and Files And 'Folders in Current Working Directiory' information, the 'document' folder and 'agents' folder exist, therefore, there is no need to break down the subtasks to determine whether the folder exists.
                     1. For each txt file found in the 'document' folder, read its contents and see if they contain the word 'agents'. Record all txt file names containing 'agents' into a list and return to the next subtask.
-                    2. Based on the list of txt files returned by the previous subtask, write a shell command to move these files to the folder named 'agents'.
+                    2. Based on the list of txt files returned by the previous subtask, write a shell command to move these files to the folder named 'agents'. 
 
                 ```json
                 {
@@ -343,7 +342,7 @@ prompt = {
 
         And you should also follow the following criteria:
         1. Try to break down the task into as few subtasks as possible.
-        2. Subtasks will be executed in the corresponding environment based on their task type, so it's crucial that the task type is accurate; otherwise, it might result in the task being unable to be completed.
+        2. Subtasks will be executed in the corresponding environment based on their type, so it's crucial that the subtask type is accurate; otherwise, it might result in the task being unable to be completed.
         3. If it is a pure mathematical problem, you can write code to complete it, and then process a QA subtask to analyze the results of the code to solve the problem.
         4. The description information of the subtask must be detailed enough, no entity and operation information in the task can be ignored. Specific information, such as names or paths, cannot be replaced with pronouns.
         5. The subtasks currently designed are compatible with and can be executed on the present version of the system.
@@ -353,7 +352,7 @@ prompt = {
         9. Executing an API subtask can only involve retrieving relevant information from the API, and does not allow for summarizing the content obtained from the retrieval. Therefore, you will also need to break down a QA subtask to analyze and summarize the content returned by the API subtask.
         10. When the task involves retrieving a certain detailed content, then after decomposing the API subtask using Bing Search API, you also need to decompose an API subtask using Bing Load Page API, using for more detailed content.
         11. Please be aware that only the APIs listed in the API List are available. Do not refer to or attempt to use APIs that are not included in this list.
-        12. If the task is to perform operations on a specific file., then all the subtasks must write the full path of the file in the task description, so as to locate the file when executing the subtasks.
+        12. If the task is to perform operations on a specific file, then all the subtasks must write the full path of the file in the task description, so as to locate the file when executing the subtasks.
         13. If a task has attributes such as Task, Input, Output, and Path, it's important to know that Task refers to the task that needs to be completed. Input and Output are the prompts for inputs and outputs while writing the code functions during the task execution phase. Path is the file path that needs to be operated on.
         14. If the task is to install a missing Python package, only one subtask is needed to install that Python package.
         
@@ -377,35 +376,45 @@ prompt = {
         '_SYSTEM_TASK_REPLAN_PROMPT': '''
         You are an expert at designing new tasks based on the results of your reasoning.
         When I was executing the code of current task, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design new tasks to resolve the problem.     
-        You should only respond with a reasoning process and a JSON result in the format as described below:
-        1. Design new tasks based on the reasoning process. For example, the inference process analyzed that the reason for the error was that there was no numpy package in the environments, causing it to fail to run. Then the reasoning process for designing a new task is: According to the reasoning process of error reporting, because there is no numpy package in the environments, we need to use the pip tool to install the numpy package.
-        2. There are three types of subtasks, the first is a task that requires the use of APIs to access internet resources to obtain information, such as retrieving information from the Internet, this type of task is called 'API subtask', and the second is a task that does not require the use of API tools but need to write code to complete, which is called 'Code subtask', 'Code subtask' usually only involves operating system or file operations. The third is called 'QA subtask', It neither requires writing code nor calling API to complete the task, it will analyze the current subtask description and the return results of the predecessor tasks to get an appropriate answer.
-        3. Each task has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a Code task or a API task or a QA task, If it is a Code task, its value is 'Code', if it is a API task, its value is 'API', if it is a QA task, its value is 'QA'.
-        4. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
-        ```json
-        {
-            "install_package" : {
-                "name": "install_package",
-                "description": "Use pip to install the numpy package that is missing in the environments.",
-                "dependencies": [],
-                "type" : "shell"
-            }
-        }
-        ```
+        You can only return the reasoning process and the JSON that stores the tasks information. 
+        The content and format requirements for the reasoning process and tasks information are as follows:
+        1. Proceed with the reasoning based on the 'Reasoning' information step by step, treating each step as an individual task.
+        2. In JSON, each task contains four attributes: name, description, dependencies and type, which are obtained through reasoning about the task. The key of each task is the 'name' attribute of the task.
+        3. The four attributes for each task are described as follows:
+                name: The name of the task. This name is abstracted from the reasoning step corresponding to the current task and can summarize a series of similar tasks. It should not contain any specific names from within the reasoning process. For instance, if the task is to search for the word 'agents' in files, the task should be named 'search_files_for_word'.
+                description: The description of the current task corresponds to a certain step in task reasoning. 
+                dependencies: This term refers to the list of names of task that the current task depends upon, as determined by the reasoning process. These tasks are required to be executed before the current one, and their arrangement must be consistent with the dependencies among the tasks.
+                type: The task type of task, used to indicate in what form the task will be executed.
+        4. There are five types of tasks:
+                Python: Python is suited for tasks that involve complex data handling, analysis, machine learning, or the need to develop cross-platform scripts and applications. It is applicable in situations requiring intricate logic, algorithm implementation, data analysis, graphical user interfaces or file internal operations.
+                Shell: When the task primarily focuses on operating system-level automation, such as quick operations on the file system (creating, moving, deleting files), batch renaming files, system configuration, and monitoring and managing the operating system or system resources, Shell scripts are particularly suitable for quickly executing system-level batch processing tasks. They leverage tools and commands provided by the operating system, enabling efficient handling of log files, monitoring of system status, and simple text processing work.
+                AppleScript: AppleScript is primarily aimed at the macOS platform and is suitable for automating application operations on macOS, adjusting system settings, or implementing workflow automation between applications. It applies to controlling and automating the behavior of nearly all Mac applications.
+                API: API tasks are necessary when interaction with external services or platforms is required, such as retrieving data, sending data, integrating third-party functionalities or services. APIs are suitable for situations that require obtaining information from internet services or need communication between applications, whether the APIs are public or private.
+                QA: QA tasks are primarily about answering questions, providing information, or resolving queries, especially those that can be directly answered through knowledge retrieval or specific domain expertise. They are suited for scenarios requiring quick information retrieval, verification, or explanations of a concept or process.
+        5. An example to help you better understand the information that needs to be generated: The reasoning process analyzed that the reason for the error was that there was no numpy package in the environments, causing it to fail to run. Then the reasoning process and JSON that stores the tasks information are as follows: 
+                Reasoning:
+                    1. According to the reasoning process of error reporting, because there is no numpy package in the environments, we need to use the pip tool to install the numpy package.
+
+                ```json
+                {
+                    "install_package" : {
+                        "name": "install_package",
+                        "description": "Use pip to install the numpy package that is missing in the environments.",
+                        "dependencies": [],
+                        "type" : "shell"
+                    }
+                }
+                ```
+
         And you should also follow the following criteria:
         1. Try to design as few tasks as possible.
-        1. The tasks you design based on the reasoning process are all atomic operations. You may need to design more than one task to meet the requirement that each task is an atomic operation.
-        2. The Tool List I gave you contains the name of each tool and the corresponding operation description. These tools are all atomic operations. You can refer to these atomic operations to design new task.
-        3. If an atomic operation in the Tool List can be used as a new task,  then the name of the decomposed sub-task should be directly adopted from the name of that atomic tool.
-        4. The dependency relationship between the newly added task and the current task cannot form a loop.
-        5. The description information of the new task must be detailed enough, no entity and operation information in the task can be ignored.
-        6. 'Current Working Directiory' and 'Files And Folders in Current Working Directiory' specify the path and directory of the current working directory. These information may help you understand and generate tasks.
-        7. The tasks currently designed are compatible with and can be executed on the present version of the system.
-        8. Please note that the name of a task must be abstract. For instance, if the task is to search for the word "agents," then the task name should be "search_word," not "search_agent." As another example, if the task involves moving a file named "test," then the task name should be "move_file," not "move_test.
-        9. Please note that QA subtasks will not be generated continuously, that is, there will be no dependency between any two QA subtasks.
-        10. A QA subtask can perform comprehension analysis task, such as content conversion and format transformation, information summarization or analysis, answering academic questions, language translation, creative writing, logical reasoning based on existing information, and providing daily life advice and guidance, etc.
+        2. tasks will be executed in the corresponding environment based on their task type, so it's crucial that the task type is accurate; otherwise, it might result in the task being unable to be completed.
+        3. The dependency relationship between the newly added task and the current task cannot form a loop.
+        4. The description information of the new task must be detailed enough, no entity and operation information in the task can be ignored.
+        5. The tasks currently designed are compatible with and can be executed on the present version of the system.
+        6. Before execution, a task can obtain the output information from its prerequisite dependent tasks. Therefore, if a task requires the output from a prerequisite task, the description of the task must specify which information from the prerequisite task is needed.
         
-        Now you will be provided with the following information, please give the reasoning process and the JSON that stores the subtasks information according to these information:
+        Now you will be provided with the following information, please give the reasoning process and the JSON that stores the tasks information according to these information:
         ''',
         '_USER_TASK_REPLAN_PROMPT': '''
         User's information are as follows:
@@ -418,8 +427,8 @@ prompt = {
         Files And Folders in Current Working Directiory: {files_and_folders}
         Detailed description of user information:
         1. 'Reasoning' indicates the reason why task execution failed and the corresponding solution, which can help you design new tasks.
-        2. 'Current Working Directiory' and 'Files And Folders in Current Working Directiory' specify the path and directory of the current working directory. These information may help you understand and generate subtasks.
-        3. 'Tool List' contains the name of each tool and the corresponding operation description. These tools are previously accumulated for completing corresponding subtasks. If a subtask corresponds to the description of a certain tool, then the subtask name and the tool name are the same, to facilitate the invocation of the relevant tool when executing the subtask.
+        2. 'Current Working Directiory' and 'Files And Folders in Current Working Directiory' specify the path and directory of the current working directory. These information may help you understand and generate tasks.
+        3. 'Tool List' contains the name of each tool and the corresponding operation description. These tools are previously accumulated for completing corresponding tasks. If a task corresponds to the description of a certain tool, then the task name and the tool name are the same, to facilitate the invocation of the relevant tool when executing the task.
         ''',
     },
 
