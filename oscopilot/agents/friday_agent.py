@@ -87,7 +87,7 @@ class FridayAgent(BaseAgent):
         isReplan = False
         score = 0
         state, node_type, description, code, result, relevant_code = execution_state.get_all_state()
-        if node_type == 'Code':
+        if node_type == 'Python':
             judgement= self.judging(tool_name, state, code, description)
             score = judgement.score
             # need_repair, critique, score, reasoning, error_type 

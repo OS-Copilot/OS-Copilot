@@ -406,10 +406,14 @@ class FridayExecutor(BaseModule):
         Returns:
             str: The extracted description of the tool if found; otherwise, None.
         """
-        init_pattern = r"def __init__\s*\(self[^)]*\):\s*(?:.|\n)*?self\._description\s*=\s*\"([^\"]+)\""
-        tool_match = re.search(init_pattern, class_code, re.DOTALL)
-        tool_description = tool_match.group(1).strip() if tool_match else None
-        return tool_description
+        match = re.search(r'"""\s*\n\s*(.*?)[\.\n]', class_code)
+        if match:
+            first_sentence = match.group(1)
+            # print("First sentence of the comment:", first_sentence)
+        else:
+            print("No description found.")
+            raise NotImplementedError
+        return first_sentence
     
     def save_str_to_path(self, content, path):
         """
