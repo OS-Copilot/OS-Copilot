@@ -376,11 +376,11 @@ prompt = {
         # Task replan prompts in os
         '_SYSTEM_TASK_REPLAN_PROMPT': '''
         You are an expert at designing new tasks based on the results of your reasoning.
-        When I was executing the code of current task, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design a new task to resolve the problem.     
+        When I was executing the code of current task, an issue occurred that is not related to the code. The user information includes a reasoning process addressing this issue. Based on the results of this reasoning, please design new tasks to resolve the problem.     
         You should only respond with a reasoning process and a JSON result in the format as described below:
-        1. Design new tasks based on the reasoning process of current task errors. For example, the inference process analyzed that the reason for the error was that there was no numpy package in the environments, causing it to fail to run. Then the reasoning process for designing a new task is: According to the reasoning process of error reporting, because there is no numpy package in the environments, we need to use the pip tool to install the numpy package.
+        1. Design new tasks based on the reasoning process. For example, the inference process analyzed that the reason for the error was that there was no numpy package in the environments, causing it to fail to run. Then the reasoning process for designing a new task is: According to the reasoning process of error reporting, because there is no numpy package in the environments, we need to use the pip tool to install the numpy package.
         2. There are three types of subtasks, the first is a task that requires the use of APIs to access internet resources to obtain information, such as retrieving information from the Internet, this type of task is called 'API subtask', and the second is a task that does not require the use of API tools but need to write code to complete, which is called 'Code subtask', 'Code subtask' usually only involves operating system or file operations. The third is called 'QA subtask', It neither requires writing code nor calling API to complete the task, it will analyze the current subtask description and the return results of the predecessor tasks to get an appropriate answer.
-        3. Each decomposed subtask has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a Code task or a API task or a QA task, If it is a Code task, its value is 'Code', if it is a API task, its value is 'API', if it is a QA task, its value is 'QA'.
+        3. Each task has four attributes: name, task description, and dependencies. 'name' abstracts an appropriate name based on the reasoning process of the current subtask. 'description' is the process of the current subtask. 'dependencies' refers to the list of task names that the current task depends on based on the reasoning process. These tasks must be executed before the current task. 'type' indicates whether the current task is a Code task or a API task or a QA task, If it is a Code task, its value is 'Code', if it is a API task, its value is 'API', if it is a QA task, its value is 'QA'.
         4. Continuing with the example in 1, the format of the JSON data I want to get is as follows:
         ```json
         {
@@ -393,6 +393,7 @@ prompt = {
         }
         ```
         And you should also follow the following criteria:
+        1. Try to design as few tasks as possible.
         1. The tasks you design based on the reasoning process are all atomic operations. You may need to design more than one task to meet the requirement that each task is an atomic operation.
         2. The Tool List I gave you contains the name of each tool and the corresponding operation description. These tools are all atomic operations. You can refer to these atomic operations to design new task.
         3. If an atomic operation in the Tool List can be used as a new task,  then the name of the decomposed sub-task should be directly adopted from the name of that atomic tool.
@@ -411,10 +412,14 @@ prompt = {
         Current Task: {current_task}
         Current Task Description: {current_task_description}
         System Version: {system_version}
-        reasoning: {reasoning}
+        Reasoning: {reasoning}
         Tool List: {tool_list}
         Current Working Directiory: {working_dir}
         Files And Folders in Current Working Directiory: {files_and_folders}
+        Detailed description of user information:
+        1. 'Reasoning' indicates the reason why task execution failed and the corresponding solution, which can help you design new tasks.
+        2. 'Current Working Directiory' and 'Files And Folders in Current Working Directiory' specify the path and directory of the current working directory. These information may help you understand and generate subtasks.
+        3. 'Tool List' contains the name of each tool and the corresponding operation description. These tools are previously accumulated for completing corresponding subtasks. If a subtask corresponds to the description of a certain tool, then the subtask name and the tool name are the same, to facilitate the invocation of the relevant tool when executing the subtask.
         ''',
     },
 
