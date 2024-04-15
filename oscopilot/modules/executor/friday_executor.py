@@ -152,7 +152,7 @@ class FridayExecutor(BaseModule):
         user_prompt = self.prompt['_USER_TASK_JUDGE_PROMPT'].format(
             current_code=code,
             task=task_description,
-            code_output=state.result,
+            code_output=state.result[:999] if len(state.result) > 1000 else state.result,
             current_working_dir=state.pwd,
             working_dir=self.environment.working_dir,
             files_and_folders=state.ls,
@@ -163,10 +163,14 @@ class FridayExecutor(BaseModule):
         judge_json = self.extract_json_from_string(response) 
         print("************************<judge_json>**************************")
         print(judge_json)
-        print("************************</judge_json>*************************")      
-        reasoning = judge_json['reasoning']
-        status = judge_json['status']
-        score = judge_json['score']
+        print("************************</judge_json>*************************")
+        try:
+            reasoning = judge_json['reasoning']
+            status = judge_json['status']
+            score = judge_json['score']
+        except KeyError as e:
+            print("The judge module did not output in the specified format.")
+            raise ValueError("Missing key in judge module output: {}".format(e))
         return reasoning, status, score
 
     def repair_tool(self, current_code, task_description, tool_type, state, critique, pre_tasks_info):

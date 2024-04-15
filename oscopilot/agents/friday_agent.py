@@ -101,6 +101,11 @@ class FridayAgent(BaseAgent):
                 repairing_result = self.repairing(tool_name, code, description, state, judgement.critique, judgement.status)
                 if repairing_result.status == 'Complete':
                     isTaskCompleted = True
+                elif repairing_result.status == 'Replan':
+                    print("The current task requires replanning...")
+                    new_sub_task_list = self.replanning(tool_name, repairing_result.critique)
+                    print("The new task list obtained after planning is: {}".format(new_sub_task_list))
+                    isReplan = True
                 else:
                     isTaskCompleted = False
                 score = repairing_result.score
@@ -292,6 +297,8 @@ class FridayAgent(BaseAgent):
                     break
                 elif status == 'Amend':
                     pass
+                elif status == 'Replan':
+                    break
                 else:
                     raise NotImplementedError
                 # print("critique: {}".format(critique))
