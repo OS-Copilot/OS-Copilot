@@ -28,12 +28,12 @@ prompt = {
         You could only respond with a code.
         Shell code output Format:
         ```shell
-        [shell code]
+        shell code
         ```
 
         AppleScript code output Format:
         ```applescript
-        [applescript code]
+        applescript code
         ```        
 
         The code you write should follow the following criteria:
@@ -62,15 +62,15 @@ prompt = {
         You could only respond with a python code and a invocation statement.
         Output Format:
         ```python
-        [python code]
+        python code
         ```
-        <invoke>[invocation statement]</invoke>
+        <invoke>invocation statement</invoke>
 
         The code you write should follow the following criteria:
         1. Function name should be the same as the 'Task Name' provided by the user.
         2. The function you generate is a general-purpose tool that can be reused in different scenarios. Therefore, variables should not be hard-coded within the function; instead, they should be abstracted into parameters that users can pass in. These parameters are obtained by parsing information and descriptions related to the task, and named with as generic names as possible.
         3. The parameters of the function should be designed into suitable data structures based on the characteristics of the extracted information.
-        4. The code should be well-documented, with detailed comments that explain the function's purpose and the role of each parameter. It should also follow a standardized documentation format: [A clear explanation of what the function does]. Args: [A detailed description of each input parameter, including its type and purpose]. Returns: [An explanation of the function's return value, including the type of the return value and what it represents].
+        4. The code should be well-documented, with detailed comments that explain the function's purpose and the role of each parameter. It should also follow a standardized documentation format: A clear explanation of what the function does. Args: A detailed description of each input parameter, including its type and purpose. Returns: An explanation of the function's return value, including the type of the return value and what it represents.
         5. The code logic should be clear and highly readable, able to meet the requirements of the task.
         6. The function must have a return value. If there is no return value, it can return information indicating that the task has been completed.
         7. If the 'Relevant Code' section contains code that directly addresses the current task, please reuse it without any modifications.
@@ -156,12 +156,12 @@ prompt = {
         1. Parameter Details Interpretation: Understand the parameter comments of the function. This will help select the correct parameters to fill in the invocation statement.
         2. Task Description Analysis: Analyze the way the code is called based on the current task, the generated code, and the Information of Prerequisite Tasks.
         3. Generating Invocation Statement: Construct the function call statement based on the analysis results above.
-        4. Output Format: The final output should include the invocation statement, which must be enclosed in <invoke></invoke> tags. For example, <invoke>[invocation statement]</invoke>.     
+        4. Output Format: The final output should include the invocation statement, which must be enclosed in <invoke></invoke> tags. For example, <invoke>function()</invoke>.     
 
         And the code you write should also follow the following criteria:
         1. You must keep the original function name.
         2. The code logic should be clear and highly readable, able to meet the requirements of the task.
-        3. The python code must be enclosed between ```python and ```. For example, ```python [python code] ```.
+        3. The python code must be enclosed between ```python and ```.
         4. The analysis and explanations must be clear, brief and easy to understand, even for those with less programming experience.
         5. All modifications must address the specific issues identified in the error analysis.
         6. The solution must enable the code to successfully complete the intended task without errors.
@@ -216,9 +216,9 @@ prompt = {
         7. Output Format: 
         ```json
         {
-            reasoning: [Your reasoning process],
-            status: [Complete/Amend/Replan],
-            score: [1-10]
+            reasoning: Your reasoning process,
+            status: Complete/Amend/Replan,
+            score: 1-10
         }
         ``` 
 
