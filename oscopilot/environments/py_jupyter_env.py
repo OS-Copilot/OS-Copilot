@@ -2,6 +2,7 @@
 
 import ast
 import os
+import sys
 import queue
 import re
 import threading
@@ -25,6 +26,7 @@ class PythonJupyterEnv(BaseEnv):
     def __init__(self):
         super().__init__()
         ipkernel_logger = logging.getLogger('IPKernelApp')
+
         # Create a filter using a lambda function
         warning_filter = lambda record: not any(msg in record.getMessage() for msg in [
             "Parent appears to have exited, shutting down.",
@@ -32,15 +34,46 @@ class PythonJupyterEnv(BaseEnv):
         ])
         # Add the filter to the logger
         ipkernel_logger.addFilter(warning_filter)
+
+        # Get the path to the current Python executable
+        python_executable = sys.executable
+        
+        # Ensure only one KernelManager instance is configured and started
+        self.km = KernelManager(kernel_name='python3', kernel_cmd=[python_executable, '-m', 'ipykernel_launcher', '-f', '{connection_file}'])
+        self.km.start_kernel(env=os.environ.copy())
+        # self.km.start_kernel()
+        self.kc = self.km.client()
+        self.kc.start_channels()
+        while not self.kc.is_alive():
+            time.sleep(0.1)
+        time.sleep(0.5)
+        '''
+        ipkernel_logger = logging.getLogger('IPKernelApp')
+        # Create a filter using a lambda function
+        warning_filter = lambda record: not any(msg in record.getMessage() for msg in [
+            "Parent appears to have exited, shutting down.",
+            "Could not destroy zmq context"
+        ])
+        # Add the filter to the logger
+        ipkernel_logger.addFilter(warning_filter)
+
+        # Get the path to the current Python executable
+        python_executable = sys.executable
+        
+        # Create a KernelManager instance using the current Python executable
+        self.km = KernelManager(kernel_name='python3', kernel_cmd=[python_executable, '-m', 'ipykernel_launcher', '-f', '{connection_file}'])
+        # self.km.start_kernel()
+        # self.kc = self.km.client()
+        # self.kc.start_channels()
             
-        self.km = KernelManager(kernel_name="python3")
+        # self.km = KernelManager(kernel_name="python3")
         self.km.start_kernel()
         self.kc = self.km.client()
         self.kc.start_channels()
         while not self.kc.is_alive():
             time.sleep(0.1)
         time.sleep(0.5)
-
+        '''
         self.listener_thread = None
         self.finish_flag = False
 

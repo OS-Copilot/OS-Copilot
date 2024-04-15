@@ -36,7 +36,7 @@ def setup_config():
     parser.add_argument('--logging_filedir', type=str, default='log', help='log path')
     parser.add_argument('--logging_filename', type=str, default='temp0325.log', help='log file name')
     parser.add_argument('--logging_prefix', type=str, default=random_string(16), help='log file prefix')
-    parser.add_argument('--score', type=int, default=7, help='critic score > score => store the tool')
+    parser.add_argument('--score', type=int, default=8, help='critic score > score => store the tool')
 
 
     # for Self-Leanring

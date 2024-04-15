@@ -156,7 +156,8 @@ class FridayExecutor(BaseModule):
             current_working_dir=state.pwd,
             working_dir=self.environment.working_dir,
             files_and_folders=state.ls,
-            next_action=next_action
+            next_action=next_action,
+            code_error=state.error,
         )
         response = send_chat_prompts(sys_prompt, user_prompt, self.llm)
         judge_json = self.extract_json_from_string(response) 
@@ -164,11 +165,11 @@ class FridayExecutor(BaseModule):
         print(judge_json)
         print("************************</judge_json>*************************")      
         reasoning = judge_json['reasoning']
-        judge = judge_json['judge']
+        status = judge_json['status']
         score = judge_json['score']
-        return reasoning, judge, score
+        return reasoning, status, score
 
-    def repair_tool(self, current_code, task_description, state, critique, pre_tasks_info):
+    def repair_tool(self, current_code, task_description, tool_type, state, critique, pre_tasks_info):
         """
         Modifies or corrects the code of an tool based on feedback to better complete a task.
 
@@ -189,18 +190,32 @@ class FridayExecutor(BaseModule):
                 - new_code (str): The amended code for the tool.
                 - invoke (str): The command or logic to invoke the amended tool.
         """
-        sys_prompt = self.prompt['_SYSTEM_SKILL_AMEND_AND_INVOKE_PROMPT']
-        user_prompt = self.prompt['_USER_SKILL_AMEND_AND_INVOKE_PROMPT'].format(
-            original_code = current_code,
-            task = task_description,
-            error = state.error,
-            code_output = state.result,
-            current_working_dir = state.pwd,
-            working_dir= self.environment.working_dir,
-            files_and_folders = state.ls,
-            critique = critique,
-            pre_tasks_info = pre_tasks_info
-        )
+        if tool_type == 'Python':
+            sys_prompt = self.prompt['_SYSTEM_PYTHON_SKILL_AMEND_AND_INVOKE_PROMPT']
+            user_prompt = self.prompt['_USER_PYTHON_SKILL_AMEND_AND_INVOKE_PROMPT'].format(
+                original_code = current_code,
+                task = task_description,
+                error = state.error,
+                code_output = state.result,
+                current_working_dir = state.pwd,
+                working_dir= self.environment.working_dir,
+                files_and_folders = state.ls,
+                critique = critique,
+                pre_tasks_info = pre_tasks_info
+            )
+        elif tool_type in ['Shell', 'AppleScript']:
+            sys_prompt = self.prompt['_SYSTEM_SHELL_APPLESCRIPT_AMEND_PROMPT']
+            user_prompt = self.prompt['_USER_SHELL_APPLESCRIPT_AMEND_PROMPT'].format(
+                original_code = current_code,
+                task = task_description,
+                error = state.error,
+                code_output = state.result,
+                current_working_dir = state.pwd,
+                working_dir= self.environment.working_dir,
+                files_and_folders = state.ls,
+                critique = critique,
+                pre_tasks_info = pre_tasks_info
+            )
         amend_msg = send_chat_prompts(sys_prompt, user_prompt, self.llm)
         new_code = self.extract_python_code(amend_msg)
         invoke = self.extract_information(amend_msg, begin_str='<invoke>', end_str='</invoke>')[0]

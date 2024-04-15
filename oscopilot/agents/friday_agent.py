@@ -87,28 +87,31 @@ class FridayAgent(BaseAgent):
         isReplan = False
         score = 0
         state, node_type, description, code, result, relevant_code = execution_state.get_all_state()
-        if node_type == 'Python':
+        if node_type in ['Python', 'Shell', 'AppleScript']:
             judgement= self.judging(tool_name, state, code, description)
             score = judgement.score
             # need_repair, critique, score, reasoning, error_type 
-            if judgement.need_repair:
-                if judgement.error_type == 'replan':
-                    print("The current task requires replanning...")
-                    new_sub_task_list = self.replanning(tool_name, judgement.reasoning)
-                    print("The new task list obtained after planning is: {}".format(new_sub_task_list))
-                    isReplan = True
+            if judgement.status == 'Replan':
+                # raise NotImplementedError
+                print("The current task requires replanning...")
+                new_sub_task_list = self.replanning(tool_name, judgement.critique)
+                print("The new task list obtained after planning is: {}".format(new_sub_task_list))
+                isReplan = True
+            elif judgement.status == 'Amend':
+                repairing_result = self.repairing(tool_name, code, description, state, judgement.critique, judgement.status)
+                if repairing_result.status == 'Complete':
+                    isTaskCompleted = True
                 else:
-                    repairing_result = self.repairing(tool_name, code, description, state, judgement.critique, judgement.need_repair)
-                    isTaskCompleted = repairing_result.isTaskCompleted
-                    score = repairing_result.score
-                    result = repairing_result.result
+                    isTaskCompleted = False
+                score = repairing_result.score
+                result = repairing_result.result
                     # isTaskCompleted, code, critique, score, result
                     # if not isTaskCompleted:
                     #     print("{} not completed in repair round {}".format(tool, args.max_repair_iterations))
                     #     break
             else:
                 isTaskCompleted = True
-            if isTaskCompleted and score >= self.score:
+            if node_type == 'Python' and isTaskCompleted and score >= self.score:
                 self.executor.store_tool(tool_name, code)
                 print("{} has been stored in the tool repository.".format(tool_name))
         else:
@@ -210,24 +213,25 @@ class FridayAgent(BaseAgent):
         This method assesses the correctness of the executed code and its alignment with the expected outcomes, guiding potential repair or amendment actions.
         """
         # Check whether the code runs correctly, if not, amend the code
-        reasoning = ''
-        error_type = ''
+        # reasoning = ''
+        # error_type = ''
         tool_node = self.planner.tool_node[tool_name]
         next_action = tool_node.next_action
-        need_repair = False
+        # need_repair = False
         critique = ''
         score = 0
+        critique, status, score = self.executor.judge_tool(code, description, state, next_action)
         # If no error is reported, check whether the task is completed
-        if state.error == None:
-            critique, judge, score = self.executor.judge_tool(code, description, state, next_action)
-            if not judge:
-                print("critique: {}".format(critique))
-                need_repair = True
-        else:
-            #  Determine whether it is caused by an error outside the code
-            reasoning, error_type = self.executor.analysis_tool(code, description, state)
-            need_repair = True
-        return JudgementResult(need_repair, critique, score, reasoning, error_type)
+        # if state.error == None:
+        #     critique, judge, score = self.executor.judge_tool(code, description, state, next_action)
+        #     if not judge:
+        #         print("critique: {}".format(critique))
+        #         need_repair = True
+        # else:
+        #     #  Determine whether it is caused by an error outside the code
+        #     reasoning, error_type = self.executor.analysis_tool(code, description, state)
+        #     need_repair = True
+        return JudgementResult(status, critique, score)
     
     def replanning(self, tool_name, reasoning):
         """
@@ -247,7 +251,7 @@ class FridayAgent(BaseAgent):
         self.planner.replan_task(reasoning, tool_name, relevant_tool_description_pair)
         return self.planner.sub_task_list
 
-    def repairing(self, tool_name, code, description, state, critique, need_repair):
+    def repairing(self, tool_name, code, description, state, critique, status):
         """
         Attempts to repair the execution of a tool by amending its code based on the critique received and the current execution state, iterating until the code executes successfully or reaches the maximum iteration limit.
 
@@ -269,28 +273,31 @@ class FridayAgent(BaseAgent):
         pre_tasks_info = self.planner.get_pre_tasks_info(tool_name)
         trial_times = 0
         score = 0
-        while (trial_times < self.executor.max_iter and need_repair == True):
+        while (trial_times < self.executor.max_iter and status == 'Amend'):
             trial_times += 1
             print("current amend times: {}".format(trial_times))
-            new_code, invoke = self.executor.repair_tool(code, description, state, critique, pre_tasks_info)
+            new_code, invoke = self.executor.repair_tool(code, description, tool_node.node_type, state, critique, pre_tasks_info)
             critique = ''
             code = new_code
             # Run the current code and check for errors
-            state = self.executor.execute_tool(code, invoke, 'Code')
+            state = self.executor.execute_tool(code, invoke, tool_node.node_type)
             result = state.result
             logging.info(state) 
             # print(state)
             # Recheck
             if state.error == None:
-                critique, judge, score = self.executor.judge_tool(code, description, state, next_action)
+                critique, status, score = self.executor.judge_tool(code, description, state, next_action)
                 # The task execution is completed and the loop exits
-                if judge:
-                    need_repair = False
+                if status == 'Complete':
                     break
+                elif status == 'Amend':
+                    pass
+                else:
+                    raise NotImplementedError
                 # print("critique: {}".format(critique))
             else: # The code still needs to be corrected
-                need_repair = True
-        return RepairingResult(not need_repair, code, critique, score, result)
+                status = 'Amend'
+        return RepairingResult(status, code, critique, score, result)
 
     def reset_inner_monologue(self):
         self.inner_monologue = InnerMonologue()

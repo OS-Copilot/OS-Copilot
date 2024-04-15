@@ -511,7 +511,7 @@ if __name__ == "__main__":
 
     # Delete
     toolManager = ToolManager(generated_tool_repo_dir='oscopilot/tool_repository/generated_tools')
-    toolManager.delete_tool("search_files_for_word")
+    toolManager.delete_tool("implement_loop_progress")
 
     # Add
     # code = ''
