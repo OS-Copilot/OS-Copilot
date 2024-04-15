@@ -1,3 +1,6 @@
+# This code is based on Open Interpreter. Original source: https://github.com/OpenInterpreter/open-interpreter
+
+
 import base64
 import io
 import os
