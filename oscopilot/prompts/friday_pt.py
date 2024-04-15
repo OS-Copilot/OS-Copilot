@@ -221,7 +221,7 @@ prompt = {
             score: [1-10]
         }
         ``` 
-                
+
         And you should also follow the following criteria:
         1. Provide clear, logical reasoning.
         2. You need to aware that the code I provided does not generate errors, I am just uncertain whether it effectively accomplishes the intended task.
@@ -247,6 +247,8 @@ prompt = {
         3. 'Code Output' represents the output of the code execution, which may be empty.
         4. 'Code Error' represents any error messages generated during code execution, which may also be empty.
         5. 'Next Task' describes tasks that follow the current task and may depend on the return from the current task. 
+
+        Note: Please output according to the output format specified in the system message.
         ''',
 
         # Tool usage prompts in os

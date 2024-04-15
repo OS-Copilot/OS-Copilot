@@ -21,7 +21,7 @@ from oscopilot.environments.base_env import BaseEnv
 class PythonJupyterEnv(BaseEnv):
     file_extension = "py"
     name = "Python"
-    aliases = ["py"]
+    aliases = ["py", "API"]
 
     def __init__(self):
         super().__init__()

@@ -334,7 +334,7 @@ class GAIALoader:
     def task2query(self, task):
         query = 'Your task is: {}'.format(task['Question'])
         if task['file_name'] != '':
-            query = query + '\nThe path of the files you need to use: {0}.{1}'.format(task['file_path'], task['file_name'].split('.')[-1])
+            query = query + '\n{0} is the absolute file path you need to use, and the file type is {1}. Note that there is no file extension at the end.'.format(task['file_path'], task['file_name'].split('.')[-1])
         print('GAIA Task {0}:\n{1}'.format(task['task_id'], query))
         logging.info(query)
         return query
