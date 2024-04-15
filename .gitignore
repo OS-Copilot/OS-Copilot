@@ -8,6 +8,10 @@ working_dir/*.log
 .vs/
 .vscode/
 .idea/
+<<<<<<< HEAD
+# /oscopilot/tool_repository/generated_tools/*
+=======
+>>>>>>> 6a6aa7936324a411c170540cf1a1208045fa9994
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -113,7 +117,10 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+<<<<<<< HEAD
+=======
 .env
+>>>>>>> 6a6aa7936324a411c170540cf1a1208045fa9994
 .envrc
 .venv
 .venvs

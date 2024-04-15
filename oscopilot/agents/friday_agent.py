@@ -119,7 +119,7 @@ class FridayAgent(BaseAgent):
             if node_type == 'Python' and isTaskCompleted and score >= self.score:
                 self.executor.store_tool(tool_name, code)
                 print("{} has been stored in the tool repository.".format(tool_name))
-        else:
+        else: 
             isTaskCompleted = True
         if isTaskCompleted:
             self.inner_monologue.result = result
