@@ -9,7 +9,7 @@ class RepairingResult:
     """
     Stores the results and intermediate representation of the repairing process
     """
-    isTaskCompleted: bool = False
+    status: str = ''
     code: str = ''
     critique: str = ''
     score: str = ''
@@ -21,11 +21,11 @@ class JudgementResult:
     """
     Stores the results and intermediate representation of the judging process
     """
-    need_repair: bool = False
+    status: bool = False
     critique: str = ''
     score: int = 0
-    reasoning: str = ''
-    error_type: str = ''
+    # reasoning: str = ''
+    # error_type: str = ''
 
 
 @dataclass

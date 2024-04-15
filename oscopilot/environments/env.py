@@ -32,13 +32,23 @@ class Env(BaseEnv):
         state = EnvState(command=code)
         lang = self.get_language(language)()  # 输入planner的节点类型即可
         for output_line_dic in lang.step(code):
-            if output_line_dic['format'] == 'active_line':
+            if output_line_dic['format'] == 'active_line' or output_line_dic['content'] in ['', '\n']:
                 continue
             content = output_line_dic['content']
             if 'Traceback' in content:
                 state.error = (state.error or '') + content
             else:
                 state.result += content
+
+        # for output_line_dic in lang.step(code):
+        #     if output_line_dic['format'] == 'active_line':
+        #         continue
+        #     content = output_line_dic['content']
+        #     if content != '' and content != '\n':
+        #         if 'Traceback' in content:
+        #             state.error = (state.error or '') + content
+        #         else:
+        #             state.result += content
         state.pwd = self.working_dir
         state.ls = subprocess.run(['ls'], cwd=self.working_dir, capture_output=True, text=True).stdout
         return state

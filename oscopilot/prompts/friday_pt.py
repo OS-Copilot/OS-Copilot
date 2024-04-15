@@ -55,6 +55,7 @@ prompt = {
         3, 'Code Type' represents the type of code to be generated.
         ''',        
 
+
         # Python generate and invoke prompts in os
         '_SYSTEM_PYTHON_SKILL_AND_INVOKE_GENERATE_PROMPT': '''
         You are a world-class programmer that can complete any task by executing code, your goal is to generate the function code that accomplishes the task, along with the function's invocation.
