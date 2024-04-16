@@ -9,23 +9,49 @@ dotenv.load_dotenv(override=True)
 
 
 class Config:
+    """
+    A singleton class for storing and accessing configuration parameters.
+
+    This class ensures that only one instance is created and provides methods for initializing and accessing parameters.
+    """    
     _instance = None
 
     @classmethod
     def initialize(cls, args):
+        """
+        Initializes the Config instance with command-line arguments.
+
+        Args:
+            args (argparse.Namespace): The parsed command-line arguments.
+        """        
         if cls._instance is None:
             cls._instance = cls.__new__(cls)
             cls._instance.parameters = vars(args)
 
     @classmethod
     def get_parameter(cls, key):
+        """
+        Retrieves a parameter value by key.
+
+        Args:
+            key (str): The key of the parameter to retrieve.
+
+        Returns:
+            Any: The value of the parameter if found, otherwise None.
+        """        
         if cls._instance is None:
             return None
         return cls._instance.parameters.get(key, None)
 
 
 def setup_config():
+    """
+    Sets up configuration parameters based on command-line arguments.
 
+    Returns:
+        argparse.Namespace: The parsed command-line arguments.
+    """
+    # Create an argument parser
     parser = argparse.ArgumentParser(description='Inputs')
 
     parser.add_argument('--generated_tool_repo_path', type=str, default='oscopilot/tool_repository/generated_tools', help='generated tool repo path')
@@ -79,7 +105,15 @@ def setup_config():
 
 
 def setup_pre_run(args):
-    
+    """
+    Sets up pre-run tasks and logging.
+
+    Args:
+        args (argparse.Namespace): The parsed command-line arguments.
+
+    Returns:
+        str: A string containing information about the task.
+    """    
     task = 'Your task is: {0}'.format(args.query)
     if args.query_file_path != '':
         task = task + '\nThe path of the files you need to use: {0}'.format(args.query_file_path)
@@ -90,7 +124,12 @@ def setup_pre_run(args):
 
 
 def self_learning_print_logging(args):
+    """
+    Prints self-learning task information and logs it.
 
+    Args:
+        args (argparse.Namespace): The parsed command-line arguments.
+    """
     task = 'Your task is: Learn to use {0} to operate {1}'.format(args.software_name, args.package_name)
     if args.demo_file_path != '':
         task = task + '\nThe path of the file helps you design the course: {0}'.format(args.demo_file_path)

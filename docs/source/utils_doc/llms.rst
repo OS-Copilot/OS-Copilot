@@ -6,6 +6,13 @@ Large Language Models
    :undoc-members:
    :show-inheritance:
 
+OS-Copilot Config
+==============================
+
+.. automodule:: oscopilot.utils.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Server Proxy Config
 ==============================
