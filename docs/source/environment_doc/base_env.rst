@@ -1,7 +1,7 @@
-Self Learning
+Base Environment
 ==============================
 
-.. autoclass:: oscopilot.agents.self_learning.SelfLearning
+.. automodule:: oscopilot.environments.base_env
    :members:
    :undoc-members:
    :show-inheritance:

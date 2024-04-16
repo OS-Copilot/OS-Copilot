@@ -128,6 +128,7 @@ For more detailed information about OS-Copilot and FRIDAY, please refer to our l
 
 
 
+
 .. Indices and tables
 .. ==================
 

@@ -1,7 +1,7 @@
-Self Learning
+Bash Environment
 ==============================
 
-.. autoclass:: oscopilot.agents.self_learning.SelfLearning
+.. automodule:: oscopilot.environments.bash_env
    :members:
    :undoc-members:
    :show-inheritance:

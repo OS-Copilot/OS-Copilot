@@ -1,7 +1,7 @@
-Self Learning
+Python Jupyter Environment
 ==============================
 
-.. autoclass:: oscopilot.agents.self_learning.SelfLearning
+.. automodule:: oscopilot.environments.py_jupyter_env
    :members:
    :undoc-members:
    :show-inheritance:

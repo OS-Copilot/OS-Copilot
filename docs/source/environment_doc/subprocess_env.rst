@@ -1,7 +1,7 @@
-Self Learning
+Subprocess Environment
 ==============================
 
-.. autoclass:: oscopilot.agents.self_learning.SelfLearning
+.. automodule:: oscopilot.environments.subprocess_env
    :members:
    :undoc-members:
    :show-inheritance:
