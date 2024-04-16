@@ -12,6 +12,11 @@ from oscopilot.environments import SubprocessEnv
 
 
 class Shell(SubprocessEnv):
+    """
+    A class representing a shell environment for executing shell scripts.
+
+    This class inherits from SubprocessEnv, which provides a general environment for executing code in subprocesses.
+    """    
     file_extension = "sh"
     name = "Shell"
     aliases = ["bash", "sh", "zsh"]
@@ -19,6 +24,11 @@ class Shell(SubprocessEnv):
     def __init__(
         self,
     ):
+        """
+        Initializes the Shell environment.
+
+        Determines the start command based on the platform.
+        """        
         super().__init__()
 
         # Determine the start command based on the platform
@@ -28,25 +38,67 @@ class Shell(SubprocessEnv):
             self.start_cmd = [os.environ.get("SHELL", "bash")]
 
     def preprocess_code(self, code):
+        """
+        Preprocesses the shell script code before execution.
+
+        Args:
+            code (str): The shell script code to preprocess.
+
+        Returns:
+            str: The preprocessed shell script code.
+        """        
         return preprocess_shell(code)
 
     def line_postprocessor(self, line):
+        """
+        Postprocesses each line of output from the shell execution.
+
+        Args:
+            line (str): A line from the output of the shell script execution.
+
+        Returns:
+            str: The processed line.
+        """        
         return line
 
     def detect_active_line(self, line):
+        """
+        Detects the active line indicator in the output.
+
+        Args:
+            line (str): A line from the output.
+
+        Returns:
+            int: The line number indicated by the active line indicator, or None if not found.
+        """        
         if "##active_line" in line:
             return int(line.split("##active_line")[1].split("##")[0])
         return None
 
     def detect_end_of_execution(self, line):
+        """
+        Detects the end of execution marker in the output.
+
+        Args:
+            line (str): A line from the output.
+
+        Returns:
+            bool: True if the end of execution marker is found, False otherwise.
+        """        
         return "##end_of_execution##" in line
 
 
 def preprocess_shell(code):
     """
-    Add active line markers
-    Wrap in a try except (trap in shell)
-    Add end of execution marker
+    Preprocesses the shell script code before execution.
+
+    Adds active line markers, wraps in a try-except block (trap in shell), and adds an end of execution marker.
+
+    Args:
+        code (str): The shell script code to preprocess.
+
+    Returns:
+        str: The preprocessed shell script code.
     """
 
     # Add commands that tell us what the active line is
@@ -62,7 +114,13 @@ def preprocess_shell(code):
 
 def add_active_line_prints(code):
     """
-    Add echo statements indicating line numbers to a shell string.
+    Adds echo statements indicating line numbers to a shell script.
+
+    Args:
+        code (str): The shell script code to add active line indicators to.
+
+    Returns:
+        str: The modified shell script code with active line indicators.
     """
     lines = code.split("\n")
     for index, line in enumerate(lines):
@@ -72,6 +130,15 @@ def add_active_line_prints(code):
 
 
 def has_multiline_commands(script_text):
+    """
+    Checks if a shell script contains multiline commands.
+
+    Args:
+        script_text (str): The shell script code to check.
+
+    Returns:
+        bool: True if the script contains multiline commands, False otherwise.
+    """    
     # Patterns that indicate a line continues
     continuation_patterns = [
         r"\\$",  # Line continuation character at the end of the line

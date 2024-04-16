@@ -19,11 +19,24 @@ from oscopilot.environments.base_env import BaseEnv
 
 
 class PythonJupyterEnv(BaseEnv):
+    """
+    A class representing an environment for executing Python code in a Jupyter environment.
+
+    This class manages the execution of Python code using IPython kernel, providing methods for preprocessing code,
+    executing code steps, handling output messages, and terminating the kernel.
+
+    It inherits from BaseEnv, which provides basic environment functionality.
+    """    
     file_extension = "py"
     name = "Python"
     aliases = ["py", "API"]
 
     def __init__(self):
+        """
+        Initializes the Python Jupyter environment.
+
+        This method sets up the IPython kernel manager and client, starts the kernel, and configures logging.
+        """        
         super().__init__()
         ipkernel_logger = logging.getLogger('IPKernelApp')
 
@@ -101,11 +114,22 @@ class PythonJupyterEnv(BaseEnv):
         # self.run(code)
 
     def terminate(self):
+        """
+        Terminates the IPython kernel and stops its channels.
+        """
         self.kc.stop_channels()
         self.km.shutdown_kernel()
 
     def step(self, code):
-        
+        """
+        Executes a step of Python code.
+
+        Args:
+            code (str): The Python code to execute.
+
+        Yields:
+            dict: Output messages generated during execution.
+        """        
         # 解析python代码并且将函数体抽取出来存成字典，key是函数名，value是函数体，如果要存的话，就将每个函数存成一个py文件
         # try:
         #     functions = string_to_python(code)  # 
@@ -141,9 +165,18 @@ class PythonJupyterEnv(BaseEnv):
             yield {"type": "console", "format": "output", "content": content}
 
     def _execute_code(self, code, message_queue):
+        """
+        Executes Python code using the IPython kernel and captures the output messages.
+
+        Args:
+            code (str): The Python code to execute.
+            message_queue (queue.Queue): The message queue for storing output messages.
+        """        
         def iopub_message_listener():
             '''
-            这个函数的主要作用是监听IPython内核的IOPub消息通道上的消息，并根据消息的类型进行相应的处理。IOPub消息通道是Jupyter/IPython体系中用于广播执行结果、日志、错误、状态更新等信息的一个通道。
+            The main function of this function is to monitor the messages on the IOPub message channel of the IPython kernel and 
+            process them accordingly according to the type of the message. The IOPub message channel is a channel in the Jupyter/IPython 
+            system used to broadcast execution results, logs, errors, status updates and other information.            
             '''
             while True:
                 # If self.finish_flag = True, and we didn't set it (we do below), we need to stop. That's our "stop"
@@ -241,6 +274,15 @@ class PythonJupyterEnv(BaseEnv):
         self.kc.execute(code)
 
     def detect_active_line(self, line):
+        """
+        Detects active line markers in the output line.
+
+        Args:
+            line (str): The output line from the IPython kernel.
+
+        Returns:
+            tuple: The modified line and active line number, if detected.
+        """        
         if "##active_line" in line:
             # Split the line by "##active_line" and grab the last element
             last_active_line = line.split("##active_line")[-1]
@@ -252,6 +294,15 @@ class PythonJupyterEnv(BaseEnv):
         return line, None
 
     def _capture_output(self, message_queue):
+        """
+        Captures output messages from the message queue.
+
+        Args:
+            message_queue (queue.Queue): The message queue.
+
+        Yields:
+            dict: Output messages.
+        """        
         while True:
             if self.listener_thread:
                 try:
@@ -263,12 +314,20 @@ class PythonJupyterEnv(BaseEnv):
             time.sleep(0.1)
 
     def stop(self):
+        """
+        Stops the execution of code by setting the finish flag.
+        """        
         self.finish_flag = True
 
     def preprocess_code(self, code):
         """
-        Add active line markers
-        Wrap in a try except
+        Preprocesses the Python code before execution.
+
+        Args:
+            code (str): The Python code to preprocess.
+
+        Returns:
+            str: The preprocessed code.
         """
         code = code.strip()
 
@@ -291,7 +350,13 @@ class PythonJupyterEnv(BaseEnv):
 
 def add_active_line_prints(code):
     """
-    Add print statements indicating line numbers to a python string.
+    Adds print statements indicating line numbers to a Python string.
+
+    Args:
+        code (str): The Python code.
+
+    Returns:
+        str: The code with added print statements.
     """
     # Replace newlines and comments with pass statements, so the line numbers are accurate (ast will remove them otherwise)
     code_lines = code.split("\n")
@@ -321,7 +386,15 @@ class AddLinePrints(ast.NodeTransformer):
     """
 
     def insert_print_statement(self, line_number):
-        """Inserts a print statement for a given line number."""
+        """
+        Inserts a print statement for a given line number.
+
+        Args:
+            line_number (int): The line number.
+
+        Returns:
+            ast.Expr: The print statement AST node.
+        """
         return ast.Expr(
             value=ast.Call(
                 func=ast.Name(id="print", ctx=ast.Load()),
@@ -331,7 +404,15 @@ class AddLinePrints(ast.NodeTransformer):
         )
 
     def process_body(self, body):
-        """Processes a block of statements, adding print calls."""
+        """
+        Processes a block of statements, adding print calls.
+
+        Args:
+            body (list): List of AST nodes representing statements.
+
+        Returns:
+            list: List of modified AST nodes.
+        """
         new_body = []
 
         # In case it's not iterable:
@@ -346,7 +427,15 @@ class AddLinePrints(ast.NodeTransformer):
         return new_body
 
     def visit(self, node):
-        """Overridden visit to transform nodes."""
+        """
+        Visits and transforms nodes in the AST.
+
+        Args:
+            node: The current AST node.
+
+        Returns:
+            ast.Node: The modified AST node.
+        """
         new_node = super().visit(node)
 
         # If node has a body, process it
@@ -368,7 +457,15 @@ class AddLinePrints(ast.NodeTransformer):
 
 
 def wrap_in_try_except(code):
-    # Add import traceback
+    """
+    Wraps Python code in a try-except block to catch exceptions.
+
+    Args:
+        code (str): The Python code.
+
+    Returns:
+        str: The code wrapped in a try-except block.
+    """
     code = "import traceback\n" + code
 
     # Parse the input code into an AST
@@ -408,6 +505,15 @@ def wrap_in_try_except(code):
 
 
 def string_to_python(code_as_string):
+    """
+    Parses Python code from a string and extracts function definitions.
+
+    Args:
+        code_as_string (str): The Python code as a string.
+
+    Returns:
+        dict: A dictionary mapping function names to their code.
+    """    
     parsed_code = ast.parse(code_as_string)
 
     # Initialize containers for different categories
