@@ -1,2 +1,0 @@
-[console_scripts]
-friday = quick_start:main
