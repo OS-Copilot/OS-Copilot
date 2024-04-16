@@ -1,11 +1,12 @@
 from __future__ import annotations
 import subprocess
 from oscopilot.utils.schema import EnvState
-from oscopilot.environments.env import Env
+from oscopilot.environments.base_env import BaseEnv
 from tempfile import NamedTemporaryFile
+import sys
 
 
-class PythonEnv(Env):
+class PythonEnv(BaseEnv):
     """
     A base class representing a Python execution environments for actions.
 
@@ -42,6 +43,7 @@ class PythonEnv(Env):
             The method ensures the last line of the output is always the current working directory
             to maintain accurate state tracking.
         """
+        python_executable = sys.executable
         tmp_code_file = NamedTemporaryFile("w", dir=self.working_dir, suffix=".py", encoding="utf-8")
         # Solving the issue of not being able to retrieve the current working directory of the last line of output
         _command = _command.strip() + "\n"  + "import os" + "\n" + "print(os.getcwd())"
@@ -53,7 +55,7 @@ class PythonEnv(Env):
         self.env_state = EnvState(command=_command)
         try:
             results = subprocess.run(
-                ["python", '-B', str(filename)],
+                [python_executable, '-B', str(filename)],
                 encoding="utf8",
                 check=True, cwd=self.working_dir, timeout=self.timeout,
                 stdout=subprocess.PIPE,
@@ -71,7 +73,7 @@ class PythonEnv(Env):
             self.env_state.error = repr(e)
         finally:
             tmp_code_file.close()
-        self.observe(self.working_dir)
+        # self.observe(self.working_dir)
 
         return self.env_state
 

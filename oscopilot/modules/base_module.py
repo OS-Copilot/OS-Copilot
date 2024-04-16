@@ -1,7 +1,9 @@
 import re
 import json
 from oscopilot.utils.llms import OpenAI
-from oscopilot.environments.py_env import PythonEnv
+# from oscopilot.environments.py_env import PythonEnv
+# from oscopilot.environments.py_jupyter_env import PythonJupyterEnv
+from oscopilot.environments import Env
 from oscopilot.tool_repository.basic_tools.get_os_version import get_os_version
 
 class BaseModule:
@@ -10,7 +12,9 @@ class BaseModule:
         Initializes a new instance of BaseModule with default values for its attributes.
         """
         self.llm = OpenAI()
-        self.environment = PythonEnv()
+        # self.environment = PythonEnv()
+        # self.environment = PythonJupyterEnv()
+        self.environment = Env()
         self.system_version = get_os_version()
         
     def extract_information(self, message, begin_str='[BEGIN]', end_str='[END]'):

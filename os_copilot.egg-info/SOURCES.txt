@@ -14,9 +14,12 @@ oscopilot/agents/friday_agent.py
 oscopilot/agents/prompt.py
 oscopilot/agents/self_learning.py
 oscopilot/environments/__init__.py
+oscopilot/environments/applescript_env.py
+oscopilot/environments/base_env.py
 oscopilot/environments/bash_env.py
 oscopilot/environments/env.py
-oscopilot/environments/py_env.py
+oscopilot/environments/py_jupyter_env.py
+oscopilot/environments/subprocess_env.py
 oscopilot/modules/__init__.py
 oscopilot/modules/base_module.py
 oscopilot/modules/executor/__init__.py
@@ -29,6 +32,8 @@ oscopilot/modules/retriever/__init__.py
 oscopilot/modules/retriever/vector_retriever.py
 oscopilot/prompts/__init__.py
 oscopilot/prompts/friday_pt.py
+oscopilot/prompts/general_pt.py
+oscopilot/prompts/old_friday_pt.py
 oscopilot/tool_repository/__init__.py
 oscopilot/tool_repository/api_tools/__init__.py
 oscopilot/tool_repository/api_tools/audio2text/__init__.py
@@ -79,6 +84,9 @@ oscopilot/utils/config.py
 oscopilot/utils/llms.py
 oscopilot/utils/schema.py
 oscopilot/utils/server_config.py
+oscopilot/utils/test_new_llms.py
 oscopilot/utils/utils.py
 test/test_data_loader.py
+test/test_executor.py
+test/test_planner.py
 test/test_self_learning.py
