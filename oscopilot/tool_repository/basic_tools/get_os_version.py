@@ -51,7 +51,7 @@ def check_os_version(s):
                     supported version.
     """
     if "mac" in s or "Ubuntu" in s or "CentOS" in s:
-        print("perating System Version:", s)
+        print("Operating System Version:", s)
     else:
         raise ValueError("Unknown Operating System")
 

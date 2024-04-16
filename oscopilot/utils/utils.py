@@ -12,6 +12,8 @@ import re
 import tiktoken
 import random
 from datasets import load_dataset
+from oscopilot.prompts.general_pt import prompt as general_pt
+from oscopilot.utils.llms import OpenAI
 
 
 def random_string(length):
@@ -296,6 +298,16 @@ def get_project_root_path():
     return project_root_path + '/'
 
 
+def GAIA_postprocess(question, response):
+    llm = OpenAI()
+    extractor_prompt = general_pt['GAIA_ANSWER_EXTRACTOR_PROMPT'].format(
+        question=question,
+        response=response
+    )
+    result = send_chat_prompts('', extractor_prompt, llm)
+    return result
+
+
 class GAIALoader:
     def __init__(self, level=1, cache_dir=None):
         if cache_dir != None:
@@ -322,8 +334,8 @@ class GAIALoader:
     def task2query(self, task):
         query = 'Your task is: {}'.format(task['Question'])
         if task['file_name'] != '':
-            query = query + '\nThe path of the files you need to use: {0}.{1}'.format(task['file_path'], task['file_name'].split('.')[-1])
-        print('GAIA Task {1}:\n{2}'.format(task['task_id'], query))
+            query = query + '\n{0} is the absolute file path you need to use, and the file type is {1}. Note that there is no file extension at the end.'.format(task['file_path'], task['file_name'].split('.')[-1])
+        print('GAIA Task {0}:\n{1}'.format(task['task_id'], query))
         logging.info(query)
         return query
     
@@ -361,3 +373,6 @@ class SheetTaskLoader:
         if self.dataset is None:
             raise ValueError("Dataset not loaded.")
         return self.dataset[task_id]
+    
+
+

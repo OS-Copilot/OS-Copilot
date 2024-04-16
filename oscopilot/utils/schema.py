@@ -9,7 +9,7 @@ class RepairingResult:
     """
     Stores the results and intermediate representation of the repairing process
     """
-    isTaskCompleted: bool = False
+    status: str = ''
     code: str = ''
     critique: str = ''
     score: str = ''
@@ -21,11 +21,11 @@ class JudgementResult:
     """
     Stores the results and intermediate representation of the judging process
     """
-    need_repair: bool = False
+    status: bool = False
     critique: str = ''
     score: int = 0
-    reasoning: str = ''
-    error_type: str = ''
+    # reasoning: str = ''
+    # error_type: str = ''
 
 
 @dataclass
@@ -38,6 +38,7 @@ class InnerMonologue:
     critique: str = ''
     isRePlan: bool = False
     isTaskCompleted: bool = False
+    result: str = ''
 
 
 @dataclass
@@ -46,10 +47,10 @@ class EnvState:
     Represents the state of an environment in which commands are executed.
     """
     command: List[str] = field(default_factory=list)
-    result: Optional[str] = None
+    result: Optional[str] = ''
     error: Optional[str] = None
-    pwd: Optional[str] = None
-    ls: Optional[str] = None
+    pwd: Optional[str] = ''
+    ls: Optional[str] = ''
 
     def __str__(self):
         return (f"Result: {self.result}\n"
