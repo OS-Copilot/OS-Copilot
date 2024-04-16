@@ -22,6 +22,7 @@ class FridayAgent(BaseAgent):
             planner (callable): A strategy for planning the execution of tasks.
             retriever (callable): A strategy for retrieving necessary information or tools related to the tasks.
             executor (callable): A strategy for executing planned tasks.
+            Tool_Manager (callable): A tool manager for handling tool-related operations.
             config (object): Configuration settings for the agent.
 
         Raises:
@@ -88,7 +89,6 @@ class FridayAgent(BaseAgent):
         if node_type == 'Code':
             judgement= self.judging(tool_name, state, code, description)
             score = judgement.score
-            # need_repair, critique, score, reasoning, error_type 
             if judgement.need_repair:
                 if judgement.error_type == 'replan':
                     print("The current task requires replanning...")
@@ -100,10 +100,6 @@ class FridayAgent(BaseAgent):
                     isTaskCompleted = repairing_result.isTaskCompleted
                     score = repairing_result.score
                     result = repairing_result.result
-                    # isTaskCompleted, code, critique, score, result
-                    # if not isTaskCompleted:
-                    #     print("{} not completed in repair round {}".format(tool, args.max_repair_iterations))
-                    #     break
             else:
                 isTaskCompleted = True
             if isTaskCompleted and score >= self.score:
@@ -113,7 +109,6 @@ class FridayAgent(BaseAgent):
             isTaskCompleted = True
         if isTaskCompleted:
             self.planner.update_tool(tool_name, result, relevant_code, True, node_type)
-        # print("The execution of the current task has been successfully completed.")
         return isTaskCompleted, isReplan
 
     def planning(self, task):

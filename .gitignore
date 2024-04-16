@@ -180,3 +180,6 @@ docs/docs_skeleton/yarn.lock
 
 
 temp
+
+examples/SheetCopilot/sheets/~$*
+examples/SheetCopilot/sheets_ans/~$*
