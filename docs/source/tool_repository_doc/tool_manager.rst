@@ -28,8 +28,3 @@ Tool Manager
 
 .. autofunction:: oscopilot.tool_repository.manager.tool_manager.main
 
-
-.. automodule:: oscopilot.tool_repository.basic_tools.get_os_version.get_os_version
-
-
-.. automodule:: oscopilot.tool_repository.basic_tools.get_os_version.check_os_version
