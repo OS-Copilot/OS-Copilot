@@ -2,17 +2,15 @@
 
 <div align="center">
 
-[[Website]](https://os-copilot.github.io/)
-[[PDF]](https://arxiv.org/pdf/2402.07456.pdf)
-[[Documentation]](https://os-copilot.readthedocs.io/en/latest/)
-[[Twitter]](https://twitter.com/oscopilot)
-[[Discord]](https://discord.com/invite/rXS2XbgfaD)
-<!-- [[Arxiv]](https://arxiv.org/abs/2402.07456) -->
-<!-- [[Tweet]](https://twitter.com/DrJimFan/status/1662115266933972993?s=20) -->
+<!-- [[PDF]](https://arxiv.org/pdf/2402.07456.pdf)
+[[Documentation]](https://os-copilot.readthedocs.io/en/latest/) -->
 
-[![Static Badge](https://img.shields.io/badge/MIT-License-green)](https://github.com/OS-Copilot/OS-Copilot/blob/main/LICENSE)
-![Static Badge](https://img.shields.io/badge/python-3.10-blue)
-[![Static Badge](https://img.shields.io/badge/FRIDAY-Frontend-yellow)](https://github.com/OS-Copilot/FRIDAY-front)
+[![Website](https://img.shields.io/website?url=https://os-copilot.github.io/)](https://os-copilot.github.io/)
+[![PDF](https://img.shields.io/website?url=https://os-copilot.github.io/)](https://arxiv.org/pdf/2402.07456.pdf)
+[![Documentation](https://img.shields.io/website?url=https://os-copilot.github.io/)](https://os-copilot.readthedocs.io/en/latest/)
+![Python](https://img.shields.io/badge/python-3.10-blue)
+[![Discord](https://img.shields.io/discord/1222168244673314847?logo=discord&style=flat)](https://discord.com/invite/rXS2XbgfaD)
+[![Twitter](https://img.shields.io/twitter/url/https/twitter.com/cloudposse.svg?style=social&label=Follow%20%40oscopilot)](https://twitter.com/oscopilot)
 
 
 
