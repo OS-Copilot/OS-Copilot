@@ -10,6 +10,8 @@ working_dir/*.log
 .idea/
 # Byte-compiled / optimized / DLL files
 __pycache__/
+**/__pycache__/
+*.pyc
 *.py[cod]
 *$py.class
 
@@ -70,9 +72,19 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# generated tools stuff:
+oscopilot/tool_repository/generated_tools/
+
+
+# Example stuff:
+examples/SheetCopilot/sheets/~$*
+examples/SheetCopilot/sheets_ans/~$*
+
 # Flask stuff:
 instance/
 .webassets-cache
+
+
 
 # Scrapy stuff:
 .scrapy
@@ -113,7 +125,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .envrc
 .venv
 .venvs

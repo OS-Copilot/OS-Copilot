@@ -1,56 +1,103 @@
-import subprocess
+# This code is based on Open Interpreter. Original source: https://github.com/OpenInterpreter/open-interpreter
+
 import os
+import platform
+import queue
+import re
+import subprocess
+import threading
+import time
+import traceback
+from oscopilot.environments import SubprocessEnv
 
-from oscopilot.utils.schema import EnvState
-from oscopilot.environments.env import Env
+
+class Shell(SubprocessEnv):
+    file_extension = "sh"
+    name = "Shell"
+    aliases = ["bash", "sh", "zsh"]
+
+    def __init__(
+        self,
+    ):
+        super().__init__()
+
+        # Determine the start command based on the platform
+        if platform.system() == "Windows":
+            self.start_cmd = ["cmd.exe"]
+        else:
+            self.start_cmd = [os.environ.get("SHELL", "bash")]
+
+    def preprocess_code(self, code):
+        return preprocess_shell(code)
+
+    def line_postprocessor(self, line):
+        return line
+
+    def detect_active_line(self, line):
+        if "##active_line" in line:
+            return int(line.split("##active_line")[1].split("##")[0])
+        return None
+
+    def detect_end_of_execution(self, line):
+        return "##end_of_execution##" in line
 
 
-class BashEnv(Env):
-    """Base class for all actions.
-
-    Args:
-        description (str, optional): The description of the action. Defaults to
-            None.
-        name (str, optional): The name of the action. If None, the name will
-            be class name. Defaults to None.
+def preprocess_shell(code):
+    """
+    Add active line markers
+    Wrap in a try except (trap in shell)
+    Add end of execution marker
     """
 
-    def __init__(self) -> None:
-        super().__init__()
-        self._name: str = self.__class__.__name__
+    # Add commands that tell us what the active line is
+    # if it's multiline, just skip this. soon we should make it work with multiline
+    if not has_multiline_commands(code):
+        code = add_active_line_prints(code)
 
-    def step(self, _command) -> EnvState:
-        self.env_state = EnvState(command=_command)
-        _command = _command() + ' && pwd'
-        try:
-            results = subprocess.run([_command], capture_output=True, check=True, cwd=self.working_dir,
-                                     text=True, shell=True, timeout=self.timeout)
-            if results.stdout:
-                stout = results.stdout.strip().split('\n')
-                self.env_state.result = "\n".join(stout[:-1])
-                self.observe(stout[-1])
-                return self.env_state
-        except subprocess.CalledProcessError as e:
-            self.env_state.error = e.stderr
-        except Exception as e:
-            self.env_state.error = repr(e)
-        self.observe(self.working_dir)
-        return self.env_state
+    # Add end command (we'll be listening for this so we know when it ends)
+    code += '\necho "##end_of_execution##"'
 
-    def reset(self):
-        self.working_dir = os.path.abspath(os.path.join(__file__, "..", "..", "..", "working_dir"))
+    return code
 
-    def observe(self, pwd):
-        self.env_state.pwd = pwd
-        self.working_dir = pwd
-        self.env_state.ls = subprocess.run(['ls'], cwd=self.working_dir, capture_output=True, text=True).stdout
+
+def add_active_line_prints(code):
+    """
+    Add echo statements indicating line numbers to a shell string.
+    """
+    lines = code.split("\n")
+    for index, line in enumerate(lines):
+        # Insert the echo command before the actual line
+        lines[index] = f'echo "##active_line{index + 1}##"\n{line}'
+    return "\n".join(lines)
+
+
+def has_multiline_commands(script_text):
+    # Patterns that indicate a line continues
+    continuation_patterns = [
+        r"\\$",  # Line continuation character at the end of the line
+        r"\|$",  # Pipe character at the end of the line indicating a pipeline continuation
+        r"&&\s*$",  # Logical AND at the end of the line
+        r"\|\|\s*$",  # Logical OR at the end of the line
+        r"<\($",  # Start of process substitution
+        r"\($",  # Start of subshell
+        r"{\s*$",  # Start of a block
+        r"\bif\b",  # Start of an if statement
+        r"\bwhile\b",  # Start of a while loop
+        r"\bfor\b",  # Start of a for loop
+        r"do\s*$",  # 'do' keyword for loops
+        r"then\s*$",  # 'then' keyword for if statements
+    ]
+
+    # Check each line for multiline patterns
+    for line in script_text.splitlines():
+        if any(re.search(pattern, line.rstrip()) for pattern in continuation_patterns):
+            return True
+
+    return False
 
 
 if __name__ == '__main__':
-    env = BashEnv()
-    print(env.name)
-    # print(env.step("ls"))
-    # print(env.step("cd ../../"))
-    # print(env.step("gogo"))
-    # env.reset()
-    # print(env.step("sleep 3"))
+    env = Shell()
+    code = 'pip install --upgrade pip'
+    for _ in env.run(code):
+        print(_)

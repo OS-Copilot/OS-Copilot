@@ -53,7 +53,7 @@ def setup_config():
 
 
     # for SheetCopilot
-    parser.add_argument('--sheet_task_id', type=int, default=None, help='sheet task dataset task id')
+    parser.add_argument('--sheet_task_id', type=int, default=1, help='sheet task dataset task id')
 
     # Check if the script is being run in a test environment
     if 'pytest' in sys.modules:

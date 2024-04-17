@@ -1,136 +1,141 @@
-import os
-from oscopilot.utils.config import Config
-from typing import Optional, Union, List
+# This code is based on Open Interpreter. Original source: https://github.com/OpenInterpreter/open-interpreter
+
+from oscopilot.environments import BaseEnv
+from oscopilot.environments import AppleScript
+from oscopilot.environments import PythonJupyterEnv
+from oscopilot.environments import Shell
 from oscopilot.utils.schema import EnvState
+import subprocess
+
+# Should this be renamed to OS or System?
 
 
-class Env:
-    """
-    A base class for environments configurations in action-based systems.
+class Env(BaseEnv):
+    def __init__(self):
+        super().__init__()
+        self.languages = [
+            PythonJupyterEnv,
+            Shell,
+            AppleScript,
+        ]
+        self._active_languages = {}
 
-    This class provides foundational attributes and methods for managing environments,
-    including timeouts, working directories, and environmental states. It is designed
-    to be extended by subclasses that implement specific environments behaviors.
-    """
+    def get_language(self, language):  # 输入planner的节点类型即可
+        for lang in self.languages:
+            if language.lower() == lang.name.lower() or (
+                hasattr(lang, "aliases") and language.lower() in (alias.lower() for alias in lang.aliases)
+            ):
+                return lang
+        return None
 
-    def __init__(self) -> None:
-        """
-        Initializes the environments with default settings.
-
-        Sets up the working directory, applying a default timeout and preparing the
-        environments state. If the working directory does not exist, it is created.
-        """
-        self._name: str = self.__class__.__name__
-        self.timeout: int = 300
-        working_dir = Config.get_parameter('working_dir')
-        if os.path.isabs(working_dir):
-            self.working_dir = working_dir
-        else:
-            self.working_dir = os.path.abspath(os.path.join(__file__, "..", "..", "..", working_dir))
-        if not os.path.exists(self.working_dir):
-            os.makedirs(self.working_dir)
-
-        self.env_state: Union[EnvState, None] = None
-
-    def list_working_dir(self):
-        """
-        Lists the contents of the working directory in a detailed format.
-
-        Returns a string representation similar to the output of the 'ls' command in Linux,
-        including file/directory names, sizes, and types.
-
-        Returns:
-            str: Detailed listings of the working directory's contents, or an error message if the directory does not exist.
-        """
-        directory = self.working_dir
-        # Check if the directory exists
-        if not os.path.exists(directory):
-            return f"Directory '{directory}' does not exist."
-
-        # List files and directories
-        files_and_dirs = os.listdir(directory)
-
-        # Create a list to store the details
-        details = []
-
-        for name in files_and_dirs:
-            # Get the full path
-            full_path = os.path.join(directory, name)
-
-            # Get file or directory size
-            size = os.path.getsize(full_path)
-
-            # Check if it's a file or directory
-            if os.path.isdir(full_path):
-                doc_type = 'Directory'
+    def step(self, language, code, stream=False, display=False):  # 不用流式的话很简单，就是调一下lang的step就行了
+        state = EnvState(command=code)
+        lang = self.get_language(language)()  # 输入planner的节点类型即可
+        for output_line_dic in lang.step(code):
+            if output_line_dic['format'] == 'active_line' or output_line_dic['content'] in ['', '\n']:
+                continue
+            content = output_line_dic['content']
+            if 'Traceback' in content:
+                state.error = (state.error or '') + content
             else:
-                doc_type = 'File'
+                state.result += content
 
-            details.append(f"{name}\t {size} bytes\t {doc_type}")
-
-        return "\n".join(details)
+        # for output_line_dic in lang.step(code):
+        #     if output_line_dic['format'] == 'active_line':
+        #         continue
+        #     content = output_line_dic['content']
+        #     if content != '' and content != '\n':
+        #         if 'Traceback' in content:
+        #             state.error = (state.error or '') + content
+        #         else:
+        #             state.result += content
+        state.pwd = self.working_dir
+        state.ls = subprocess.run(['ls'], cwd=self.working_dir, capture_output=True, text=True).stdout
+        return state
         
-    def step(self, _command) -> EnvState:
-        """
-        Executes a command within the environments.
+        # if (
+        #     language == "python"
+        #     and self.computer.import_computer_api
+        #     and "computer" in code
+        # ):
+        #     if not self.computer._has_imported_computer_api:
+        #         self.computer._has_imported_computer_api = True
+        #         # Give it access to the computer via Python
+        #         self.computer.run(
+        #             language="python",
+        #             code="import time\nfrom interpreter import interpreter\ncomputer = interpreter.computer",  # We ask it to use time, so
+        #             display=self.computer.verbose,
+        #         )
 
-        This method is intended to be implemented by subclasses, defining how commands
-        are processed and their effects on the environments state.
+        if stream == False:
+            # If stream == False, *pull* from _streaming_run.
+            output_messages = []
+            for chunk in self._streaming_run(language, code, display=display):
+                if chunk.get("format") != "active_line":
+                    # Should we append this to the last message, or make a new one?
+                    if (
+                        output_messages != []
+                        and output_messages[-1].get("type") == chunk["type"]
+                        and output_messages[-1].get("format") == chunk["format"]
+                    ):
+                        output_messages[-1]["content"] += chunk["content"]
+                    else:
+                        output_messages.append(chunk)
+            return output_messages
 
-        Args:
-            _command: The command to be executed.
+        elif stream == True:
+            # If stream == True, replace this with _streaming_run.
+            return self._streaming_run(language, code, display=display)
 
-        Raises:
-            NotImplementedError: Indicates that the subclass must implement this method.
+    def _streaming_run(self, language, code, display=False):
+        if language not in self._active_languages:
+            # Get the language. Pass in self.computer *if it takes a single argument*
+            # but pass in nothing if not. This makes custom languages easier to add / understand.
+            lang_class = self.get_language(language)
+            if lang_class.__init__.__code__.co_argcount > 1:
+                self._active_languages[language] = lang_class(self.computer)
+            else:
+                self._active_languages[language] = lang_class()
+        try:
+            for chunk in self._active_languages[language].run(code):
+                # self.format_to_recipient can format some messages as having a certain recipient.
+                # Here we add that to the LMC messages:
+                if chunk["type"] == "console" and chunk.get("format") == "output":
+                    recipient, content = parse_for_recipient(chunk["content"])
+                    if recipient:
+                        chunk["recipient"] = recipient
+                        chunk["content"] = content
 
-        Returns:
-            EnvState: The state of the environments after executing the command.
-        """
-        raise NotImplementedError
+                    # Sometimes, we want to hide the traceback to preserve tokens.
+                    # (is this a good idea?)
+                    if "@@@HIDE_TRACEBACK@@@" in content:
+                        chunk["content"] = (
+                            "Stopping execution.\n\n"
+                            + content.split("@@@HIDE_TRACEBACK@@@")[-1].strip()
+                        )
 
-    def reset(self):
-        """
-        Resets the environments to its initial state.
+                yield chunk
 
-        This method is intended to be implemented by subclasses, defining the specific
-        actions required to reset the environments.
-        """
-        working_dir = Config.get_parameter('working_dir')
-        if os.path.isabs(working_dir):
-            self.working_dir = working_dir
-        else:
-            self.working_dir = os.path.abspath(os.path.join(__file__, "..", "..", "..", working_dir))
-    
-    @property
-    def name(self):
-        """
-        The name of the environments.
+                # Print it also if display = True
+                if (
+                    display
+                    and chunk.get("format") != "active_line"
+                    and chunk.get("content")
+                ):
+                    print(chunk["content"])
 
-        Returns:
-            str: The name of the environments, typically set to the class name unless overridden in a subclass.
-        """
-        return self._name
+        except GeneratorExit:
+            self.stop()
 
-    def __repr__(self):
-        """
-        Provides a string representation of the environments.
+    def stop(self):
+        for language in self._active_languages.values():
+            language.stop()
 
-        Returns:
-            str: A representation of the environments, including its name.
-        """
-        return f'{self.name}'
-
-    def __str__(self):
-        """
-        Returns the string representation of the environments, mirroring `__repr__`.
-
-        Returns:
-            str: A string representation of the environments.
-        """
-        return self.__repr__()
-
-
-if __name__ == '__main__':
-    env = Env()
-    env.env_state = EnvState()
-    # result = env.observe()
+    def terminate(self):
+        for language_name in list(self._active_languages.keys()):
+            language = self._active_languages[language_name]
+            if (
+                language
+            ):  # Not sure why this is None sometimes. We should look into this
+                language.terminate()
+            del self._active_languages[language_name]

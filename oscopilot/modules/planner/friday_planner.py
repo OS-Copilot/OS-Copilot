@@ -4,6 +4,7 @@ from oscopilot.modules.base_module import BaseModule
 from oscopilot.tool_repository.manager.tool_manager import get_open_api_description_pair
 from oscopilot.utils.utils import send_chat_prompts
 import json
+import sys
 import logging
 
 
@@ -63,8 +64,12 @@ class FridayPlanner(BaseModule):
         response = send_chat_prompts(sys_prompt, user_prompt, self.llm)
         decompose_json = self.extract_json_from_string(response)
         # Building tool graph and topological ordering of tools
-        self.create_tool_graph(decompose_json)
-        self.topological_sort()
+        if decompose_json != 'No JSON data found in the string.':
+            self.create_tool_graph(decompose_json)
+            self.topological_sort()
+        else:
+            print(response)
+            sys.exit()
 
     def replan_task(self, reasoning, current_task, relevant_tool_description_pair):
         """

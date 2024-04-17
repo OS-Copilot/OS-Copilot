@@ -1,8 +1,10 @@
 import re
 import json
 from oscopilot.utils.llms import OpenAI
-from oscopilot.environments.py_env import PythonEnv
-from oscopilot.tool_repository.basic_tools.get_os_version import get_os_version
+# from oscopilot.environments.py_env import PythonEnv
+# from oscopilot.environments.py_jupyter_env import PythonJupyterEnv
+from oscopilot.environments import Env
+from oscopilot.utils import get_os_version
 
 class BaseModule:
     def __init__(self):
@@ -10,7 +12,9 @@ class BaseModule:
         Initializes a new instance of BaseModule with default values for its attributes.
         """
         self.llm = OpenAI()
-        self.environment = PythonEnv()
+        # self.environment = PythonEnv()
+        # self.environment = PythonJupyterEnv()
+        self.environment = Env()
         self.system_version = get_os_version()
         
     def extract_information(self, message, begin_str='[BEGIN]', end_str='[END]'):
@@ -29,7 +33,7 @@ class BaseModule:
         _begin = message.find(begin_str)
         _end = message.find(end_str)
         while not (_begin == -1 or _end == -1):
-            result.append(message[_begin + len(begin_str):_end])
+            result.append(message[_begin + len(begin_str):_end].lstrip("\n"))
             message = message[_end + len(end_str):]
             _begin = message.find(begin_str)
             _end = message.find(end_str)
