@@ -4,7 +4,7 @@ from oscopilot.utils.llms import OpenAI
 # from oscopilot.environments.py_env import PythonEnv
 # from oscopilot.environments.py_jupyter_env import PythonJupyterEnv
 from oscopilot.environments import Env
-from oscopilot.tool_repository.basic_tools.get_os_version import get_os_version
+from oscopilot.utils import get_os_version
 
 class BaseModule:
     def __init__(self):
@@ -33,7 +33,7 @@ class BaseModule:
         _begin = message.find(begin_str)
         _end = message.find(end_str)
         while not (_begin == -1 or _end == -1):
-            result.append(message[_begin + len(begin_str):_end])
+            result.append(message[_begin + len(begin_str):_end].lstrip("\n"))
             message = message[_end + len(end_str):]
             _begin = message.find(begin_str)
             _end = message.find(end_str)

@@ -39,6 +39,9 @@
 ## 🔥 News
 - *2024.3*: 🎉 OS-Copilot is accepted at the [LLM Agents Workshop](https://llmagents.github.io/)@ICLR 2024. 
 
+## What is OS-Copilot
+
+OS-Copilot is an open-source library to build generalist agents capable of automatically interfacing with comprehensive elements in an operating system (OS), including the web, code terminals, files, multimedia, and various third-party applications.
 
 ## ⚡️ Quickstart
 
@@ -59,6 +62,9 @@
    ```
 
 4. **Set OpenAI API Key:** Configure your OpenAI API key in [.env](.env).
+   ```
+   cp .env_template .env
+   ```
 
 5. **Now you are ready to have fun:**
    ```

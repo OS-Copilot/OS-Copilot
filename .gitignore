@@ -10,6 +10,7 @@ working_dir/*.log
 .idea/
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*.pyc
 *.py[cod]
 *$py.class
 
@@ -70,9 +71,18 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# generated tools stuff:
+oscopilot/tool_repository/generated_tools/
+
+
+# Example stuff:
+~$*
+
 # Flask stuff:
 instance/
 .webassets-cache
+
+
 
 # Scrapy stuff:
 .scrapy
@@ -113,7 +123,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+=env
 .envrc
 .venv
 .venvs
@@ -178,7 +188,5 @@ docs/docs_skeleton/build
 docs/docs_skeleton/node_modules
 docs/docs_skeleton/yarn.lock
 
-# ignore temp office files
-~$*
-
+# ignore temp files
 temp

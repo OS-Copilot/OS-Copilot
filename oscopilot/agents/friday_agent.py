@@ -1,5 +1,5 @@
 from oscopilot.agents.base_agent import BaseAgent
-from oscopilot.tool_repository.basic_tools.get_os_version import check_os_version
+from oscopilot.utils import check_os_version
 import json
 import logging
 import sys
