@@ -2,6 +2,7 @@ from oscopilot import FridayAgent
 from oscopilot import FridayExecutor, FridayPlanner, FridayRetriever, ToolManager
 from oscopilot.utils import setup_config, SheetTaskLoader
 
+
 args = setup_config()
 sheet_task_loader = SheetTaskLoader("examples/SheetCopilot/sheet_task.jsonl")
 agent = FridayAgent(FridayPlanner, FridayRetriever, FridayExecutor, ToolManager, config=args)
