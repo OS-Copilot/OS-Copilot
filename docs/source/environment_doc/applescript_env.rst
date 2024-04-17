@@ -1,7 +1,7 @@
-Python Environment
+AppleScript Environment
 ==============================
 
-.. automodule:: oscopilot.environments.py_env
+.. automodule:: oscopilot.environments.applescript_env
    :members:
    :undoc-members:
    :show-inheritance:

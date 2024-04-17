@@ -41,6 +41,7 @@ class FridayExecutor(BaseModule):
         Args:
             task_name (str): The name of the task for which tool code is being generated.
             task_description (str): A description of the task, detailing what the tool aims to accomplish.
+            tool_type (str): The type of tool being generated, such as 'Python', 'Shell', or 'AppleScript'.
             pre_tasks_info (dict): Information about tasks that are prerequisites for the current task, including their descriptions and return values.
             relevant_code (dict): A dictionary of code snippets relevant to the current task, possibly including code from prerequisite tasks.
 
@@ -185,6 +186,7 @@ class FridayExecutor(BaseModule):
         Args:
             current_code (str): The original code of the tool that requires amendment.
             task_description (str): The description of the task the tool is intended to complete.
+            tool_type (str): The type of tool being amended, such as 'Python', 'Shell', or 'AppleScript'.
             state: The state object containing details about the tool's execution outcome.
             critique (str): Feedback or critique on the tool's execution, used to guide the amendment.
             pre_tasks_info (dict): Information about tasks that are prerequisites for the current task.
@@ -521,7 +523,28 @@ class FridayExecutor(BaseModule):
 
     def generate_openapi_doc(self, tool_api_path):
         """
-        Format openapi document.
+        Generates a reduced OpenAPI documentation for a specific API path from the full OpenAPI documentation.
+
+        This method isolates and extracts the documentation for a specific tool API path, including its
+        schemas and operations (GET, POST), from the entire OpenAPI documentation stored in the instance.
+        It constructs a new, smaller OpenAPI document that only includes details relevant to the specified API path.
+        If the API path does not exist in the full documentation, it returns an error message.
+
+        Args:
+            tool_api_path (str): The specific API path for which the OpenAPI documentation should be generated.
+
+        Returns:
+            dict: A dictionary representing the OpenAPI documentation for the specific API path. If the path is not
+                found, returns a dictionary with an error message.
+        
+        The method performs several checks:
+        - Verifies the existence of the tool API path in the full OpenAPI documentation.
+        - Extracts relevant parts of the OpenAPI schema related to the path.
+        - Includes any referenced schemas necessary for understanding the API's structure and data types.
+
+        It handles both JSON and multipart/form-data content types in API request bodies, searching for schema references
+        to include in the returned documentation. This enables the resulting API document to be self-contained with respect
+        to the schemas needed to understand the API's usage.
         """
         # init current api's doc
         curr_api_doc = {}

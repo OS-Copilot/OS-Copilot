@@ -77,8 +77,7 @@ oscopilot/tool_repository/generated_tools/
 
 
 # Example stuff:
-examples/SheetCopilot/sheets/~$*
-examples/SheetCopilot/sheets_ans/~$*
+~$*
 
 # Flask stuff:
 instance/
@@ -125,6 +124,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+=env
 .envrc
 .venv
 .venvs
@@ -189,5 +189,5 @@ docs/docs_skeleton/build
 docs/docs_skeleton/node_modules
 docs/docs_skeleton/yarn.lock
 
-
+# ignore temp files
 temp

@@ -1,7 +1,7 @@
-Large Language Models
+Subprocess Environment
 ==============================
 
-.. autoclass:: oscopilot.utils.llms.OpenAI
+.. automodule:: oscopilot.environments.subprocess_env
    :members:
    :undoc-members:
    :show-inheritance:

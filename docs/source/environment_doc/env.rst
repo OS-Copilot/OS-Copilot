@@ -1,4 +1,4 @@
-Base Environment
+Execution Environment
 ==============================
 
 .. automodule:: oscopilot.environments.env

@@ -22,6 +22,7 @@ class FridayAgent(BaseAgent):
             planner (callable): A strategy for planning the execution of tasks.
             retriever (callable): A strategy for retrieving necessary information or tools related to the tasks.
             executor (callable): A strategy for executing planned tasks.
+            Tool_Manager (callable): A tool manager for handling tool-related operations.
             config (object): Configuration settings for the agent.
 
         Raises:
@@ -88,7 +89,7 @@ class FridayAgent(BaseAgent):
         score = 0
         state, node_type, description, code, result, relevant_code = execution_state.get_all_state()
         if node_type in ['Python', 'Shell', 'AppleScript']:
-            judgement= self.judging(tool_name, state, code, description)
+            judgement = self.judging(tool_name, state, code, description)
             score = judgement.score
             # need_repair, critique, score, reasoning, error_type 
             if judgement.status == 'Replan':
@@ -110,10 +111,6 @@ class FridayAgent(BaseAgent):
                     isTaskCompleted = False
                 score = repairing_result.score
                 result = repairing_result.result
-                    # isTaskCompleted, code, critique, score, result
-                    # if not isTaskCompleted:
-                    #     print("{} not completed in repair round {}".format(tool, args.max_repair_iterations))
-                    #     break
             else:
                 isTaskCompleted = True
             if node_type == 'Python' and isTaskCompleted and score >= self.score:
@@ -124,7 +121,6 @@ class FridayAgent(BaseAgent):
         if isTaskCompleted:
             self.inner_monologue.result = result
             self.planner.update_tool(tool_name, result, relevant_code, True, node_type)
-        # print("The execution of the current task has been successfully completed.")
         return isTaskCompleted, isReplan
 
     def planning(self, task):
@@ -176,7 +172,6 @@ class FridayAgent(BaseAgent):
             relevant_code = self.retriever.retrieve_tool_code_pair(retrieve_name)
         # task execute step
         if node_type == 'QA':
-            # result = execute_agent.question_and_answer_tool(pre_tasks_info, task, task)
             if self.planner.tool_num == 1:
                 result = self.executor.question_and_answer_tool(pre_tasks_info, original_task, original_task)
             else:
@@ -218,24 +213,11 @@ class FridayAgent(BaseAgent):
         This method assesses the correctness of the executed code and its alignment with the expected outcomes, guiding potential repair or amendment actions.
         """
         # Check whether the code runs correctly, if not, amend the code
-        # reasoning = ''
-        # error_type = ''
         tool_node = self.planner.tool_node[tool_name]
         next_action = tool_node.next_action
-        # need_repair = False
         critique = ''
         score = 0
         critique, status, score = self.executor.judge_tool(code, description, state, next_action)
-        # If no error is reported, check whether the task is completed
-        # if state.error == None:
-        #     critique, judge, score = self.executor.judge_tool(code, description, state, next_action)
-        #     if not judge:
-        #         print("critique: {}".format(critique))
-        #         need_repair = True
-        # else:
-        #     #  Determine whether it is caused by an error outside the code
-        #     reasoning, error_type = self.executor.analysis_tool(code, description, state)
-        #     need_repair = True
         return JudgementResult(status, critique, score)
     
     def replanning(self, tool_name, reasoning):
@@ -266,7 +248,7 @@ class FridayAgent(BaseAgent):
             description (str): A description of the tool's intended functionality.
             state (ExecutionState): The current execution state of the tool, including results and error information.
             critique (str): Feedback on the tool's last execution attempt, identifying issues to be addressed.
-            need_repair (bool): A flag indicating whether the tool's code needs repairs.
+            status (str): Three status types: 'Amend', 'Complete', and 'Replan'.
 
         Returns:
             RepairingResult: An object encapsulating the result of the repair attempt, including whether the task has been completed successfully, the amended code, critique, execution score, and the execution result.
@@ -288,8 +270,6 @@ class FridayAgent(BaseAgent):
             state = self.executor.execute_tool(code, invoke, tool_node.node_type)
             result = state.result
             logging.info(state) 
-            # print(state)
-            # Recheck
             if state.error == None:
                 critique, status, score = self.executor.judge_tool(code, description, state, next_action)
                 # The task execution is completed and the loop exits
@@ -301,7 +281,6 @@ class FridayAgent(BaseAgent):
                     break
                 else:
                     raise NotImplementedError
-                # print("critique: {}".format(critique))
             else: # The code still needs to be corrected
                 status = 'Amend'
         return RepairingResult(status, code, critique, score, result)

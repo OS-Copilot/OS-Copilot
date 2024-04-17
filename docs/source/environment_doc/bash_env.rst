@@ -1,7 +1,7 @@
-Large Language Models
+Bash Environment
 ==============================
 
-.. autoclass:: oscopilot.utils.llms.OpenAI
+.. automodule:: oscopilot.environments.bash_env
    :members:
    :undoc-members:
    :show-inheritance:

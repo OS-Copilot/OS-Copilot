@@ -1,7 +1,7 @@
-Large Language Models
+Self Learning
 ==============================
 
-.. autoclass:: oscopilot.utils.llms.OpenAI
+.. autoclass:: oscopilot.agents.self_learning.SelfLearning
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,7 +1,7 @@
-Large Language Models
+Data Schema
 ==============================
 
-.. autoclass:: oscopilot.utils.llms.OpenAI
+.. automodule:: oscopilot.utils.schema
    :members:
    :undoc-members:
    :show-inheritance:

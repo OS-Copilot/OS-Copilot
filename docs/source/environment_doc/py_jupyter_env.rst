@@ -1,7 +1,7 @@
-Large Language Models
+Python Jupyter Environment
 ==============================
 
-.. autoclass:: oscopilot.utils.llms.OpenAI
+.. automodule:: oscopilot.environments.py_jupyter_env
    :members:
    :undoc-members:
    :show-inheritance:

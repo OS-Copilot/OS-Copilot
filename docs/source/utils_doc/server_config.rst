@@ -1,7 +1,7 @@
-Large Language Models
+Server Proxy Config
 ==============================
 
-.. autoclass:: oscopilot.utils.llms.OpenAI
+.. autoclass:: oscopilot.utils.server_config.ConfigManager
    :members:
    :undoc-members:
    :show-inheritance:

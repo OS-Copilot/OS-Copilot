@@ -8,7 +8,26 @@ import traceback
 from oscopilot.environments.base_env import BaseEnv
 
 class SubprocessEnv(BaseEnv):
+    """
+    A class representing an environment for executing code using subprocesses.
+
+    This class manages the execution of code in subprocesses, providing methods for preprocessing code,
+    starting and terminating processes, handling output streams, and executing code steps.
+
+    It inherits from BaseEnv, which provides basic environment functionality.
+    """    
+
     def __init__(self):
+        """
+        Initializes the subprocess environment.
+
+        Attributes:
+            start_cmd (list): The command used to start the subprocess.
+            process (subprocess.Popen or None): The subprocess object.
+            verbose (bool): Whether to print verbose output.
+            output_queue (queue.Queue): A queue for storing output messages.
+            done (threading.Event): An event to signal completion of execution.
+        """        
         self.start_cmd = []
         self.process = None
         self.verbose = False
@@ -16,30 +35,68 @@ class SubprocessEnv(BaseEnv):
         self.done = threading.Event()
 
     def detect_active_line(self, line):
+        """
+        Detects an active line indicator in the output line.
+
+        Args:
+            line (str): The output line from the subprocess.
+
+        Returns:
+            int or None: The active line number if detected, else None.
+        """        
         return None
 
     def detect_end_of_execution(self, line):
+        """
+        Detects an end of execution marker in the output line.
+
+        Args:
+            line (str): The output line from the subprocess.
+
+        Returns:
+            bool: True if end of execution marker is detected, else False.
+        """        
         return None
 
     def line_postprocessor(self, line):
+        """
+        Post-processes an output line from the subprocess.
+
+        Args:
+            line (str): The output line from the subprocess.
+
+        Returns:
+            str or None: The processed line or None if line should be discarded.
+        """        
         return line
 
     def preprocess_code(self, code):
         """
-        This needs to insert an end_of_execution marker of some kind,
-        which can be detected by detect_end_of_execution.
+        Preprocesses code before execution.
 
-        Optionally, add active line markers for detect_active_line.
+        This method inserts an end_of_execution marker and optionally adds active line markers.
+
+        Args:
+            code (str): The code to preprocess.
+
+        Returns:
+            str: The preprocessed code.
         """
         return code
 
     def terminate(self):
+        """
+        Terminates the subprocess if it is running.
+        """        
         if self.process:
             self.process.terminate()
             self.process.stdin.close()
             self.process.stdout.close()
 
     def start_process(self):
+        """
+        Starts the subprocess to execute code.
+        """        
         if self.process:
             self.terminate()
 
@@ -69,6 +126,15 @@ class SubprocessEnv(BaseEnv):
         ).start()
 
     def step(self, code):
+        """
+        Executes a step of code.
+
+        Args:
+            code (str): The code to execute.
+
+        Yields:
+            dict: Output messages generated during execution.
+        """        
         retry_count = 0
         max_retries = 3
 
@@ -136,6 +202,13 @@ class SubprocessEnv(BaseEnv):
                     break
 
     def handle_stream_output(self, stream, is_error_stream):
+        """
+        Handles the streaming output from the subprocess.
+
+        Args:
+            stream: The output stream to handle.
+            is_error_stream (bool): Indicates if the stream is the error stream.
+        """        
         try:
             for line in iter(stream.readline, ""):
                 if self.verbose:
