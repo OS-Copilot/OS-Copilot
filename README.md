@@ -29,7 +29,6 @@
 <p align="center">
   <img src='pic/framework.png' width="75%">
 </p>
-
 - Leveraging OS-Copilot, we built **FRIDAY**, a self-improving AI assistant capable of solving general computer tasks.
 
 <p align="center">
@@ -39,7 +38,6 @@
 ## 🔥 News
 - *2024.3*: 🎉 OS-Copilot is accepted at the [LLM Agents Workshop](https://llmagents.github.io/)@ICLR 2024. 
 
-=======
 ## What is OS-Copilot
 
 OS-Copilot is an open-source library to build generalist agents capable of automatically interfacing with comprehensive elements in an operating system (OS), including the web, code terminals, files, multimedia, and various third-party applications.
