@@ -6,8 +6,8 @@
 [[Documentation]](https://os-copilot.readthedocs.io/en/latest/) -->
 
 [![Website](https://img.shields.io/website?url=https://os-copilot.github.io/)](https://os-copilot.github.io/)
-[![PDF](https://img.shields.io/website?url=https://os-copilot.github.io/)](https://arxiv.org/pdf/2402.07456.pdf)
-[![Documentation](https://img.shields.io/website?url=https://os-copilot.github.io/)](https://os-copilot.readthedocs.io/en/latest/)
+[![PDF](https://img.shields.io/pdf?url=https://arxiv.org/pdf/2402.07456.pdf)](https://arxiv.org/pdf/2402.07456.pdf)
+[![Documentation](https://img.shields.io/documentation?url=https://os-copilot.readthedocs.io/en/latest/)](https://os-copilot.readthedocs.io/en/latest/)
 
 ![Python](https://img.shields.io/badge/python-3.10-blue)
 [![Discord](https://img.shields.io/discord/1222168244673314847?logo=discord&style=flat)](https://discord.com/invite/rXS2XbgfaD)
