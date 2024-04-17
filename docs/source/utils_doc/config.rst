@@ -1,7 +1,7 @@
-Large Language Models
+OS-Copilot Config
 ==============================
 
-.. autoclass:: oscopilot.utils.llms.OpenAI
+.. automodule:: oscopilot.utils.config
    :members:
    :undoc-members:
    :show-inheritance:

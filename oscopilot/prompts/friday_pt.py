@@ -9,11 +9,11 @@ The dictionary is segmented into three main categories:
 
 3. **retrieve_prompt**: Dedicated to information retrieval, including filtering code snippets based on specific criteria, aiding the AI in sourcing and suggesting code solutions efficiently.
 
-Each category comprises system and user prompts, where system prompts define the AI's task or query in detail, and user prompts typically include placeholders for dynamic information insertion, reflecting the context or specific requirements of the task at hand.
-
 4. **self_learning_prompt**: Contains prompts for self-learning tasks, such as designing educational courses based on software and content parameters. These prompts guide the AI in generating course designs and educational content tailored to user needs.
 
 5. **text_extract_prompt**: Contains prompts for text extraction tasks, such as extracting specific information from text data. These prompts guide the AI in identifying and extracting relevant data from text inputs.
+
+Each category comprises system and user prompts, where system prompts define the AI's task or query in detail, and user prompts typically include placeholders for dynamic information insertion, reflecting the context or specific requirements of the task at hand.
 
 Usage:
 The `prompts` dictionary is utilized by the AI agents to dynamically select appropriate prompts based on the current context or task, ensuring relevant and precise guidance for each operation. This dynamic approach allows the AI to adapt its interactions and responses to suit a wide array of programming and operational needs, enhancing its utility and effectiveness in assisting users.
