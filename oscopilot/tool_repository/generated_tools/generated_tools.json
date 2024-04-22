@@ -1,6 +1,1 @@
-{
-    "reverse_text": {
-        "code": "def reverse_text(text):\n    \"\"\"\n    Reverse the given text.\n\n    Args:\n    text (str): The text to be reversed.\n\n    Returns:\n    str: The reversed text.\n    \"\"\"\n    return text[::-1]",
-        "description": "Reverse the given text"
-    }
-}
+{}
