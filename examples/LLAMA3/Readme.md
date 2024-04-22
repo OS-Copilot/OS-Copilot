@@ -1,5 +1,5 @@
 
-# using llama3 as llm at local server
+# Using llama3 as llm at local server
 
 
 ### Deploy local api services using [ollama](#https://github.com/ollama/ollama/tree/main)
@@ -23,7 +23,7 @@
    ollama run/pull llama3
    ```
 
-### test llama3 api services
+### Test llama3 api services
 
 
 ```
@@ -44,6 +44,8 @@ If the api cannot be linked in the script, run the following command to resolve 
 export NO_PROXY=localhost,127.0.0.1 
 ```
 
-#### test_script
+#### Test_script
+
+```
 python quick_start.py
-####
+```
