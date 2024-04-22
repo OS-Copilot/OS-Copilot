@@ -69,6 +69,7 @@ class FridayPlanner(BaseModule):
             self.topological_sort()
         else:
             print(response)
+            print('No JSON data found in the string.')
             sys.exit()
 
     def replan_task(self, reasoning, current_task, relevant_tool_description_pair):
