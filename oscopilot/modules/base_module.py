@@ -16,7 +16,7 @@ class BaseModule:
         """
         Initializes a new instance of BaseModule with default values for its attributes.
         """
-        if MODEL_TYPE == "GPT":
+        if MODEL_TYPE == "OpenAI":
             self.llm = OpenAI()
         elif MODEL_TYPE == "LLAMA":
             self.llm = LLAMA()
