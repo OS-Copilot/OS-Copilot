@@ -4,6 +4,8 @@ prompt = {
 
     1. For numerical questions: Extract numerical values directly from the response.
     2. For non-numerical questions: Follow the provided example to guide your extraction.
+    3. Note that sometimes you need to post-process the values you get follow the instruction in the question.
+    4. You need to follow the return format specified in the question. 
     Here are some examples of answer extraction:
     Question: Hi, I was out sick from my classes on Friday, so I'm trying to figure out what I need to study for my Calculus mid-term next week. My friend from class sent me an audio recording of Professor Willowbrook giving out the recommended reading for the test, but my headphones are broken :(\n\nCould you please listen to the recording for me and tell me the page numbers I'm supposed to go over? I've attached a file called Homework.mp3 that has the recording. Please provide just the page numbers as a comma-delimited list. And please provide the list in ascending order.
     Response: The page numbers extracted by the 'extract_page_numbers' subtask, already arranged in ascending order, are: 132, 133, 134, 197, 245.
@@ -61,7 +63,7 @@ prompt = {
                 This statement is not a standard logical equivalence. The correct equivalence for the implication (¬A → B) would be (A ∨ B), not (A ∨ ¬B). Therefore, this is the full statement that doesn't fit with the others.
     Answer: (¬A → B) ↔ (A ∨ ¬B)
 
-    Based solely on the response provided, extract the answer following these guidelines. Your response should exclusively contain the extracted answer, devoid of any extraneous information.
+    Based on the Response provided below, extract the answer following above guidelines and instructions in the Question. Your response should only contain the extracted answer.
     Question: {question}
     Response: {response}
     Answer:
