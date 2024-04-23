@@ -1,17 +1,25 @@
 import re
 import json
-from oscopilot.utils.llms import OpenAI
+import os
+from oscopilot.utils.llms import OpenAI,LLAMA
 # from oscopilot.environments.py_env import PythonEnv
 # from oscopilot.environments.py_jupyter_env import PythonJupyterEnv
 from oscopilot.environments import Env
 from oscopilot.utils import get_os_version
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
+MODEL_TYPE = os.getenv('MODEL_TYPE')
 
 class BaseModule:
     def __init__(self):
         """
         Initializes a new instance of BaseModule with default values for its attributes.
         """
-        self.llm = OpenAI()
+        if MODEL_TYPE == "OpenAI":
+            self.llm = OpenAI()
+        elif MODEL_TYPE == "LLAMA":
+            self.llm = LLAMA()
         # self.environment = PythonEnv()
         # self.environment = PythonJupyterEnv()
         self.environment = Env()
