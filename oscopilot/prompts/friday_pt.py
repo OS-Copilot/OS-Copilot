@@ -490,6 +490,7 @@ prompt = {
         6. Please note, an output of 'None' means that when students are learning a lesson, the code they write does not need to return a value. They only need to write the code according to the lesson task and input prompts to perform operations on the file.
         7. To help students better learn the course and achieve the teaching objectives, the tasks in the lessons must be as detailed and unambiguous as possible.
         8. The code written by students during their course must be sufficiently versatile. Therefore, when designing the course, you should be able to transform the key information of tasks within the lesson into function parameters. Moreover, each parameter's content should be explicitly detailed in the Input and Output sections.
+        9. If the Current Course is not empty, you must design new lessons based on the existing course content, ensuring that these new lessons do not duplicate any lessons that are already present.
         ''',
         '_USER_COURSE_DESIGN_PROMPT' : '''
         User's information are as follows:
@@ -497,6 +498,7 @@ prompt = {
         Python Package Name: {package_name}
         Demo File Path: {demo_file_path} 
         File Content: {file_content}
+        Current Course: {current_course}
         System Version: {system_version}
         ''',       
 

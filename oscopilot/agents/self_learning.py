@@ -37,7 +37,7 @@ class SelfLearning:
         if text_extractor:
             self.text_extractor = text_extractor(agent)
 
-    def self_learning(self, software_name, package_name, demo_file_path):
+    def self_learning(self, software_name, package_name, demo_file_path, file_content=None):
         """
         Initiates the self-learning process by designing a course and triggering the learning mechanism.
 
@@ -49,11 +49,11 @@ class SelfLearning:
             None.
         """
         self_learning_print_logging(self.config)
-        file_content = None
         if demo_file_path:
             if not os.path.isabs(demo_file_path):
                 demo_file_path = get_project_root_path() + demo_file_path  # TODO: test abs path
-            file_content = self.text_extract(demo_file_path)
+            if not file_content:
+                file_content = self.text_extract(demo_file_path)
         self.course = self.course_design(software_name, package_name, demo_file_path, file_content)
         self.learn_course(self.course)
 
@@ -103,5 +103,34 @@ class SelfLearning:
             self.agent.run(lesson)
 
 
-    def continuous_learning(self):
-        pass
+    def continuous_learning(self, software_name, package_name, demo_file_path=None):
+        """
+        Implements a continuous learning process that updates and applies new courses based on a designed curriculum.
+
+        Args:
+            software_name (str): Name of the software being learned.
+            package_name (str): Name of the package within the software.
+            demo_file_path (str, optional): Path to a demo file used for extracting text content. Defaults to None.
+
+        Returns:
+            None: This method does not return anything but updates internal states and possibly external resources.
+        """
+
+        # Initialize variable to hold file content if needed
+        file_content = None
+        if demo_file_path:
+            if not os.path.isabs(demo_file_path):
+                demo_file_path = get_project_root_path() + demo_file_path  # TODO: test abs path
+                file_content = self.text_extract(demo_file_path)
+        self.self_learning(software_name, package_name, demo_file_path, file_content)
+
+        # Continuously design and apply new courses
+        while True:
+            current_course = str(self.course)
+            new_course = self.learner.design_course(software_name, package_name, demo_file_path, file_content, current_course)
+            self.course.update(new_course)
+            self.learn_course(new_course)
+
+
+
+        

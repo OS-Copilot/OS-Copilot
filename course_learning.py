@@ -9,4 +9,9 @@ demo_file_path = args.demo_file_path
 
 friday_agent = FridayAgent(FridayPlanner, FridayRetriever, FridayExecutor, ToolManager, config=args)
 self_learning = SelfLearning(friday_agent, SelfLearner, ToolManager, args, TextExtractor)
-self_learning.self_learning(software_name, package_name, demo_file_path)
+
+# Only one stage of course study
+# self_learning.self_learning(software_name, package_name, demo_file_path)
+
+# continous learning
+self_learning.continuous_learning(software_name, package_name, demo_file_path)
