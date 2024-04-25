@@ -130,7 +130,7 @@ def self_learning_print_logging(args):
     Args:
         args (argparse.Namespace): The parsed command-line arguments.
     """
-    task = 'Your task is: Learn to use {0} to operate {1}'.format(args.software_name, args.package_name)
+    task = 'Your task is: Learn to use {0} to operate {1}'.format(args.package_name, args.software_name)
     if args.demo_file_path != '':
         task = task + '\nThe path of the file helps you design the course: {0}'.format(args.demo_file_path)
 

@@ -1,0 +1,1 @@
+from .text_extractor import *

@@ -25,7 +25,7 @@ class SelfLearner(BaseModule):
         self.tool_manager = tool_manager
         self.course = {}
         
-    def design_course(self, software_name, package_name, demo_file_path, file_content):
+    def design_course(self, software_name, package_name, demo_file_path, file_content=None, current_course=None):
         """
         Designs a course based on specified software and content parameters and stores it in the course attribute.
         
@@ -47,7 +47,8 @@ class SelfLearner(BaseModule):
             software_name = software_name,
             package_name = package_name,
             file_content = file_content,
-            demo_file_path = demo_file_path
+            demo_file_path = demo_file_path,
+            current_course = current_course
         )
         response = send_chat_prompts(sys_prompt, user_prompt, self.llm)
         # logging.info(f"The overall response is: {response}")

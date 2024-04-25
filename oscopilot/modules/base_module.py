@@ -80,3 +80,31 @@ class BaseModule:
                 return f"Error parsing JSON data: {e}"
         else:
             return "No JSON data found in the string."
+        
+
+    def extract_list_from_string(self, text):
+        """
+        Extracts a list of task descriptions from a given string containing enumerated tasks.
+        This function ensures that only text immediately following a numbered bullet is captured,
+        and it stops at the first newline character or at the next number, preventing the inclusion of subsequent non-numbered lines or empty lines.
+
+        Parameters:
+        text (str): A string containing multiple enumerated tasks. Each task is numbered and followed by its description.
+
+        Returns:
+        list[str]: A list of strings, each representing the description of a task extracted from the input string.
+        """
+
+        # Regular expression pattern:
+        # \d+\. matches one or more digits followed by a dot, indicating the task number.
+        # \s+ matches one or more whitespace characters after the dot.
+        # ([^\n]*?) captures any sequence of characters except newlines (non-greedy) as the task description.
+        # (?=\n\d+\.|\n\Z|\n\n) is a positive lookahead that matches a position followed by either a newline with digits and a dot (indicating the start of the next task),
+        # or the end of the string, or two consecutive newlines (indicating a break between tasks or end of content).
+        task_pattern = r'\d+\.\s+([^\n]*?)(?=\n\d+\.|\n\Z|\n\n)'
+
+        # Use the re.findall function to search for all matches of the pattern in the input text.
+        data_list = re.findall(task_pattern, text)
+
+        # Return the list of matched task descriptions.
+        return data_list
