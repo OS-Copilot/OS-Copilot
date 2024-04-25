@@ -112,7 +112,6 @@ class LLAMA:
         payload = {
             "model": self.model_name,
             "messages": messages,
-
             "stream": False
             
         }
