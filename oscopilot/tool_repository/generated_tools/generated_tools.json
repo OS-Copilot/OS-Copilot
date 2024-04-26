@@ -1,1 +1,6 @@
-{}
+{
+    "read_excel_file": {
+        "code": "import openpyxl\n\ndef read_excel_file(file_path, sheet_name):\n    \"\"\"\n    Reads all the rows from a specified sheet in an Excel file and stores each row's data in a list.\n\n    Args:\n    file_path (str): The path to the Excel file.\n    sheet_name (str): The name of the sheet to read data from.\n\n    Returns:\n    list: A list of lists, where each inner list contains the data from one row of the specified sheet.\n    \"\"\"\n    # Load the workbook and select the specified sheet\n    workbook = openpyxl.load_workbook(file_path)\n    sheet = workbook[sheet_name]\n    \n    # Read all rows in the sheet and store each row's data in a list\n    data = []\n    for row in sheet.iter_rows(values_only=True):\n        data.append(list(row))\n    \n    # Close the workbook\n    workbook.close()\n    \n    return data",
+        "description": "Reads all the rows from a specified sheet in an Excel file and stores each row's data in a list"
+    }
+}

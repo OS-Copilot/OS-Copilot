@@ -218,6 +218,7 @@ prompt = {
                 Replan: Errors encountered during code execution cannot be rectified by simply modifying the code, requiring additional operations within the code's execution environment. This necessitates new tasks to perform these extra operations.
         6. Code's generality score: Evaluate the generality of the code and give code a score. The generality of the code can be analyzed based on parameters flexibility, error and exception handling, clarity of comments, code efficiency, security aspects, and other factors. According to the evaluation results, the code can be scored on a scale from 1 to 10, with integers reflecting the code's generality. A score of 1-3 indicates that the code is not very generic and can only complete the current task. A score of 4-6 indicates that the code can efficiently complete similar tasks, but the parameter names are not generic enough. A score of 7-8 indicates that the code is sufficiently generic but lacks in terms of security, clarity of comments, and fault tolerance. A score of 9-10 indicates that the code is highly generic in all aspects.
         7. Output Format: 
+
         ```json
         {
             reasoning: Your reasoning process,
@@ -233,6 +234,7 @@ prompt = {
         4. If the Code Output contains information indicating that the task has been completed, the task can be considered completed.    
         5. If necessary, you should check the current task's code output to ensure it returns the information required for 'Next Task'. If it does not, then the current task can be considered incomplete.
         6. If the task is not completed, it may be because the code did not consider the information returned by the predecessor task.
+        7. The JSON response must be enclosed between ```json and ```.
         Now you will be provided with the following information, please give the result JSON according to these information.
         ''',
         '_USER_TASK_JUDGE_PROMPT': '''
@@ -312,19 +314,19 @@ prompt = {
         You can only return the reasoning process and the JSON that stores the subtasks information. 
         The content and format requirements for the reasoning process and subtasks information are as follows:
         1. Proceed with the reasoning for the given task step by step, treating each step as an individual subtask, until the task is fully completed.
-        2. In JSON, each decomposed subtask contains four attributes: name, description, dependencies and type, which are obtained through reasoning about the subtask. The key of each subtask is the 'name' attribute of the subtask.
-        3. The four attributes for each subtask are described as follows:
-                name: The name of the subtask. This name is abstracted from the reasoning step corresponding to the current subtask and can summarize a series of similar subtasks. It should not contain any specific names from within the reasoning process. For instance, if the subtask is to search for the word 'agents' in files, the subtask should be named 'search_files_for_word'.
+        2. In JSON, each subtask is identified by a key that represents the name of the subtask. Every subtask is broken down into three attributes: 'description', 'dependencies', and 'type'. These attributes are determined through a reasoning process about the subtask.
+        3. Each subtask's name is abstracted from the reasoning process specific to that task and can serve as a generic label for a range of similar tasks. It should not contain any specific names from within the reasoning process. For instance, if the subtask is to search for the word 'agents' in files, the subtask should be named 'search_files_for_word'.
+        4. The three attributes for each subtask are described as follows:
                 description: The description of the current subtask corresponds to a certain step in task reasoning. 
                 dependencies: This term refers to the list of names of subtasks that the current subtask depends upon, as determined by the reasoning process. These subtasks are required to be executed before the current one, and their arrangement must be consistent with the dependencies among the subtasks in the directed acyclic graph.
                 type: The task type of subtask, used to indicate in what form the subtask will be executed.
-        4. There are five types of subtasks:
+        5. There are five types of subtasks:
                 Python: Python is suited for subtasks that involve complex data handling, analysis, machine learning, or the need to develop cross-platform scripts and applications. It is applicable in situations requiring intricate logic, algorithm implementation, data analysis, graphical user interfaces or file internal operations.
                 Shell: When the subtask primarily focuses on operating system-level automation, such as quick operations on the file system (creating, moving, deleting files), batch renaming files, system configuration, and monitoring and managing the operating system or system resources, Shell scripts are particularly suitable for quickly executing system-level batch processing tasks. They leverage tools and commands provided by the operating system, enabling efficient handling of log files, monitoring of system status, and simple text processing work.
                 AppleScript: AppleScript is primarily aimed at the macOS platform and is suitable for automating application operations on macOS, adjusting system settings, or implementing workflow automation between applications. It applies to controlling and automating the behavior of nearly all Mac applications.
                 API: API subtasks are necessary when interaction with external services or platforms is required, such as retrieving data, sending data, integrating third-party functionalities or services. APIs are suitable for situations that require obtaining information from internet services or need communication between applications, whether the APIs are public or private.
                 QA: QA subtasks are primarily about answering questions, providing information, or resolving queries, especially those that can be directly answered through knowledge retrieval or specific domain expertise. They are suited for scenarios requiring quick information retrieval, verification, or explanations of a concept or process.
-        5. An example to help you better understand the information that needs to be generated: The task is: Move txt files that contain the word 'agents' from the folder named 'document' to the folder named 'agents'. Then the reasoning process and JSON that stores the subtasks information are as follows: 
+        6. An example to help you better understand the information that needs to be generated: The task is: Move txt files that contain the word 'agents' from the folder named 'document' to the folder named 'agents'. Then the reasoning process and JSON that stores the subtasks information are as follows: 
                 Reasoning:
                     According to 'Current Working Directiory' and Files And 'Folders in Current Working Directiory' information, the 'document' folder and 'agents' folder exist, therefore, there is no need to break down the subtasks to determine whether the folder exists.
                     1. For each txt file found in the 'document' folder, read its contents and see if they contain the word 'agents'. Record all txt file names containing 'agents' into a list and return to the next subtask.
@@ -333,13 +335,11 @@ prompt = {
                 ```json
                 {
                     "retrieve_files" : {
-                        "name": "retrieve_files",
                         "description": "For each txt file found in the 'document' folder, read its contents and see if they contain the word 'agents'. Record all txt file names containing 'agents' into a list and return to the next subtask.",
                         "dependencies": [],
                         "type" : "Python"
                     },
                     "organize_files" : {
-                        "name": "organize_files",
                         "description": "Based on the list of txt files returned by the previous subtask, write a shell command to move these files to the folder named 'agents'.",
                         "dependencies": ["retrieve_files"],
                         "type": "Shell"
@@ -362,7 +362,8 @@ prompt = {
         12. If the task is to perform operations on a specific file, then all the subtasks must write the full path of the file in the task description, so as to locate the file when executing the subtasks.
         13. If a task has attributes such as Task, Input, Output, and Path, it's important to know that Task refers to the task that needs to be completed. Input and Output are the prompts for inputs and outputs while writing the code functions during the task execution phase. Path is the file path that needs to be operated on.
         14. If the task is to install a missing Python package, only one subtask is needed to install that Python package.
-        
+        15. The JSON response must be enclosed between ```json and ```.
+
         Now you will be provided with the following information, please give the reasoning process and the JSON that stores the subtasks information according to these information.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT': '''
@@ -386,26 +387,25 @@ prompt = {
         You can only return the reasoning process and the JSON that stores the tasks information. 
         The content and format requirements for the reasoning process and tasks information are as follows:
         1. Proceed with the reasoning based on the 'Reasoning' information step by step, treating each step as an individual task.
-        2. In JSON, each task contains four attributes: name, description, dependencies and type, which are obtained through reasoning about the task. The key of each task is the 'name' attribute of the task.
-        3. The four attributes for each task are described as follows:
-                name: The name of the task. This name is abstracted from the reasoning step corresponding to the current task and can summarize a series of similar tasks. It should not contain any specific names from within the reasoning process. For instance, if the task is to search for the word 'agents' in files, the task should be named 'search_files_for_word'.
+        2. In JSON, each subtask is identified by a key that represents the name of the subtask. Every subtask is broken down into three attributes: 'description', 'dependencies', and 'type'. These attributes are determined through a reasoning process about the subtask.
+        3. Each subtask's name is abstracted from the reasoning process specific to that task and can serve as a generic label for a range of similar tasks. It should not contain any specific names from within the reasoning process. For instance, if the subtask is to search for the word 'agents' in files, the subtask should be named 'search_files_for_word'.
+        4. The three attributes for each task are described as follows:
                 description: The description of the current task corresponds to a certain step in task reasoning. 
                 dependencies: This term refers to the list of names of task that the current task depends upon, as determined by the reasoning process. These tasks are required to be executed before the current one, and their arrangement must be consistent with the dependencies among the tasks.
                 type: The task type of task, used to indicate in what form the task will be executed.
-        4. There are five types of tasks:
+        5. There are five types of tasks:
                 Python: Python is suited for tasks that involve complex data handling, analysis, machine learning, or the need to develop cross-platform scripts and applications. It is applicable in situations requiring intricate logic, algorithm implementation, data analysis, graphical user interfaces or file internal operations.
                 Shell: When the task primarily focuses on operating system-level automation, such as quick operations on the file system (creating, moving, deleting files), batch renaming files, system configuration, and monitoring and managing the operating system or system resources, Shell scripts are particularly suitable for quickly executing system-level batch processing tasks. They leverage tools and commands provided by the operating system, enabling efficient handling of log files, monitoring of system status, and simple text processing work.
                 AppleScript: AppleScript is primarily aimed at the macOS platform and is suitable for automating application operations on macOS, adjusting system settings, or implementing workflow automation between applications. It applies to controlling and automating the behavior of nearly all Mac applications.
                 API: API tasks are necessary when interaction with external services or platforms is required, such as retrieving data, sending data, integrating third-party functionalities or services. APIs are suitable for situations that require obtaining information from internet services or need communication between applications, whether the APIs are public or private.
                 QA: QA tasks are primarily about answering questions, providing information, or resolving queries, especially those that can be directly answered through knowledge retrieval or specific domain expertise. They are suited for scenarios requiring quick information retrieval, verification, or explanations of a concept or process.
-        5. An example to help you better understand the information that needs to be generated: The reasoning process analyzed that the reason for the error was that there was no numpy package in the environments, causing it to fail to run. Then the reasoning process and JSON that stores the tasks information are as follows: 
+        6. An example to help you better understand the information that needs to be generated: The reasoning process analyzed that the reason for the error was that there was no numpy package in the environments, causing it to fail to run. Then the reasoning process and JSON that stores the tasks information are as follows: 
                 Reasoning:
                     1. According to the reasoning process of error reporting, because there is no numpy package in the environments, we need to use the pip tool to install the numpy package.
 
                 ```json
                 {
                     "install_package" : {
-                        "name": "install_package",
                         "description": "Use pip to install the numpy package that is missing in the environments.",
                         "dependencies": [],
                         "type" : "shell"
@@ -420,7 +420,8 @@ prompt = {
         4. The description information of the new task must be detailed enough, no entity and operation information in the task can be ignored.
         5. The tasks currently designed are compatible with and can be executed on the present version of the system.
         6. Before execution, a task can obtain the output information from its prerequisite dependent tasks. Therefore, if a task requires the output from a prerequisite task, the description of the task must specify which information from the prerequisite task is needed.
-        
+        7. The JSON response must be enclosed between ```json and ```.
+
         Now you will be provided with the following information, please give the reasoning process and the JSON that stores the tasks information according to these information.
         ''',
         '_USER_TASK_REPLAN_PROMPT': '''
@@ -491,6 +492,7 @@ prompt = {
         7. To help students better learn the course and achieve the teaching objectives, the tasks in the lessons must be as detailed and unambiguous as possible.
         8. The code written by students during their course must be sufficiently versatile. Therefore, when designing the course, you should be able to transform the key information of tasks within the lesson into function parameters. Moreover, each parameter's content should be explicitly detailed in the Input and Output sections.
         9. If the Current Course is not empty, you must design new lessons based on the existing course content, ensuring that these new lessons do not duplicate any lessons that are already present.
+        10. The JSON response must be enclosed between ```json and ```.
         ''',
         '_USER_COURSE_DESIGN_PROMPT' : '''
         User's information are as follows:
