@@ -503,15 +503,15 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
+    main()
 
     # Retrieval
     # res = toolManager.retrieve_tool_name("Open the specified text file in the specified folder using the default text viewer on Ubuntu.")
     # print(res[0])
 
     # Delete
-    toolManager = ToolManager(generated_tool_repo_dir='oscopilot/tool_repository/generated_tools')
-    toolManager.delete_tool("implement_loop_progress")
+    # toolManager = ToolManager(generated_tool_repo_dir='oscopilot/tool_repository/generated_tools')
+    # toolManager.delete_tool("implement_loop_progress")
 
     # Add
     # code = ''
