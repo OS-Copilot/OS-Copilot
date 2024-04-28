@@ -2,7 +2,7 @@ from oscopilot.tool_repository.manager.action_node import ActionNode
 from collections import defaultdict, deque
 from oscopilot.modules.base_module import BaseModule
 from oscopilot.tool_repository.manager.tool_manager import get_open_api_description_pair
-from oscopilot.utils.utils import send_chat_prompts
+from oscopilot.utils.utils import send_chat_prompts, api_exception_mechanism
 import json
 import sys
 import logging
@@ -31,6 +31,7 @@ class FridayPlanner(BaseModule):
         self.tool_graph = defaultdict(list)
         self.sub_task_list = []
 
+    @api_exception_mechanism(max_retries=3)
     def decompose_task(self, task, tool_description_pair):
         """
         Decomposes a complex task into manageable subtasks and updates the tool graph.
@@ -187,9 +188,8 @@ class FridayPlanner(BaseModule):
             Modifies the internal state by updating `tool_num`, `tool_node`, and `tool_graph`
             to reflect the newly created tool graph.
         """
-        for _, task_info in decompose_json.items():
+        for task_name, task_info in decompose_json.items():
             self.tool_num += 1
-            task_name = task_info['name']
             task_description = task_info['description']
             task_type = task_info['type']
             task_dependencies = task_info['dependencies']
@@ -215,9 +215,8 @@ class FridayPlanner(BaseModule):
             Updates the tool graph and nodes to include the new tool and its dependencies.
             Modifies the dependencies of the current task to include the new tool.
         """
-        for _, task_info in new_task_json.items():
+        for task_name, task_info in new_task_json.items():
             self.tool_num += 1
-            task_name = task_info['name']
             task_description = task_info['description']
             task_type = task_info['type']
             task_dependencies = task_info['dependencies']

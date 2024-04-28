@@ -15,6 +15,7 @@ from datasets import load_dataset
 from oscopilot.prompts.general_pt import prompt as general_pt
 from oscopilot.utils.llms import OpenAI
 import platform
+from functools import wraps
 
 
 def random_string(length):
@@ -432,3 +433,51 @@ def check_os_version(s):
         raise ValueError("Unknown Operating System")
 
 
+def api_exception_mechanism(max_retries=3):
+    """
+    A decorator to add a retry mechanism to functions, particularly for handling API calls.
+    This decorator will retry a function up to `max_retries` times if an exception is raised.
+
+    Args:
+    max_retries (int): The maximum number of retries allowed before giving up and re-raising the exception.
+
+    Returns:
+    function: A wrapper function that incorporates the retry mechanism.
+    """
+    def decorator(func):
+        """
+        The actual decorator that takes a function and applies the retry logic to it.
+
+        Args:
+        func (function): The function to which the retry mechanism will be applied.
+
+        Returns:
+        function: The wrapped function with retry logic.
+        """
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            """
+            A wrapper function that executes the decorated function and handles exceptions by retrying.
+
+            Args:
+            *args: Variable length argument list for the decorated function.
+            **kwargs: Arbitrary keyword arguments for the decorated function.
+
+            Returns:
+            Any: The return value of the decorated function if successful.
+
+            Raises:
+            Exception: Re-raises any exception if the max retry limit is reached.
+            """
+            attempts = 0
+            while attempts < max_retries:
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    attempts += 1
+                    logging.error(f"Error on attempt {attempts} in {func.__name__}: {str(e)}")
+                    if attempts == max_retries:
+                        logging.error(f"Max retries reached in {func.__name__}, operation failed.")
+                        raise
+        return wrapper
+    return decorator

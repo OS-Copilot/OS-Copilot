@@ -140,18 +140,11 @@ class FridayAgent(BaseAgent):
 
         # decompose task
         # Set up the generation format error handling mechanism
-        max_retries = 3
-        attempts = 0
-        while attempts < max_retries:
-            try:
-                self.planner.decompose_task(task, retrieve_tool_description_pair)
-                break
-            except Exception as e:
-                attempts += 1
-                logging.error(f"Error in planning on attempt {attempts}: {str(e)}")
-                if attempts == max_retries:
-                    logging.error("Max retries reached, planning failed.")        
-        
+        try:
+            self.planner.decompose_task(task, retrieve_tool_description_pair)
+        except Exception as e:
+            print("api call failed:", str(e))  
+            return     
         return self.planner.sub_task_list
     
     def executing(self, tool_name, original_task):
@@ -192,21 +185,15 @@ class FridayAgent(BaseAgent):
         else:
             invoke = ''
             # Set up the generation format error handling mechanism
-            max_retries = 3
-            attempts = 0
-            while attempts < max_retries:
-                try:
-                    if node_type == 'API':
-                        api_path = self.executor.extract_API_Path(description)
-                        code = self.executor.api_tool(description, api_path, pre_tasks_info)
-                    else:
-                        code, invoke = self.executor.generate_tool(tool_name, description, node_type, pre_tasks_info, relevant_code)
-                    break
-                except Exception as e:
-                    attempts += 1
-                    logging.error(f"Error in generating tool code on attempt {attempts}: {str(e)}")
-                    if attempts == max_retries:
-                        logging.error("Max retries reached, Failed to execute subtask.")
+            try:
+                if node_type == 'API':
+                    api_path = self.executor.extract_API_Path(description)
+                    code = self.executor.api_tool(description, api_path, pre_tasks_info)
+                else:
+                    code, invoke = self.executor.generate_tool(tool_name, description, node_type, pre_tasks_info, relevant_code)
+            except Exception as e:
+                print("api call failed:", str(e))
+                return
             # Execute python tool class code
             state = self.executor.execute_tool(code, invoke, node_type)
             result = state.result
@@ -240,17 +227,11 @@ class FridayAgent(BaseAgent):
         critique = ''
         score = 0
         # Set up the generation format error handling mechanism
-        max_retries = 3
-        attempts = 0
-        while attempts < max_retries:
-            try:
-                critique, status, score = self.executor.judge_tool(code, description, state, next_action)
-                break
-            except Exception as e:
-                attempts += 1
-                logging.error(f"Error in judging on attempt {attempts}: {str(e)}")
-                if attempts == max_retries:
-                    logging.error("Max retries reached, judging failed.")           
+        try:
+            critique, status, score = self.executor.judge_tool(code, description, state, next_action)
+        except Exception as e:
+            print("api call failed:", str(e))
+            return
         return JudgementResult(status, critique, score)
     
     def replanning(self, tool_name, reasoning):
@@ -269,17 +250,11 @@ class FridayAgent(BaseAgent):
         relevant_tool_name = self.retriever.retrieve_tool_name(reasoning)
         relevant_tool_description_pair = self.retriever.retrieve_tool_description_pair(relevant_tool_name)
         # Set up the generation format error handling mechanism
-        max_retries = 3
-        attempts = 0
-        while attempts < max_retries:
-            try:
-                self.planner.replan_task(reasoning, tool_name, relevant_tool_description_pair)
-                break
-            except Exception as e:
-                attempts += 1
-                logging.error(f"Error in replanning on attempt {attempts}: {str(e)}")
-                if attempts == max_retries:
-                    logging.error("Max retries reached, replanning failed.")             
+        try:
+            self.planner.replan_task(reasoning, tool_name, relevant_tool_description_pair)
+        except Exception as e:
+            print("api call failed:", str(e))
+            return
         return self.planner.sub_task_list
 
     def repairing(self, tool_name, code, description, state, critique, status):
@@ -308,17 +283,11 @@ class FridayAgent(BaseAgent):
             trial_times += 1
             print("current amend times: {}".format(trial_times))
             # Set up the generation format error handling mechanism
-            max_retries = 3
-            attempts = 0
-            while attempts < max_retries:
-                try:
-                    new_code, invoke = self.executor.repair_tool(code, description, tool_node.node_type, state, critique, pre_tasks_info)
-                    break
-                except Exception as e:
-                    attempts += 1
-                    logging.error(f"Error in generating tool code on attempt {attempts}: {str(e)}")
-                    if attempts == max_retries:
-                        logging.error("Max retries reached, Failed to generate tool.")            
+            try:
+                new_code, invoke = self.executor.repair_tool(code, description, tool_node.node_type, state, critique, pre_tasks_info)
+            except Exception as e:
+                print("api call failed:", str(e))
+                return
             critique = ''
             code = new_code
             # Run the current code and check for errors
@@ -326,17 +295,12 @@ class FridayAgent(BaseAgent):
             result = state.result
             logging.info(state) 
             if state.error == None:
-                # Set up the generation format error handling mechanism
-                attempts = 0
-                while attempts < max_retries:
-                    try:
-                        critique, status, score = self.executor.judge_tool(code, description, state, next_action)
-                        break
-                    except Exception as e:
-                        attempts += 1
-                        logging.error(f"Error in judging on attempt {attempts}: {str(e)}")
-                        if attempts == max_retries:
-                            logging.error("Max retries reached, judging failed.")                 
+            # Set up the generation format error handling mechanism
+                try:
+                    critique, status, score = self.executor.judge_tool(code, description, state, next_action)
+                except Exception as e:
+                    print("api call failed:", str(e))
+                    return
                 # The task execution is completed and the loop exits
                 if status == 'Complete':
                     break
