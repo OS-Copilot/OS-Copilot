@@ -100,7 +100,12 @@ class SelfLearning:
         for name, lesson in course.items():
             logging.info(f"The current lesson is: {name}")
             logging.info(f"The current lesson content is: {lesson}")
-            self.agent.run(lesson)
+            try:
+                self.agent.run(lesson)
+            except Exception as e:
+                logging.error(f"Error learning lesson {name}: {e}")
+                logging.error("Skipping this lesson and continuing with the next one.")
+                continue          
 
 
     def continuous_learning(self, software_name, package_name, demo_file_path=None):
@@ -126,8 +131,9 @@ class SelfLearning:
 
         # Continuously design and apply new courses
         while True:
-            current_course = str(self.course)
-            new_course = self.learner.design_course(software_name, package_name, demo_file_path, file_content, current_course)
+            prior_course = str(self.course)
+            logging.info(f"The lessons that have been completed so far are as follows:\n {prior_course}")
+            new_course = self.learner.design_course(software_name, package_name, demo_file_path, file_content, prior_course)
             self.course.update(new_course)
             self.learn_course(new_course)
 

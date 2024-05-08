@@ -87,6 +87,7 @@ prompt = {
         1. The Python function invocation must be syntactically correct as per Python standards.
         2. Fill in the corresponding parameters according to the relevant information of the task and the description of the function's parameters.
         3. If the invocation requires the output of prerequisite tasks, you can obtain relevant information from 'Information of Prerequisite Tasks'.
+        4. Please ensure that the format of invocation statement is: <invoke>function(parameter1, parameter2, ...)</invoke>.
 
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information.         
         ''',
@@ -177,6 +178,7 @@ prompt = {
         3. If the execution of the current task's code requires the return value of a prerequisite task, the return information of the prerequisite task can assist you in generating the code execution for the current task.
         4. The function includes detailed comments for input and output parameters. If there are errors related to parameter data structures, these comments can be referred to for writing the appropriate data structures.
         5. When generating the function call, all required parameter information must be filled in without any omissions.
+        6. Please ensure that the format of invocation statement is: <invoke>function(parameter1, parameter2, ...)</invoke>.
         
         Now you will be provided with the following information, please give your modified python code and invocation statement according to these information.
         ''',
@@ -464,7 +466,7 @@ prompt = {
         # self learning prompt
         '_SYSTEM_COURSE_DESIGN_PROMPT' : '''
         You are an expert in designing a python course focused entirely on using a specific Python package to operate a particular software, each lesson in the course includes specific tasks for operating the software package, as well as prompts for program input and output. Students will write Python code based on the content of each lesson and the relevant prompts to complete tasks, thereby learning how to use specific package to operate software.
-        I will provide you with the name of the software you need to learn, the specific Python package required to operate it, and an example of course design. Additionally, there may be a provision of the software's demo file path and its contents. I want you to design a software learning course, aimed at mastering skills for performing specific software operations using specific python package. Please generate a progressively challenging course based on the information and criteria below.
+        I'll furnish you with the software's name for your learning, the corresponding Python package necessary for its operation, and an example of course design. Optionally, you may receive access to the software's demo file and completed courses. Your task is to craft a comprehensive software learning course focused on proficiency in executing targeted operations using the specified Python package, if Prior Course is provided, I expect you to design advanced courses building upon the completed course. Please generate a progressively challenging course based on the information and criteria below.
         Excel Course Design Example: To help you better design a course on related software, here I provide you with an example of a course design for learning to manipulate Excel files using openpyxl. Lesson 1, use openpyxl to read all the contents of sheet 'Sheet1' in demo.xlsx, the input is the path of file and the name of the sheet, the output is the contents of 'Sheet1' in 'demo.xlsx' as a list of rows, where each row contains the data from the respective row in the sheet, and demo.xlsx is located in 'working_dir/demo.xlsx'. Lesson 2, use the Python package 'openpyxl' to read all the contents of column 'Product' of sheet 'Sheet1' in demo.xlsx, the input is the path of file, sheet name and column name, the output is the contents of column 'Product' of 'Sheet1' in 'demo.xlsx' as a list, and demo.xlsx is located in 'working_dir/demo.xlsx'. Lesson 3, use openpyxl to insert a new sheet named 'new sheet' into demo.xlsx, the input is the path of file and the name of the new sheet, the output is None, and demo.xlsx is located in 'working_dir/demo.xlsx'. Lesson 3, use the Python package 'openpyxl' to copy the 'Product' column from 'Sheet1' to 'Sheet2' in demo.xlsx. input is the path of the file, sheet name1, sheet name2, column name, output is None, and demo.xlsx is located in 'working_dir/demo.xlsx'. Lesson 5, use the Python package 'openpyxl' to create a histogram that represents the data from the 'Product' and 'Sales' columns in the 'Sheet1' of demo.xlsx, the input is the path of the file, sheet name, column name1, colunm name2, the output is None, and demo.xlsx is located in 'working_dir/demo.xlsx'. lesson 6, use openpyxl to sum the values under the 'sales' column from the sheet 'Sheet1', the input is the path of the file ,sheet name and column name, the output is the sum of the 'sales' column, and demo.xlsx is located in 'working_dir/demo.xlsx'. 
         Note that only six lessons are listed here for demonstration purposes; you will need to design the course to include as many lessons as possible to comprehensively learn Python package manipulation in practice.
         You should only respond with the format as described below:
@@ -491,7 +493,7 @@ prompt = {
         6. Please note, an output of 'None' means that when students are learning a lesson, the code they write does not need to return a value. They only need to write the code according to the lesson task and input prompts to perform operations on the file.
         7. To help students better learn the course and achieve the teaching objectives, the tasks in the lessons must be as detailed and unambiguous as possible.
         8. The code written by students during their course must be sufficiently versatile. Therefore, when designing the course, you should be able to transform the key information of tasks within the lesson into function parameters. Moreover, each parameter's content should be explicitly detailed in the Input and Output sections.
-        9. If the Current Course is not empty, you must design new lessons based on the existing course content, ensuring that these new lessons do not duplicate any lessons that are already present.
+        9. Prior Course refers to the courses that have already been completed. If the Prior Course is not empty, you need to design new lessons based on the existing ones to learn more complex operations of the package, ensuring that these new lessons do not duplicate any lessons that are already in Prior Course.
         10. The JSON response must be enclosed between ```json and ```.
         ''',
         '_USER_COURSE_DESIGN_PROMPT' : '''
@@ -500,7 +502,7 @@ prompt = {
         Python Package Name: {package_name}
         Demo File Path: {demo_file_path} 
         File Content: {file_content}
-        Current Course: {current_course}
+        Prior Course: {prior_course}
         System Version: {system_version}
         ''',       
 
