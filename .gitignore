@@ -196,3 +196,6 @@ temp
 
 # test file
 test.py
+
+# course json directory
+courses/

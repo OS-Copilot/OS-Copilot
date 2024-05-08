@@ -1,7 +1,8 @@
 import os
 import logging
 from oscopilot.prompts.friday_pt import prompt
-from oscopilot.utils import self_learning_print_logging, get_project_root_path
+import json
+from oscopilot.utils import self_learning_print_logging, get_project_root_path, read_json, save_json
 
 
 class SelfLearning: 
@@ -37,7 +38,38 @@ class SelfLearning:
         if text_extractor:
             self.text_extractor = text_extractor(agent)
 
-    def self_learning(self, software_name, package_name, demo_file_path, file_content=None):
+    def _initialize_learning(self, software_name, package_name, demo_file_path):
+        """
+        Common initialization logic for self-learning and continuous learning methods.
+
+        Args:
+            software_name (str): Name of the software.
+            package_name (str): Name of the package within the software.
+            demo_file_path (str): Path to a demo file used for extracting text content.
+
+        Returns:
+            tuple: A tuple containing the prior course path and the file content extracted from the demo file.
+        """
+        self_learning_print_logging(self.config)
+        # Create or read the course file
+        courses_dir = get_project_root_path() + 'courses'
+        if not os.path.exists(courses_dir):
+            os.makedirs(courses_dir)
+        prior_course_path = os.path.join(courses_dir, software_name + '_' + package_name + '.json')
+        if os.path.exists(prior_course_path):
+            self.course = read_json(prior_course_path)
+        else:
+            initial_course = {}
+            save_json(prior_course_path, initial_course)
+        # Extract file content if demo file path is provided
+        file_content = None
+        if demo_file_path:
+            if not os.path.isabs(demo_file_path):
+                demo_file_path = get_project_root_path() + demo_file_path 
+            file_content = self.text_extract(demo_file_path)
+        return prior_course_path, file_content
+
+    def self_learning(self, software_name, package_name, demo_file_path):
         """
         Initiates the self-learning process by designing a course and triggering the learning mechanism.
 
@@ -45,17 +77,40 @@ class SelfLearning:
             software_name (str): The name of the software for which the course is being designed.
             package_name (str): The name of the software package related to the course.
             demo_file_path (str): The file path of a demo or example file that is relevant to the course content.
+
         Returns:
             None.
         """
-        self_learning_print_logging(self.config)
-        if demo_file_path:
-            if not os.path.isabs(demo_file_path):
-                demo_file_path = get_project_root_path() + demo_file_path  # TODO: test abs path
-            if not file_content:
-                file_content = self.text_extract(demo_file_path)
-        self.course = self.course_design(software_name, package_name, demo_file_path, file_content)
-        self.learn_course(self.course)
+        prior_course_path, file_content = self._initialize_learning(software_name, package_name, demo_file_path)
+
+        prior_course = json.dumps(self.course, indent=4)
+        logging.info(f"The lessons that have been completed so far are as follows:\n {prior_course}")
+        new_course = self.learner.design_course(software_name, package_name, demo_file_path, file_content, prior_course)
+        self.learn_course(new_course) 
+        save_json(prior_course_path, new_course)  
+
+    def continuous_learning(self, software_name, package_name, demo_file_path=None):
+        """
+        Implements a continuous learning process that updates and applies new courses based on a designed curriculum.
+
+        Args:
+            software_name (str): Name of the software being learned.
+            package_name (str): Name of the package within the software.
+            demo_file_path (str, optional): Path to a demo file used for extracting text content. Defaults to None.
+
+        Returns:
+            None: This method does not return anything but updates internal states and possibly external resources.
+        """
+        prior_course_path, file_content = self._initialize_learning(software_name, package_name, demo_file_path)
+
+        # Continuously design and apply new courses        
+        while True:
+            prior_course = json.dumps(self.course, indent=4)
+            logging.info(f"The lessons that have been completed so far are as follows:\n {prior_course}")
+            new_course = self.learner.design_course(software_name, package_name, demo_file_path, file_content, prior_course)
+            self.course.update(new_course)
+            self.learn_course(new_course)   
+            save_json(prior_course_path, new_course)        
 
     def text_extract(self, demo_file_path):
         """
@@ -86,7 +141,6 @@ class SelfLearning:
         course = self.learner.design_course(software_name, package_name, demo_file_path, file_content)
         return course
 
-
     def learn_course(self, course):
         """
         Triggers the learning of the designed course using the configured agent.
@@ -100,43 +154,10 @@ class SelfLearning:
         for name, lesson in course.items():
             logging.info(f"The current lesson is: {name}")
             logging.info(f"The current lesson content is: {lesson}")
-            try:
-                self.agent.run(lesson)
-            except Exception as e:
-                logging.error(f"Error learning lesson {name}: {e}")
-                logging.error("Skipping this lesson and continuing with the next one.")
-                continue          
-
-
-    def continuous_learning(self, software_name, package_name, demo_file_path=None):
-        """
-        Implements a continuous learning process that updates and applies new courses based on a designed curriculum.
-
-        Args:
-            software_name (str): Name of the software being learned.
-            package_name (str): Name of the package within the software.
-            demo_file_path (str, optional): Path to a demo file used for extracting text content. Defaults to None.
-
-        Returns:
-            None: This method does not return anything but updates internal states and possibly external resources.
-        """
-
-        # Initialize variable to hold file content if needed
-        file_content = None
-        if demo_file_path:
-            if not os.path.isabs(demo_file_path):
-                demo_file_path = get_project_root_path() + demo_file_path  # TODO: test abs path
-                file_content = self.text_extract(demo_file_path)
-        self.self_learning(software_name, package_name, demo_file_path, file_content)
-
-        # Continuously design and apply new courses
-        while True:
-            prior_course = str(self.course)
-            logging.info(f"The lessons that have been completed so far are as follows:\n {prior_course}")
-            new_course = self.learner.design_course(software_name, package_name, demo_file_path, file_content, prior_course)
-            self.course.update(new_course)
-            self.learn_course(new_course)
+            self.agent.run(lesson)
 
 
 
-        
+
+
+
