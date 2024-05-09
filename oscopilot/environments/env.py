@@ -75,7 +75,8 @@ class Env(BaseEnv):
                 state.error = (state.error or '') + content
             else:
                 state.result += content
-
+        if lang.name == 'Python':
+            lang.terminate()
         # for output_line_dic in lang.step(code):
         #     if output_line_dic['format'] == 'active_line':
         #         continue

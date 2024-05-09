@@ -18,6 +18,67 @@ import platform
 from functools import wraps
 
 
+def save_json(file_path, new_json_content):
+    """
+    Saves JSON content to a file.
+
+    Args:
+        file_path (str): The path to the JSON file.
+        new_json_content (dict or list): The new JSON content to be saved.
+
+    Returns:
+        None
+    """
+
+    # Check if the file exists
+    if os.path.exists(file_path): 
+        # If the file exists, read its content
+        with open(file_path, 'r') as f:
+            json_content = json.load(f)
+        
+        # Check the type of existing JSON content
+        if isinstance(json_content, list):
+            # If the existing content is a list, append or extend the new content
+            if isinstance(new_json_content, list):
+                json_content.extend(new_json_content)    
+            else:
+                json_content.append(new_json_content)   
+        elif isinstance(json_content, dict):  
+            # If the existing content is a dictionary, update it with the new content
+            if isinstance(new_json_content, dict):
+                json_content.update(new_json_content)                
+            else:
+                # If the new content is not a dictionary, return without saving
+                return
+        else:
+            # If the existing content is neither a list nor a dictionary, return without saving
+            return
+        
+        # Write the updated JSON content back to the file
+        with open(file_path, 'w') as f:
+            json.dump(json_content, f, indent=4)
+    else:
+        # If the file does not exist, create a new file and write the new content to it
+        with open(file_path, 'w') as f:
+            json.dump(new_json_content, f, indent=4)
+
+
+def read_json(file_path):
+    """
+    Reads JSON content from a file.
+
+    Args:
+        file_path (str): The path to the JSON file to be read.
+
+    Returns:
+        dict or list: The JSON content read from the file. If the file contains a JSON object, it returns a dictionary. 
+                      If the file contains a JSON array, it returns a list.
+    """    
+    with open(file_path, 'r') as f:
+        json_content = json.load(f)
+    return json_content
+
+
 def random_string(length):
     """
     Generates a random string of a specified length.
