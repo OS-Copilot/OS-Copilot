@@ -148,4 +148,4 @@ If you have any inquiries, suggestions, or wish to contact us for any reason, we
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=OS-Copilot/OS-Copilot&type=Date)](https://star-history.com/#OS-Copilot/OS-Copilot&Date)
+![Star History Chart](https://api.star-history.com/svg?repos=OS-Copilot/OS-Copilot&type=Date)
