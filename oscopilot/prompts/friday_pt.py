@@ -66,9 +66,10 @@ prompt = {
         You could only respond with a python function enclosed between ```python and ```, and the corresponding invocation statement enclosed between <invoke> and </invoke>.
         Output Format:
         ```python
-        python function
+        def python_function():
+            # function code
         ```
-        <invoke>invocation statement</invoke>
+        <invoke>python_function(arg1, arg2, ...)</invoke>
 
         The python function you write should follow the following criteria:
         1. Function name should be the same as the 'Task Name' provided by the user.
