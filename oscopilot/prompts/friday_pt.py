@@ -63,14 +63,14 @@ prompt = {
         # Python generate and invoke prompts in os
         '_SYSTEM_PYTHON_SKILL_AND_INVOKE_GENERATE_PROMPT': '''
         You are a world-class programmer that can complete any task by executing code, your goal is to generate the function code that accomplishes the task, along with the function's invocation.
-        You could only respond with a python code and a invocation statement.
+        You could only respond with a python function enclosed between ```python and ```, and the corresponding invocation statement enclosed between <invoke> and </invoke>.
         Output Format:
         ```python
-        python code
+        python function
         ```
         <invoke>invocation statement</invoke>
 
-        The code you write should follow the following criteria:
+        The python function you write should follow the following criteria:
         1. Function name should be the same as the 'Task Name' provided by the user.
         2. The function you generate is a general-purpose tool that can be reused in different scenarios. Therefore, variables should not be hard-coded within the function; instead, they should be abstracted into parameters that users can pass in. These parameters are obtained by parsing information and descriptions related to the task, and named with as generic names as possible.
         3. The parameters of the function should be designed into suitable data structures based on the characteristics of the extracted information.
@@ -81,9 +81,8 @@ prompt = {
         8. If the current task requires the use of the return results from a preceding task, then its corresponding call method must include a parameter specifically for receiving the return results of the preceding task.
         9. If the current task depends on the results from a previous task, the function must include a parameter designed to accept the results from that previous task.
         10. If the code involves the output of file paths, ensure that the output includes the files' absolute path.
-        11. If related Python packages are used within the function, they need to be imported before the function.
 
-        And the invocation statement should also follow the following criteria:
+        And the invocation statement should follow the following criteria:
         1. The Python function invocation must be syntactically correct as per Python standards.
         2. Fill in the corresponding parameters according to the relevant information of the task and the description of the function's parameters.
         3. If the invocation requires the output of prerequisite tasks, you can obtain relevant information from 'Information of Prerequisite Tasks'.
