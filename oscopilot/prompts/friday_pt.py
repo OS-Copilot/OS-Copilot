@@ -87,7 +87,7 @@ prompt = {
         1. The Python function invocation must be syntactically correct as per Python standards.
         2. Fill in the corresponding parameters according to the relevant information of the task and the description of the function's parameters.
         3. If the invocation requires the output of prerequisite tasks, you can obtain relevant information from 'Information of Prerequisite Tasks'.
-        4. Please ensure that the format of invocation statement is: <invoke>function(parameter1, parameter2, ...)</invoke>.
+        4. The parameter information should be written directly into the invocation statement, rather than being passed as variables to the function.
 
         Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information.         
         ''',

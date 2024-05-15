@@ -144,3 +144,8 @@ OS-Copilot is provided "as is" without warranty of any kind. Users assume full r
 ## 📬 Contact
 
 If you have any inquiries, suggestions, or wish to contact us for any reason, we warmly invite you to email us at wuzhiyong@pjlab.org.cn.
+
+
+## Star History
+
+![Star History Chart](https://api.star-history.com/svg?repos=OS-Copilot/OS-Copilot&type=Date)
