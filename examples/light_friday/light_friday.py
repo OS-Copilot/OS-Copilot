@@ -5,6 +5,15 @@ from oscopilot.modules.base_module import BaseModule
 import re
 from rich.console import Console
 from rich.markdown import Markdown
+import dotenv
+import os
+
+dotenv.load_dotenv(dotenv_path='.env', override=True)
+MODEL_NAME = os.getenv('MODEL_NAME')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION')
+BASE_URL = os.getenv('OPENAI_BASE_URL')
+
 
 console = Console()
 

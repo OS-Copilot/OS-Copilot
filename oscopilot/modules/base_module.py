@@ -8,7 +8,7 @@ from oscopilot.environments import Env
 from oscopilot.utils import get_os_version
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
+load_dotenv(dotenv_path='.env', override=True)
 MODEL_TYPE = os.getenv('MODEL_TYPE')
 
 class BaseModule:

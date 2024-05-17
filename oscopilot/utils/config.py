@@ -5,7 +5,7 @@ from oscopilot.utils.utils import random_string, get_project_root_path
 import dotenv
 import sys
 
-dotenv.load_dotenv(override=True)
+dotenv.load_dotenv(dotenv_path='.env', override=True)
 
 
 class Config:
