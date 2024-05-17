@@ -10,7 +10,7 @@ import sys
 import os
 import re
 from dotenv import load_dotenv
-load_dotenv(override=True)
+load_dotenv(dotenv_path='.env', override=True)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION')
 

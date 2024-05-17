@@ -3,7 +3,7 @@ import dotenv
 
 from fastapi import FastAPI
 from oscopilot.utils.server_config import ConfigManager
-dotenv.load_dotenv(override=True)
+dotenv.load_dotenv(dotenv_path='.env', override=True)
 app = FastAPI()
 
 # Import your services

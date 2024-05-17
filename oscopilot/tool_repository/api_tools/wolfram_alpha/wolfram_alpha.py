@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 
 
-load_dotenv(override=True)
+load_dotenv(dotenv_path='.env', override=True)
 
 WOLFRAMALPHA_APP_ID = os.getenv('WOLFRAMALPHA_APP_ID')
 
