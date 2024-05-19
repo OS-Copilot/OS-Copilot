@@ -13,5 +13,5 @@ self_learning = SelfLearning(friday_agent, SelfLearner, ToolManager, args, TextE
 # Only one stage of course study
 # self_learning.self_learning(software_name, package_name, demo_file_path)
 
-# continous learning
+# contiunous learning
 self_learning.continuous_learning(software_name, package_name, demo_file_path)
