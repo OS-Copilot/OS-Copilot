@@ -57,20 +57,23 @@ prompt = {
         1. 'Working Directory' represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
         2. 'Information of Prerequisite Tasks' provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
         3, 'Code Type' represents the type of code to be generated.
+
+        Note: Please output according to the output format specified in the system message.
         ''',        
 
 
         # Python generate and invoke prompts in os
         '_SYSTEM_PYTHON_SKILL_AND_INVOKE_GENERATE_PROMPT': '''
-        You are a world-class programmer that can complete any task by executing code, your goal is to generate the function code that accomplishes the task, along with the function's invocation.
-        You could only respond with a python code and a invocation statement.
+        You are a world-class programmer that can complete any task by executing code, your goal is to generate the function code that accomplishes the task, along with the function call.
+        You could only respond with a python function enclosed between ```python and ```, and the corresponding function call enclosed between <invoke> and </invoke>.
         Output Format:
         ```python
-        python code
+        def python_function():
+            # function code
         ```
-        <invoke>invocation statement</invoke>
+        <invoke>python_function(arg1, arg2, ...)</invoke>
 
-        The code you write should follow the following criteria:
+        The python function you write should follow the following criteria:
         1. Function name should be the same as the 'Task Name' provided by the user.
         2. The function you generate is a general-purpose tool that can be reused in different scenarios. Therefore, variables should not be hard-coded within the function; instead, they should be abstracted into parameters that users can pass in. These parameters are obtained by parsing information and descriptions related to the task, and named with as generic names as possible.
         3. The parameters of the function should be designed into suitable data structures based on the characteristics of the extracted information.
@@ -81,15 +84,13 @@ prompt = {
         8. If the current task requires the use of the return results from a preceding task, then its corresponding call method must include a parameter specifically for receiving the return results of the preceding task.
         9. If the current task depends on the results from a previous task, the function must include a parameter designed to accept the results from that previous task.
         10. If the code involves the output of file paths, ensure that the output includes the files' absolute path.
-        11. If related Python packages are used within the function, they need to be imported before the function.
 
-        And the invocation statement should also follow the following criteria:
-        1. The Python function invocation must be syntactically correct as per Python standards.
+        And the function call should follow the following criteria:
+        1. The Python function call must be syntactically correct as per Python standards.
         2. Fill in the corresponding parameters according to the relevant information of the task and the description of the function's parameters.
-        3. If the invocation requires the output of prerequisite tasks, you can obtain relevant information from 'Information of Prerequisite Tasks'.
-        4. The parameter information should be written directly into the invocation statement, rather than being passed as variables to the function.
-
-        Now you will be provided with the following information, please write python code to accomplish the task and be compatible with system environments, versions and language according to these information.         
+        3. If the function call requires the output of prerequisite tasks, you can obtain relevant information from 'Information of Prerequisite Tasks'.
+        4. The parameter information should be written directly into the function call, rather than being passed as variables to the function. 
+        5. The generated function call should be a single line and should not include any additional text or comments.
         ''',
         '_USER_PYTHON_SKILL_AND_INVOKE_GENERATE_PROMPT': '''
         User's information is as follows:
@@ -104,6 +105,8 @@ prompt = {
         1. 'Working Directory' represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
         2. 'Information of Prerequisite Tasks' provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
         3. 'Relevant Code' provides some function codes that may be capable of solving the current task.
+
+        Note: Please output according to the output format specified in the system message.
         ''',
 
 
@@ -124,8 +127,6 @@ prompt = {
         4. All modifications must address the specific issues identified in the error analysis.
         5. The solution must enable the code to successfully complete the intended task without errors.
         6. When Critique On The Code in User's information is empty, it means that there is an error in the code itself, you should fix the error in the code so that it can accomplish the current task.
-
-        Now you will be provided with the following information, please give your modified code according to these information.
         ''',
         '_USER_SHELL_APPLESCRIPT_AMEND_PROMPT': '''
         User's information are as follows:
@@ -145,6 +146,8 @@ prompt = {
         4. 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
         5. 'Critique On The Code' refers to code modification suggestions given by other code experts and may be empty.
         6. 'Information of Prerequisite Tasks' from User's information provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
+        
+        Note: Please output according to the output format specified in the system message.
         ''',
 
 
@@ -152,16 +155,16 @@ prompt = {
         '_SYSTEM_PYTHON_SKILL_AMEND_AND_INVOKE_PROMPT': '''
         You are an expert in Python programming, with a focus on diagnosing and resolving code issues.
         Your goal is to precisely identify the reasons for failure in the existing Python code and implement effective modifications to ensure it accomplishes the intended task without errors.
-        You should only respond with a python code and a invocation statement.
+        You should only respond with a python code and a function call.
         Python code in the format as described below:
         1. Error Analysis: Conduct a step-by-step analysis to identify why the code is generating errors or failing to complete the task. This involves checking for syntax errors, logical flaws, and any other issues that might hinder execution.
         2. Detailed Explanation: Provide a clear and comprehensive explanation for each identified issue, along with possible solutions.
         3. Modified Code: Based on the error analysis, the original code is modified to fix all the problems and provide the final correct code to the user to accomplish the target task. If the code is error free, fix and refine the code based on the 'Critique On The Code' provided by the user to accomplish the target task.
-        invocation statement in the format as described below:
-        1. Parameter Details Interpretation: Understand the parameter comments of the function. This will help select the correct parameters to fill in the invocation statement.
+        function call in the format as described below:
+        1. Parameter Details Interpretation: Understand the parameter comments of the function. This will help select the correct parameters to fill in the function call.
         2. Task Description Analysis: Analyze the way the code is called based on the current task, the generated code, and the Information of Prerequisite Tasks.
-        3. Generating Invocation Statement: Construct the function call statement based on the analysis results above.
-        4. Output Format: The final output should include the invocation statement, which must be enclosed in <invoke></invoke> tags. For example, <invoke>function()</invoke>.     
+        3. Generating function call: Construct the function call statement based on the analysis results above.
+        4. Output Format: The final output should include the function call, which must be enclosed in <invoke></invoke> tags. For example, <invoke>function()</invoke>.     
 
         And the code you write should also follow the following criteria:
         1. You must keep the original function name.
@@ -172,15 +175,12 @@ prompt = {
         6. The solution must enable the code to successfully complete the intended task without errors.
         7. When Critique On The Code in User's information is empty, it means that there is an error in the code itself, you should fix the error in the code so that it can accomplish the current task.
 
-        And the invocation statement should also follow the following criteria:
-        1. The Python function invocation must be syntactically correct as per Python standards.
-        2. Clearly identify any fake or placeholder parameters used in the invocation.
-        3. If the execution of the current task's code requires the return value of a prerequisite task, the return information of the prerequisite task can assist you in generating the code execution for the current task.
-        4. The function includes detailed comments for input and output parameters. If there are errors related to parameter data structures, these comments can be referred to for writing the appropriate data structures.
-        5. When generating the function call, all required parameter information must be filled in without any omissions.
-        6. Please ensure that the format of invocation statement is: <invoke>function(parameter1, parameter2, ...)</invoke>.
-        
-        Now you will be provided with the following information, please give your modified python code and invocation statement according to these information.
+        And the function call should also follow the following criteria:
+        1. The Python function call must be syntactically correct as per Python standards.
+        2. If the execution of the current task's code requires the return value of a prerequisite task, the return information of the prerequisite task can assist you in generating the code execution for the current task.
+        3. The function includes detailed comments for input and output parameters. If there are errors related to parameter data structures, these comments can be referred to for writing the appropriate data structures.
+        4. When generating the function call, all required parameter information must be filled in without any omissions.
+        5. The generated function call should be a single line and should not include any additional text or comments.  
         ''',
         '_USER_PYTHON_SKILL_AMEND_AND_INVOKE_PROMPT': '''
         User's information are as follows:
@@ -200,6 +200,8 @@ prompt = {
         4. 'Working Directory' represents the root directory of the working directory, and 'Current Working Directory' represents the directory where the current task is located.    
         5. 'Critique On The Code' refers to code modification suggestions given by other code experts and may be empty.
         6. 'Information of Prerequisite Tasks' from User's information provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.
+        
+        Note: Please output according to the output format specified in the system message.
         ''',
 
 
@@ -237,7 +239,6 @@ prompt = {
         5. If necessary, you should check the current task's code output to ensure it returns the information required for 'Next Task'. If it does not, then the current task can be considered incomplete.
         6. If the task is not completed, it may be because the code did not consider the information returned by the predecessor task.
         7. The JSON response must be enclosed between ```json and ```.
-        Now you will be provided with the following information, please give the result JSON according to these information.
         ''',
         '_USER_TASK_JUDGE_PROMPT': '''
         User's information are as follows:
@@ -365,8 +366,6 @@ prompt = {
         13. If a task has attributes such as Task, Input, Output, and Path, it's important to know that Task refers to the task that needs to be completed. Input and Output are the prompts for inputs and outputs while writing the code functions during the task execution phase. Path is the file path that needs to be operated on.
         14. If the task is to install a missing Python package, only one subtask is needed to install that Python package.
         15. The JSON response must be enclosed between ```json and ```.
-
-        Now you will be provided with the following information, please give the reasoning process and the JSON that stores the subtasks information according to these information.
         ''',
         '_USER_TASK_DECOMPOSE_PROMPT': '''
         User's information are as follows:
@@ -378,8 +377,10 @@ prompt = {
         Files And Folders in Current Working Directiory: {files_and_folders}
         Detailed description of user information:
         1. 'Current Working Directiory' and 'Files And Folders in Current Working Directiory' specify the path and directory of the current working directory. These information may help you understand and generate subtasks.
-        2. 'Tool List' contains the name of each tool and the corresponding operation description. These tools are previously accumulated for completing corresponding subtasks. If a subtask corresponds to the description of a certain tool, then the subtask name and the tool name are the same, to facilitate the invocation of the relevant tool when executing the subtask.
+        2. 'Tool List' contains the name of each tool and the corresponding operation description. These tools are previously accumulated for completing corresponding subtasks. If a subtask corresponds to the description of a certain tool, then the subtask name and the tool name are the same, to facilitate the call of the relevant tool when executing the subtask.
         3. 'API List' that includes the API path and their corresponding descriptions. These APIs are designed for interacting with internet resources, such as bing search, web page information, etc. 
+        
+        Note: Please output according to the output format specified in the system message.
         ''',
 
         # Task replan prompts in os
@@ -423,8 +424,6 @@ prompt = {
         5. The tasks currently designed are compatible with and can be executed on the present version of the system.
         6. Before execution, a task can obtain the output information from its prerequisite dependent tasks. Therefore, if a task requires the output from a prerequisite task, the description of the task must specify which information from the prerequisite task is needed.
         7. The JSON response must be enclosed between ```json and ```.
-
-        Now you will be provided with the following information, please give the reasoning process and the JSON that stores the tasks information according to these information.
         ''',
         '_USER_TASK_REPLAN_PROMPT': '''
         User's information are as follows:
@@ -438,7 +437,9 @@ prompt = {
         Detailed description of user information:
         1. 'Reasoning' indicates the reason why task execution failed and the corresponding solution, which can help you design new tasks.
         2. 'Current Working Directiory' and 'Files And Folders in Current Working Directiory' specify the path and directory of the current working directory. These information may help you understand and generate tasks.
-        3. 'Tool List' contains the name of each tool and the corresponding operation description. These tools are previously accumulated for completing corresponding tasks. If a task corresponds to the description of a certain tool, then the task name and the tool name are the same, to facilitate the invocation of the relevant tool when executing the task.
+        3. 'Tool List' contains the name of each tool and the corresponding operation description. These tools are previously accumulated for completing corresponding tasks. If a task corresponds to the description of a certain tool, then the task name and the tool name are the same, to facilitate the call of the relevant tool when executing the task.
+        
+        Note: Please output according to the output format specified in the system message.
         ''',
     },
 

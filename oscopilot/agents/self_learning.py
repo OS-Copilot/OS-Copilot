@@ -82,9 +82,11 @@ class SelfLearning:
             None.
         """
         prior_course_path, file_content = self._initialize_learning(software_name, package_name, demo_file_path)
-
-        prior_course = json.dumps(self.course, indent=4)
-        logging.info(f"The lessons that have been completed so far are as follows:\n {prior_course}")
+        if len(self.course) > 50:
+            prior_course = json.dumps(dict(list(self.course.items())[-50:]))
+        else:
+            prior_course = json.dumps(self.course, indent=4)
+        logging.info(f"The latest lessons that have been completed so far are as follows:\n {prior_course}")
         new_course = self.learner.design_course(software_name, package_name, demo_file_path, file_content, prior_course)
         self.learn_course(new_course) 
         save_json(prior_course_path, new_course)  
@@ -105,12 +107,15 @@ class SelfLearning:
 
         # Continuously design and apply new courses        
         while True:
-            prior_course = json.dumps(self.course, indent=4)
-            logging.info(f"The lessons that have been completed so far are as follows:\n {prior_course}")
+            if len(self.course) > 50:
+                prior_course = json.dumps(dict(list(self.course.items())[-50:]), indent=4)
+            else:
+                prior_course = json.dumps(self.course, indent=4)
+            logging.info(f"The latest lessons that have been completed so far are as follows:\n {prior_course}")
             new_course = self.learner.design_course(software_name, package_name, demo_file_path, file_content, prior_course)
             self.course.update(new_course)
             self.learn_course(new_course)   
-            save_json(prior_course_path, new_course)        
+            save_json(prior_course_path, new_course)      
 
     def text_extract(self, demo_file_path):
         """
