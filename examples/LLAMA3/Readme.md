@@ -35,8 +35,10 @@ python examples/LLAMA3/test_llama3.py
 
 ```
 MODEL_NAME="llama3"
-MODEL_TYPE="LLAMA"
+MODEL_TYPE="OLLAMA"
 MODEL_SERVER="http://localhost:11434"
+EMBED_MODEL_TYPE="OLLAMA"
+EMBED_MODEL_NAME="nomic-embed-text"
 ```
 
 If the api cannot be linked in the script, run the following command to resolve the problem

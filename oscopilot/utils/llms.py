@@ -67,7 +67,7 @@ class OpenAI:
         return response.choices[0].message.content
 
 
-class LLAMA:
+class OLLAMA:
     """
     A class for interacting with the OpenAI API, allowing for chat completion requests.
 
@@ -135,7 +135,7 @@ def main():
     # message.append({"role": "user", "content": 'hello'})
     # print(OPENAI_API_KEY)
     # print(BASE_URL)
-    llm = LLAMA()
+    llm = OLLAMA()
     response = llm.chat(messages)
     print(response)
     end_time = time.time()

@@ -1,7 +1,7 @@
 import re
 import json
 import os
-from oscopilot.utils.llms import OpenAI,LLAMA
+from oscopilot.utils.llms import OpenAI, OLLAMA
 # from oscopilot.environments.py_env import PythonEnv
 # from oscopilot.environments.py_jupyter_env import PythonJupyterEnv
 from oscopilot.environments import Env
@@ -18,8 +18,8 @@ class BaseModule:
         """
         if MODEL_TYPE == "OpenAI":
             self.llm = OpenAI()
-        elif MODEL_TYPE == "LLAMA":
-            self.llm = LLAMA()
+        elif MODEL_TYPE == "OLLAMA":
+            self.llm = OLLAMA()
         # self.environment = PythonEnv()
         # self.environment = PythonJupyterEnv()
         self.environment = Env()
