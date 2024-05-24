@@ -4,6 +4,7 @@
 
 from langchain.vectorstores import Chroma
 from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_community.embeddings import OllamaEmbeddings
 import argparse
 import json
 import sys
@@ -14,6 +15,8 @@ load_dotenv(dotenv_path='.env', override=True)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION')
 
+EMBED_MODEL_TYPE = os.getenv('EMBED_MODEL_TYPE')
+EMBED_MODEL_NAME = os.getenv('EMBED_MODEL_NAME')
 
 class ToolManager:
     """
@@ -60,12 +63,18 @@ class ToolManager:
         os.makedirs(f"{generated_tool_repo_dir}/tool_code", exist_ok=True)
         os.makedirs(f"{generated_tool_repo_dir}/tool_description", exist_ok=True)
         # Utilize the Chroma database and employ OpenAI Embeddings for vectorization (default: text-embedding-ada-002)
-        self.vectordb = Chroma(
-            collection_name="tool_vectordb",
-            embedding_function=OpenAIEmbeddings(
+        
+        if EMBED_MODEL_TYPE == "OpenAI":
+            embedding_function = OpenAIEmbeddings(
                 openai_api_key=OPENAI_API_KEY,
                 openai_organization=OPENAI_ORGANIZATION,
-            ),
+            )
+        elif EMBED_MODEL_TYPE == "OLLAMA":
+            embedding_function = OllamaEmbeddings(model=EMBED_MODEL_NAME)
+        
+        self.vectordb = Chroma(
+            collection_name="tool_vectordb",
+            embedding_function=embedding_function,
             persist_directory=self.vectordb_path,
         )
         assert self.vectordb._collection.count() == len(self.generated_tools), (
