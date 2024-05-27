@@ -316,7 +316,7 @@ def cosine_similarity(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))\
     
 
-def send_chat_prompts(sys_prompt, user_prompt, llm):
+def send_chat_prompts(sys_prompt, user_prompt, llm, prefix=""):
     """
     Sends a sequence of chat prompts to a language learning model (LLM) and returns the model's response.
 
@@ -334,7 +334,7 @@ def send_chat_prompts(sys_prompt, user_prompt, llm):
             {"role": "system", "content": sys_prompt},
             {"role": "user", "content": user_prompt},
         ]
-    return llm.chat(message)
+    return llm.chat(message, prefix=prefix)
 
 
 def get_project_root_path():

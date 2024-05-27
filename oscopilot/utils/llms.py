@@ -41,7 +41,7 @@ class OpenAI:
 
         self.model_name = MODEL_NAME
 
-    def chat(self, messages, temperature=0):
+    def chat(self, messages, temperature=0, prefix=""):
         """
         Sends a chat completion request to the OpenAI API using the specified messages and parameters.
 
@@ -62,7 +62,10 @@ class OpenAI:
             messages=messages,
             temperature=temperature
         )
-        logging.info(f"Response: {response.choices[0].message.content}")
+
+        if len(prefix) > 0 and prefix[-1] != " ":
+            prefix += " "
+        logging.info(f"{prefix}Response: {response.choices[0].message.content}")
 
         return response.choices[0].message.content
 

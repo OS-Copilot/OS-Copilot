@@ -1,0 +1,49 @@
+/* Selection */
+::selection {
+  background: rgb(173, 214, 255);
+}
+
+/* Global Scrollbar Setting */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 0;
+  background-color: rgb(250, 250, 250);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background-color: rgb(190, 190, 190);
+}
+
+/* Mozilla Firefox Scrollbar */
+html {
+  scrollbar-color: rgb(190, 190, 190) rgb(250, 250, 250);
+}
+
+.MuiTextarea-endDecorator>.MuiBox-root {
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+}
+
+.MuiTextarea-endDecorator>.MuiBox-root button {
+  -webkit-app-region: no-drag;
+}
+
+.ActionPad:hover {
+  background-color: var(--joy-palette-primary-200, #C7DFF7) !important
+}
+
+.ActionPad:active {
+  background-color: var(--joy-palette-primary-300, #97C3F0) !important 
+}
+
+/* Okashii Margin */
+body {
+  margin: 0px;
+}
