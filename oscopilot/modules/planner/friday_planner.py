@@ -62,7 +62,7 @@ class FridayPlanner(BaseModule):
             working_dir = self.environment.working_dir,
             files_and_folders = files_and_folders
         )
-        response = send_chat_prompts(sys_prompt, user_prompt, self.llm)
+        response = send_chat_prompts(sys_prompt, user_prompt, self.llm, prefix="Overall")
         decompose_json = self.extract_json_from_string(response)
         # Building tool graph and topological ordering of tools
         if decompose_json != 'No JSON data found in the string.':
