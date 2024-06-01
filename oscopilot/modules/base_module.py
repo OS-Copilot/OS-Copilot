@@ -63,7 +63,7 @@ class BaseModule:
             str: An error message indicating a parsing error or that no JSON data was found.
         """
         # Improved regular expression to find JSON data within a string
-        json_regex = r'```json\s*\n\{[\s\S]*?\n\}\s*```'
+        json_regex = r'```json\n\s*\{\n\s*[\s\S\n]*\}\n\s*```'
         
         # Search for JSON data in the text
         matches = re.findall(json_regex, text)
