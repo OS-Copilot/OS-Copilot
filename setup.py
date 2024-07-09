@@ -10,7 +10,7 @@ setup(
     author="Zhiyong Wu and Chengcheng Han and Zichen Ding and Zhenmin Weng and Zhoumianze Liu and Shunyu Yao and Tao Yu and Lingpeng Kong",
     author_email="wuzhiyong@pjlab.org.cn, hccngu@163.com",
     description="An self-improving embodied conversational agents seamlessly integrated into the operating system to automate our daily tasks.",
-    long_description=open("README.md").read(),
+    long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/OS-Copilot/OS-Copilot",
     license="MIT",
