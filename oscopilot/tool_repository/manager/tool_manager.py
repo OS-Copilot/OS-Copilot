@@ -392,7 +392,7 @@ def add_tool(toolManager, tool_name, tool_path):
     with open(tool_path, 'r') as file:
         code = file.read()
     
-    pattern = r'self\._description = "(.*?)"'
+    pattern = r'"""\s*\n\s*(.*?)[\.\n]'
     match = re.search(pattern, code)
     if match:
         description = match.group(1)
