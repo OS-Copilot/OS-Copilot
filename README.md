@@ -106,6 +106,11 @@ python friday/tool_repository/manager/tool_manager.py --delete --tool_name [tool
 
 For comprehensive guidelines on deploying API services, please refer to the [OS-Copilot documentation](https://os-copilot.readthedocs.io/en/latest/).  -->
 
+## 💻 User Interface (UI)
+
+**Enhance Your Experience with Our Intuitive Frontend!** This interface is crafted for effortless control of your agents. For more details, visit [OS-Copilot Frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/fronted).
+
+
 ## 🏫 Community
 
 Join our community to connect with other enthusiasts, researchers and developers:
