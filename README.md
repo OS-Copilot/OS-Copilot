@@ -34,7 +34,7 @@
 </p> -->
 
 ## 🔥 News
-- *2024.6*: 🎉 The front-end interface of OS-Copilot is now available. Go check it out in the `frontend` directory!
+- *2024.6*: 🎉 The front-end interface of OS-Copilot is now available. Go check it out in the [frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/fronted) directory!
 - *2024.3*: 🎉 OS-Copilot is accepted at the [LLM Agents Workshop](https://llmagents.github.io/)@ICLR 2024!
 
 ## What is OS-Copilot
