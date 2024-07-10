@@ -34,7 +34,8 @@
 </p> -->
 
 ## 🔥 News
-- *2024.3*: 🎉 OS-Copilot is accepted at the [LLM Agents Workshop](https://llmagents.github.io/)@ICLR 2024. 
+- *2024.6*: 🎉 The front-end interface of OS-Copilot is now available. Go check it out in the [frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/fronted) directory!
+- *2024.3*: 🎉 OS-Copilot is accepted at the [LLM Agents Workshop](https://llmagents.github.io/)@ICLR 2024!
 
 ## What is OS-Copilot
 
@@ -104,6 +105,11 @@ python friday/tool_repository/manager/tool_manager.py --delete --tool_name [tool
 ## ✨ Deploy API Services
 
 For comprehensive guidelines on deploying API services, please refer to the [OS-Copilot documentation](https://os-copilot.readthedocs.io/en/latest/).  -->
+
+## 💻 User Interface (UI)
+
+**Enhance Your Experience with Our Intuitive Frontend!** This interface is crafted for effortless control of your agents. For more details, visit [OS-Copilot Frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/fronted).
+
 
 ## 🏫 Community
 
