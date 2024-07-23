@@ -1,0 +1,39 @@
+name: Lint and Fix
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint autopep8
+
+    - name: Run Pylint
+      run: |
+        pylint your_project_directory
+
+    - name: Auto-fix with autopep8
+      run: |
+        autopep8 --in-place --aggressive --aggressive -r your_project_directory
+
+    - name: Commit changes
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git add .
+        git commit -m "Auto-fix code style issues"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
