@@ -5,9 +5,9 @@ name: Python application
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]  # Example: Adding 'dev' branch
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "release/*" ]  # Example: Adding pattern for 'release/' branches
 
 permissions:
   contents: read
