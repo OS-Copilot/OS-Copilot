@@ -9,7 +9,7 @@ import os
 from dotenv import load_dotenv
 
 
-load_dotenv(override=True)
+load_dotenv(dotenv_path='.env', override=True)
 
 BING_API = os.getenv('BING_SUBSCRIPTION_KEY')  # set bing API
 

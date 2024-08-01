@@ -2,7 +2,7 @@ import requests
 import os
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
+load_dotenv(dotenv_path='.env', override=True)
 API_BASE_URL = os.getenv('API_BASE_URL') 
 
 class ToolRequestUtil:

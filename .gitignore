@@ -135,6 +135,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+!fronted/.env
 
 # Spyder project settings
 .spyderproject
@@ -193,3 +194,9 @@ docs/docs_skeleton/yarn.lock
 
 # ignore temp files
 temp
+
+# test file
+test.py
+
+# course json directory
+courses/

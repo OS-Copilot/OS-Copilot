@@ -34,7 +34,8 @@
 </p> -->
 
 ## 🔥 News
-- *2024.3*: 🎉 OS-Copilot is accepted at the [LLM Agents Workshop](https://llmagents.github.io/)@ICLR 2024. 
+- *2024.6*: 🎉 The front-end interface of OS-Copilot is now available. Go check it out in the [frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/fronted) directory!
+- *2024.3*: 🎉 OS-Copilot is accepted at the [LLM Agents Workshop](https://llmagents.github.io/)@ICLR 2024!
 
 ## What is OS-Copilot
 
@@ -105,6 +106,11 @@ python friday/tool_repository/manager/tool_manager.py --delete --tool_name [tool
 
 For comprehensive guidelines on deploying API services, please refer to the [OS-Copilot documentation](https://os-copilot.readthedocs.io/en/latest/).  -->
 
+## 💻 User Interface (UI)
+
+**Enhance Your Experience with Our Intuitive Frontend!** This interface is crafted for effortless control of your agents. For more details, visit [OS-Copilot Frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/fronted).
+
+
 ## 🏫 Community
 
 Join our community to connect with other enthusiasts, researchers and developers:
@@ -130,13 +136,11 @@ OS-Copilot is provided "as is" without warranty of any kind. Users assume full r
 ## 🔎 Citation
 
 ```
-@misc{wu2024oscopilot,
-      title={OS-Copilot: Towards Generalist Computer Agents with Self-Improvement}, 
-      author={Zhiyong Wu and Chengcheng Han and Zichen Ding and Zhenmin Weng and Zhoumianze Liu and Shunyu Yao and Tao Yu and Lingpeng Kong},
-      year={2024},
-      eprint={2402.07456},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI}
+@article{wu2024copilot,
+  title={Os-copilot: Towards generalist computer agents with self-improvement},
+  author={Wu, Zhiyong and Han, Chengcheng and Ding, Zichen and Weng, Zhenmin and Liu, Zhoumianze and Yao, Shunyu and Yu, Tao and Kong, Lingpeng},
+  journal={arXiv preprint arXiv:2402.07456},
+  year={2024}
 }
 ```
 
@@ -144,3 +148,8 @@ OS-Copilot is provided "as is" without warranty of any kind. Users assume full r
 ## 📬 Contact
 
 If you have any inquiries, suggestions, or wish to contact us for any reason, we warmly invite you to email us at wuzhiyong@pjlab.org.cn.
+
+
+## Star History
+
+![Star History Chart](https://api.star-history.com/svg?repos=OS-Copilot/OS-Copilot&type=Date)

@@ -4,16 +4,19 @@
 
 from langchain.vectorstores import Chroma
 from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_community.embeddings import OllamaEmbeddings
 import argparse
 import json
 import sys
 import os
 import re
 from dotenv import load_dotenv
-load_dotenv(override=True)
+load_dotenv(dotenv_path='.env', override=True)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION')
 
+EMBED_MODEL_TYPE = os.getenv('EMBED_MODEL_TYPE')
+EMBED_MODEL_NAME = os.getenv('EMBED_MODEL_NAME')
 
 class ToolManager:
     """
@@ -60,12 +63,18 @@ class ToolManager:
         os.makedirs(f"{generated_tool_repo_dir}/tool_code", exist_ok=True)
         os.makedirs(f"{generated_tool_repo_dir}/tool_description", exist_ok=True)
         # Utilize the Chroma database and employ OpenAI Embeddings for vectorization (default: text-embedding-ada-002)
-        self.vectordb = Chroma(
-            collection_name="tool_vectordb",
-            embedding_function=OpenAIEmbeddings(
+        
+        if EMBED_MODEL_TYPE == "OpenAI":
+            embedding_function = OpenAIEmbeddings(
                 openai_api_key=OPENAI_API_KEY,
                 openai_organization=OPENAI_ORGANIZATION,
-            ),
+            )
+        elif EMBED_MODEL_TYPE == "OLLAMA":
+            embedding_function = OllamaEmbeddings(model=EMBED_MODEL_NAME)
+        
+        self.vectordb = Chroma(
+            collection_name="tool_vectordb",
+            embedding_function=embedding_function,
             persist_directory=self.vectordb_path,
         )
         assert self.vectordb._collection.count() == len(self.generated_tools), (
@@ -383,7 +392,7 @@ def add_tool(toolManager, tool_name, tool_path):
     with open(tool_path, 'r') as file:
         code = file.read()
     
-    pattern = r'self\._description = "(.*?)"'
+    pattern = r'"""\s*\n\s*(.*?)[\.\n]'
     match = re.search(pattern, code)
     if match:
         description = match.group(1)
@@ -503,15 +512,15 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
+    main()
 
     # Retrieval
     # res = toolManager.retrieve_tool_name("Open the specified text file in the specified folder using the default text viewer on Ubuntu.")
     # print(res[0])
 
     # Delete
-    toolManager = ToolManager(generated_tool_repo_dir='oscopilot/tool_repository/generated_tools')
-    toolManager.delete_tool("implement_loop_progress")
+    # toolManager = ToolManager(generated_tool_repo_dir='oscopilot/tool_repository/generated_tools')
+    # toolManager.delete_tool("implement_loop_progress")
 
     # Add
     # code = ''

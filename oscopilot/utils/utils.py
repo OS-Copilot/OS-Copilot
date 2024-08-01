@@ -15,6 +15,68 @@ from datasets import load_dataset
 from oscopilot.prompts.general_pt import prompt as general_pt
 from oscopilot.utils.llms import OpenAI
 import platform
+from functools import wraps
+
+
+def save_json(file_path, new_json_content):
+    """
+    Saves JSON content to a file.
+
+    Args:
+        file_path (str): The path to the JSON file.
+        new_json_content (dict or list): The new JSON content to be saved.
+
+    Returns:
+        None
+    """
+
+    # Check if the file exists
+    if os.path.exists(file_path): 
+        # If the file exists, read its content
+        with open(file_path, 'r') as f:
+            json_content = json.load(f)
+        
+        # Check the type of existing JSON content
+        if isinstance(json_content, list):
+            # If the existing content is a list, append or extend the new content
+            if isinstance(new_json_content, list):
+                json_content.extend(new_json_content)    
+            else:
+                json_content.append(new_json_content)   
+        elif isinstance(json_content, dict):  
+            # If the existing content is a dictionary, update it with the new content
+            if isinstance(new_json_content, dict):
+                json_content.update(new_json_content)                
+            else:
+                # If the new content is not a dictionary, return without saving
+                return
+        else:
+            # If the existing content is neither a list nor a dictionary, return without saving
+            return
+        
+        # Write the updated JSON content back to the file
+        with open(file_path, 'w') as f:
+            json.dump(json_content, f, indent=4)
+    else:
+        # If the file does not exist, create a new file and write the new content to it
+        with open(file_path, 'w') as f:
+            json.dump(new_json_content, f, indent=4)
+
+
+def read_json(file_path):
+    """
+    Reads JSON content from a file.
+
+    Args:
+        file_path (str): The path to the JSON file to be read.
+
+    Returns:
+        dict or list: The JSON content read from the file. If the file contains a JSON object, it returns a dictionary. 
+                      If the file contains a JSON array, it returns a list.
+    """    
+    with open(file_path, 'r') as f:
+        json_content = json.load(f)
+    return json_content
 
 
 def random_string(length):
@@ -254,7 +316,7 @@ def cosine_similarity(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))\
     
 
-def send_chat_prompts(sys_prompt, user_prompt, llm):
+def send_chat_prompts(sys_prompt, user_prompt, llm, prefix=""):
     """
     Sends a sequence of chat prompts to a language learning model (LLM) and returns the model's response.
 
@@ -272,7 +334,7 @@ def send_chat_prompts(sys_prompt, user_prompt, llm):
             {"role": "system", "content": sys_prompt},
             {"role": "user", "content": user_prompt},
         ]
-    return llm.chat(message)
+    return llm.chat(message, prefix=prefix)
 
 
 def get_project_root_path():
@@ -432,3 +494,51 @@ def check_os_version(s):
         raise ValueError("Unknown Operating System")
 
 
+def api_exception_mechanism(max_retries=3):
+    """
+    A decorator to add a retry mechanism to functions, particularly for handling API calls.
+    This decorator will retry a function up to `max_retries` times if an exception is raised.
+
+    Args:
+    max_retries (int): The maximum number of retries allowed before giving up and re-raising the exception.
+
+    Returns:
+    function: A wrapper function that incorporates the retry mechanism.
+    """
+    def decorator(func):
+        """
+        The actual decorator that takes a function and applies the retry logic to it.
+
+        Args:
+        func (function): The function to which the retry mechanism will be applied.
+
+        Returns:
+        function: The wrapped function with retry logic.
+        """
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            """
+            A wrapper function that executes the decorated function and handles exceptions by retrying.
+
+            Args:
+            *args: Variable length argument list for the decorated function.
+            **kwargs: Arbitrary keyword arguments for the decorated function.
+
+            Returns:
+            Any: The return value of the decorated function if successful.
+
+            Raises:
+            Exception: Re-raises any exception if the max retry limit is reached.
+            """
+            attempts = 0
+            while attempts < max_retries:
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    attempts += 1
+                    logging.error(f"Error on attempt {attempts} in {func.__name__}: {str(e)}")
+                    if attempts == max_retries:
+                        logging.error(f"Max retries reached in {func.__name__}, operation failed.")
+                        raise
+        return wrapper
+    return decorator

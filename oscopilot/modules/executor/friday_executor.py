@@ -4,7 +4,7 @@ import re
 import json
 import subprocess
 from pathlib import Path
-from oscopilot.utils.utils import send_chat_prompts
+from oscopilot.utils.utils import send_chat_prompts, api_exception_mechanism
 
 
 
@@ -29,6 +29,7 @@ class FridayExecutor(BaseModule):
         with open(self.open_api_doc_path) as f:
             self.open_api_doc = json.load(f) 
     
+    @api_exception_mechanism(max_retries=3)
     def generate_tool(self, task_name, task_description, tool_type, pre_tasks_info, relevant_code):
         """
         Generates executable code and invocation logic for a specified tool.
@@ -127,6 +128,7 @@ class FridayExecutor(BaseModule):
         print("************************</state>*************************") 
         return state
 
+    @api_exception_mechanism(max_retries=3)
     def judge_tool(self, code, task_description, state, next_action):
         """
         Evaluates the outcome of an executed tool to determine its success in completing a task.
@@ -174,6 +176,7 @@ class FridayExecutor(BaseModule):
             raise ValueError("Missing key in judge module output: {}".format(e))
         return reasoning, status, score
 
+    @api_exception_mechanism(max_retries=3)
     def repair_tool(self, current_code, task_description, tool_type, state, critique, pre_tasks_info):
         """
         Modifies or corrects the code of an tool based on feedback to better complete a task.
@@ -227,6 +230,7 @@ class FridayExecutor(BaseModule):
         invoke = self.extract_information(amend_msg, begin_str='<invoke>', end_str='</invoke>')[0]
         return new_code, invoke
 
+    @api_exception_mechanism(max_retries=3)
     def analysis_tool(self, code, task_description, state):
         """
         Analyzes the execution outcome of an tool to determine the nature of any errors.
@@ -299,6 +303,7 @@ class FridayExecutor(BaseModule):
         else:
             print("tool already exists!")
 
+    @api_exception_mechanism(max_retries=3)
     def api_tool(self, description, api_path, context="No context provided."):
         """
         Executes a task by calling an API tool with the provided description and context.

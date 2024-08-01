@@ -57,15 +57,18 @@ class FridayAgent(BaseAgent):
         print("The task list obtained after planning is: {}".format(sub_tasks_list))
 
         while self.planner.sub_task_list:
-            sub_task = self.planner.sub_task_list.pop(0)
-            execution_state = self.executing(sub_task, task)
-            isTaskCompleted, isReplan = self.self_refining(sub_task, execution_state)
-            if isReplan: continue
-            if isTaskCompleted:
-                print("The execution of the current sub task has been successfully completed.")
-            else:
-                print("{} not completed in repair round {}".format(sub_task, self.config.max_repair_iterations))
-                # sys.exit()
+            try:
+                sub_task = self.planner.sub_task_list.pop(0)
+                execution_state = self.executing(sub_task, task)
+                isTaskCompleted, isReplan = self.self_refining(sub_task, execution_state)
+                if isReplan: continue
+                if isTaskCompleted:
+                    print("The execution of the current sub task has been successfully completed.")
+                else:
+                    print("{} not completed in repair round {}".format(sub_task, self.config.max_repair_iterations))
+                    break
+            except Exception as e:
+                print("Current task execution failed. Error: {}".format(str(e)))
                 break
 
     def self_refining(self, tool_name, execution_state: ExecutionState):
@@ -139,8 +142,12 @@ class FridayAgent(BaseAgent):
         retrieve_tool_description_pair = self.retriever.retrieve_tool_description_pair(retrieve_tool_name)
 
         # decompose task
-        self.planner.decompose_task(task, retrieve_tool_description_pair)
-
+        # Set up the generation format error handling mechanism
+        try:
+            self.planner.decompose_task(task, retrieve_tool_description_pair)
+        except Exception as e:
+            print("api call failed:", str(e))  
+            return     
         return self.planner.sub_task_list
     
     def executing(self, tool_name, original_task):
@@ -180,11 +187,16 @@ class FridayAgent(BaseAgent):
             logging.info(result)
         else:
             invoke = ''
-            if node_type == 'API':
-                api_path = self.executor.extract_API_Path(description)
-                code = self.executor.api_tool(description, api_path, pre_tasks_info)
-            else:
-                code, invoke = self.executor.generate_tool(tool_name, description, node_type, pre_tasks_info, relevant_code)
+            # Set up the generation format error handling mechanism
+            try:
+                if node_type == 'API':
+                    api_path = self.executor.extract_API_Path(description)
+                    code = self.executor.api_tool(description, api_path, pre_tasks_info)
+                else:
+                    code, invoke = self.executor.generate_tool(tool_name, description, node_type, pre_tasks_info, relevant_code)
+            except Exception as e:
+                print("api call failed:", str(e))
+                return
             # Execute python tool class code
             state = self.executor.execute_tool(code, invoke, node_type)
             result = state.result
@@ -217,7 +229,12 @@ class FridayAgent(BaseAgent):
         next_action = tool_node.next_action
         critique = ''
         score = 0
-        critique, status, score = self.executor.judge_tool(code, description, state, next_action)
+        # Set up the generation format error handling mechanism
+        try:
+            critique, status, score = self.executor.judge_tool(code, description, state, next_action)
+        except Exception as e:
+            print("api call failed:", str(e))
+            return
         return JudgementResult(status, critique, score)
     
     def replanning(self, tool_name, reasoning):
@@ -235,7 +252,12 @@ class FridayAgent(BaseAgent):
         """
         relevant_tool_name = self.retriever.retrieve_tool_name(reasoning)
         relevant_tool_description_pair = self.retriever.retrieve_tool_description_pair(relevant_tool_name)
-        self.planner.replan_task(reasoning, tool_name, relevant_tool_description_pair)
+        # Set up the generation format error handling mechanism
+        try:
+            self.planner.replan_task(reasoning, tool_name, relevant_tool_description_pair)
+        except Exception as e:
+            print("api call failed:", str(e))
+            return
         return self.planner.sub_task_list
 
     def repairing(self, tool_name, code, description, state, critique, status):
@@ -263,7 +285,12 @@ class FridayAgent(BaseAgent):
         while (trial_times < self.executor.max_iter and status == 'Amend'):
             trial_times += 1
             print("current amend times: {}".format(trial_times))
-            new_code, invoke = self.executor.repair_tool(code, description, tool_node.node_type, state, critique, pre_tasks_info)
+            # Set up the generation format error handling mechanism
+            try:
+                new_code, invoke = self.executor.repair_tool(code, description, tool_node.node_type, state, critique, pre_tasks_info)
+            except Exception as e:
+                print("api call failed:", str(e))
+                return
             critique = ''
             code = new_code
             # Run the current code and check for errors
@@ -271,7 +298,12 @@ class FridayAgent(BaseAgent):
             result = state.result
             logging.info(state) 
             if state.error == None:
-                critique, status, score = self.executor.judge_tool(code, description, state, next_action)
+            # Set up the generation format error handling mechanism
+                try:
+                    critique, status, score = self.executor.judge_tool(code, description, state, next_action)
+                except Exception as e:
+                    print("api call failed:", str(e))
+                    return
                 # The task execution is completed and the loop exits
                 if status == 'Complete':
                     break

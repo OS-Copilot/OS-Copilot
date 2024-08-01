@@ -1,17 +1,25 @@
 import re
 import json
-from oscopilot.utils.llms import OpenAI
+import os
+from oscopilot.utils.llms import OpenAI, OLLAMA
 # from oscopilot.environments.py_env import PythonEnv
 # from oscopilot.environments.py_jupyter_env import PythonJupyterEnv
 from oscopilot.environments import Env
 from oscopilot.utils import get_os_version
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path='.env', override=True)
+MODEL_TYPE = os.getenv('MODEL_TYPE')
 
 class BaseModule:
     def __init__(self):
         """
         Initializes a new instance of BaseModule with default values for its attributes.
         """
-        self.llm = OpenAI()
+        if MODEL_TYPE == "OpenAI":
+            self.llm = OpenAI()
+        elif MODEL_TYPE == "OLLAMA":
+            self.llm = OLLAMA()
         # self.environment = PythonEnv()
         # self.environment = PythonJupyterEnv()
         self.environment = Env()
@@ -55,7 +63,7 @@ class BaseModule:
             str: An error message indicating a parsing error or that no JSON data was found.
         """
         # Improved regular expression to find JSON data within a string
-        json_regex = r'```json\s*\n\{[\s\S]*?\n\}\s*```'
+        json_regex = r'```json\n\s*\{\n\s*[\s\S\n]*\}\n\s*```'
         
         # Search for JSON data in the text
         matches = re.findall(json_regex, text)
@@ -72,3 +80,31 @@ class BaseModule:
                 return f"Error parsing JSON data: {e}"
         else:
             return "No JSON data found in the string."
+        
+
+    def extract_list_from_string(self, text):
+        """
+        Extracts a list of task descriptions from a given string containing enumerated tasks.
+        This function ensures that only text immediately following a numbered bullet is captured,
+        and it stops at the first newline character or at the next number, preventing the inclusion of subsequent non-numbered lines or empty lines.
+
+        Parameters:
+        text (str): A string containing multiple enumerated tasks. Each task is numbered and followed by its description.
+
+        Returns:
+        list[str]: A list of strings, each representing the description of a task extracted from the input string.
+        """
+
+        # Regular expression pattern:
+        # \d+\. matches one or more digits followed by a dot, indicating the task number.
+        # \s+ matches one or more whitespace characters after the dot.
+        # ([^\n]*?) captures any sequence of characters except newlines (non-greedy) as the task description.
+        # (?=\n\d+\.|\n\Z|\n\n) is a positive lookahead that matches a position followed by either a newline with digits and a dot (indicating the start of the next task),
+        # or the end of the string, or two consecutive newlines (indicating a break between tasks or end of content).
+        task_pattern = r'\d+\.\s+([^\n]*?)(?=\n\d+\.|\n\Z|\n\n)'
+
+        # Use the re.findall function to search for all matches of the pattern in the input text.
+        data_list = re.findall(task_pattern, text)
+
+        # Return the list of matched task descriptions.
+        return data_list
