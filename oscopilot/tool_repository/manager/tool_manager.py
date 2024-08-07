@@ -15,8 +15,8 @@ load_dotenv(dotenv_path='.env', override=True)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION')
 
-EMBED_MODEL_TYPE = os.getenv('EMBED_MODEL_TYPE')
-EMBED_MODEL_NAME = os.getenv('EMBED_MODEL_NAME')
+EMBED_MODEL_TYPE = os.getenv('MODEL_TYPE')
+EMBED_MODEL_NAME = os.getenv('MODEL_NAME')
 
 class ToolManager:
     """
