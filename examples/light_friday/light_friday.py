@@ -8,7 +8,7 @@ from rich.markdown import Markdown
 import dotenv
 import os
 
-dotenv.load_dotenv(dotenv_path='.env', override=True)
+dotenv.load_dotenv(override=True)
 MODEL_NAME = os.getenv('MODEL_NAME')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION')

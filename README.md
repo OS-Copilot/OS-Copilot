@@ -12,8 +12,6 @@
 [![Discord](https://img.shields.io/discord/1222168244673314847?logo=discord&style=flat)](https://discord.com/invite/rXS2XbgfaD)
 [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/cloudposse.svg?style=social&label=Follow%20%40oscopilot)](https://twitter.com/oscopilot)
 
-
-
 <p align="center">
   <img src='pic/demo.png' width="100%">
 </p>
@@ -23,7 +21,7 @@
 <!-- ## 📖 Overview
 
 - **OS-Copilot** is a pioneering conceptual framework for building generalist computer agents on Linux and MacOS, which provides a unified interface for app interactions in the heterogeneous OS ecosystem.
-  
+
 <p align="center">
   <img src='pic/framework.png' width="75%">
 </p>
@@ -34,8 +32,10 @@
 </p> -->
 
 ## 🔥 News
-- *2024.6*: 🎉 The front-end interface of OS-Copilot is now available. Go check it out in the [frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/fronted) directory!
-- *2024.3*: 🎉 OS-Copilot is accepted at the [LLM Agents Workshop](https://llmagents.github.io/)@ICLR 2024!
+
+- _2024.9_: Now Friday is equipped with vision! Try out the new friday_vision! Currently still under development but more stable versions expected soon.
+- _2024.6_: 🎉 The front-end interface of OS-Copilot is now available. Go check it out in the [frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/fronted) directory!
+- _2024.3_: 🎉 OS-Copilot is accepted at the [LLM Agents Workshop](https://llmagents.github.io/)@ICLR 2024!
 
 ## What is OS-Copilot
 
@@ -43,28 +43,29 @@ OS-Copilot is an open-source library to build generalist agents capable of autom
 
 ## ⚡️ Quickstart
 
-1. **Clone the GitHub Repository:** 
+1. **Clone the GitHub Repository:**
 
    ```
    git clone https://github.com/OS-Copilot/OS-Copilot.git
    ```
 
-2. **Set Up Python Environment and Install Dependencies:** 
+2. **Set Up Python Environment and Install Dependencies:**
 
    ```
    conda create -n oscopilot_env python=3.10 -y
    conda activate oscopilot_env
-   
+
    cd OS-Copilot
    pip install -e .
    ```
 
-4. **Set OpenAI API Key:** Configure your OpenAI API key in [.env](.env).
-    ```
+3. **Set OpenAI API Key:** Configure your OpenAI API key in [.env](.env).
+
+   ```
    cp .env_template .env
    ```
 
-5. **Now you are ready to have fun:**
+4. **Now you are ready to have fun:**
    ```
    python quick_start.py
    ```
@@ -73,16 +74,15 @@ OS-Copilot is an open-source library to build generalist agents capable of autom
 
 ## 🛠️ Tutorial
 
-| **Level**        | **Tutorial**                                                                                    | **Description**                                                                                            |
-|------------------|-------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| **Beginner**     | [Installation](https://os-copilot.readthedocs.io/en/latest/installation.html)| Explore three methods to install FRIDAY.                                                                   |
-| **Beginner**     | [Getting Started](https://os-copilot.readthedocs.io/en/latest/quick_start.html)| The simplest demonstration of FRIDAY with a quick_start.py script.                                         |
-| **Intermediate** | [Adding Your Tools](https://os-copilot.readthedocs.io/en/latest/tutorials/add_tool.html)| Adding and removing tools to the FRIDAY.                                                                   |
-| **Intermediate** | [Deploying API Services](https://os-copilot.readthedocs.io/en/latest/tutorials/deploy_api_service.html)| Demonstrate the deployment of API services for FRIDAY.                                                     |
-| **Intermediate** | [Example: Automating Excel Tasks](https://os-copilot.readthedocs.io/en/latest/tutorials/example_excel.html)| Automating Excel control using FRIDAY.                                                                     |
-| **Intermediate** | [Enhancing FRIDAY with Self-Learning for Excel Task Automation](https://os-copilot.readthedocs.io/en/latest/tutorials/self_learning.html) | Improved Excel control with self-directed learning.                                                        |
-| **Advanced**     | [Designing New API Tools](https://os-copilot.readthedocs.io/en/latest/tutorials/design_new_api_tool.html)| Guides on deploying custom API tools for FRIDAY to extend its functionalities. |
-
+| **Level**        | **Tutorial**                                                                                                                              | **Description**                                                                |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| **Beginner**     | [Installation](https://os-copilot.readthedocs.io/en/latest/installation.html)                                                             | Explore three methods to install FRIDAY.                                       |
+| **Beginner**     | [Getting Started](https://os-copilot.readthedocs.io/en/latest/quick_start.html)                                                           | The simplest demonstration of FRIDAY with a quick_start.py script.             |
+| **Intermediate** | [Adding Your Tools](https://os-copilot.readthedocs.io/en/latest/tutorials/add_tool.html)                                                  | Adding and removing tools to the FRIDAY.                                       |
+| **Intermediate** | [Deploying API Services](https://os-copilot.readthedocs.io/en/latest/tutorials/deploy_api_service.html)                                   | Demonstrate the deployment of API services for FRIDAY.                         |
+| **Intermediate** | [Example: Automating Excel Tasks](https://os-copilot.readthedocs.io/en/latest/tutorials/example_excel.html)                               | Automating Excel control using FRIDAY.                                         |
+| **Intermediate** | [Enhancing FRIDAY with Self-Learning for Excel Task Automation](https://os-copilot.readthedocs.io/en/latest/tutorials/self_learning.html) | Improved Excel control with self-directed learning.                            |
+| **Advanced**     | [Designing New API Tools](https://os-copilot.readthedocs.io/en/latest/tutorials/design_new_api_tool.html)                                 | Guides on deploying custom API tools for FRIDAY to extend its functionalities. |
 
 <!-- ## 🛠️ FRIDAY-Gizmos
 We maintain an open-source library of toolkits for FRIDAY, which includes tools that can be directly utilized within FRIDAY.
@@ -110,7 +110,6 @@ For comprehensive guidelines on deploying API services, please refer to the [OS-
 
 **Enhance Your Experience with Our Intuitive Frontend!** This interface is crafted for effortless control of your agents. For more details, visit [OS-Copilot Frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/fronted).
 
-
 ## 🏫 Community
 
 Join our community to connect with other enthusiasts, researchers and developers:
@@ -132,7 +131,6 @@ Join our community to connect with other enthusiasts, researchers and developers
 
 OS-Copilot is provided "as is" without warranty of any kind. Users assume full responsibility for any risks associated with its use, including **potential data loss** or **changes to system settings**. The developers of OS-Copilot are not liable for any damages or losses resulting from its use. Users must ensure their actions comply with applicable laws and regulations.
 
-
 ## 🔎 Citation
 
 ```
@@ -144,11 +142,9 @@ OS-Copilot is provided "as is" without warranty of any kind. Users assume full r
 }
 ```
 
-
 ## 📬 Contact
 
 If you have any inquiries, suggestions, or wish to contact us for any reason, we warmly invite you to email us at wuzhiyong@pjlab.org.cn.
-
 
 ## Star History
 
