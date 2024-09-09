@@ -33,7 +33,7 @@
 
 ## 🔥 News
 
-- _2024.9_: Now Friday is equipped with vision! Try out the new friday_vision! Currently still under development but more stable versions expected soon.
+- _2024.9_: 🎉 Now Friday is equipped with vision! Try out the new [friday_vision](https://github.com/OS-Copilot/OS-Copilot/tree/main/examples/friday_vision)! Currently still under development but more stable versions are expected soon.
 - _2024.6_: 🎉 The front-end interface of OS-Copilot is now available. Go check it out in the [frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/fronted) directory!
 - _2024.3_: 🎉 OS-Copilot is accepted at the [LLM Agents Workshop](https://llmagents.github.io/)@ICLR 2024!
 
