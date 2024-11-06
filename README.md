@@ -34,7 +34,7 @@
 ## 🔥 News
 
 - _2024.9_: 🎉 Now Friday is equipped with vision! Try out the new [friday_vision](https://github.com/OS-Copilot/OS-Copilot/tree/main/examples/friday_vision)! Currently still under development but more stable versions are expected soon.
-- _2024.6_: 🎉 The front-end interface of OS-Copilot is now available. Go check it out in the [frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/fronted) directory!
+- _2024.6_: 🎉 The front-end interface of OS-Copilot is now available. Go check it out in the [frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/frontend) directory!
 - _2024.3_: 🎉 OS-Copilot is accepted at the [LLM Agents Workshop](https://llmagents.github.io/)@ICLR 2024!
 
 ## What is OS-Copilot
@@ -108,7 +108,7 @@ For comprehensive guidelines on deploying API services, please refer to the [OS-
 
 ## 💻 User Interface (UI)
 
-**Enhance Your Experience with Our Intuitive Frontend!** This interface is crafted for effortless control of your agents. For more details, visit [OS-Copilot Frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/fronted).
+**Enhance Your Experience with Our Intuitive Frontend!** This interface is crafted for effortless control of your agents. For more details, visit [OS-Copilot Frontend](https://github.com/OS-Copilot/OS-Copilot/tree/main/frontend).
 
 ## 🏫 Community
 
