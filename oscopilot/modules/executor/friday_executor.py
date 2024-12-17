@@ -226,8 +226,13 @@ class FridayExecutor(BaseModule):
                 pre_tasks_info = pre_tasks_info
             )
         amend_msg = send_chat_prompts(sys_prompt, user_prompt, self.llm)
-        new_code = self.extract_python_code(amend_msg)
-        invoke = self.extract_information(amend_msg, begin_str='<invoke>', end_str='</invoke>')[0]
+        
+        new_code = self.extract_code(amend_msg, tool_type)
+        if tool_type == 'Python':
+            invoke = self.extract_information(amend_msg, begin_str='<invoke>', end_str='</invoke>')[0]
+        else:
+            invoke = ''
+            
         return new_code, invoke
 
     @api_exception_mechanism(max_retries=3)
