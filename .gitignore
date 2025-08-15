@@ -200,3 +200,7 @@ test.py
 
 # course json directory
 courses/
+# Local config & runtime
+config.yaml
+working_dir/
+
