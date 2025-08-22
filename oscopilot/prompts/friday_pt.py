@@ -35,6 +35,11 @@ prompt = {
         shell code
         ```
 
+        Windows Command/PowerShell code output Format:
+        ```powershell
+        powershell code
+        ```
+
         AppleScript code output Format:
         ```applescript
         applescript code
@@ -325,7 +330,7 @@ prompt = {
                 type: The task type of subtask, used to indicate in what form the subtask will be executed.
         5. There are five types of subtasks:
                 Python: Python is suited for subtasks that involve complex data handling, analysis, machine learning, or the need to develop cross-platform scripts and applications. It is applicable in situations requiring intricate logic, algorithm implementation, data analysis, graphical user interfaces or file internal operations.
-                Shell: When the subtask primarily focuses on operating system-level automation, such as quick operations on the file system (creating, moving, deleting files), batch renaming files, system configuration, and monitoring and managing the operating system or system resources, Shell scripts are particularly suitable for quickly executing system-level batch processing tasks. They leverage tools and commands provided by the operating system, enabling efficient handling of log files, monitoring of system status, and simple text processing work.
+                Shell: When the subtask primarily focuses on operating system-level automation, such as quick operations on the file system (creating, moving, deleting files), batch renaming files, system configuration, and monitoring and managing the operating system or system resources, Shell scripts are particularly suitable for quickly executing system-level batch processing tasks. On Unix/Linux/Mac systems, use bash/sh commands. On Windows systems, use PowerShell or cmd commands. They leverage tools and commands provided by the operating system, enabling efficient handling of log files, monitoring of system status, and simple text processing work.
                 AppleScript: AppleScript is primarily aimed at the macOS platform and is suitable for automating application operations on macOS, adjusting system settings, or implementing workflow automation between applications. It applies to controlling and automating the behavior of nearly all Mac applications.
                 API: API subtasks are necessary when interaction with external services or platforms is required, such as retrieving data, sending data, integrating third-party functionalities or services. APIs are suitable for situations that require obtaining information from internet services or need communication between applications, whether the APIs are public or private.
                 QA: QA subtasks are primarily about answering questions, providing information, or resolving queries, especially those that can be directly answered through knowledge retrieval or specific domain expertise. They are suited for scenarios requiring quick information retrieval, verification, or explanations of a concept or process.
@@ -398,7 +403,7 @@ prompt = {
                 type: The task type of task, used to indicate in what form the task will be executed.
         5. There are five types of tasks:
                 Python: Python is suited for tasks that involve complex data handling, analysis, machine learning, or the need to develop cross-platform scripts and applications. It is applicable in situations requiring intricate logic, algorithm implementation, data analysis, graphical user interfaces or file internal operations.
-                Shell: When the task primarily focuses on operating system-level automation, such as quick operations on the file system (creating, moving, deleting files), batch renaming files, system configuration, and monitoring and managing the operating system or system resources, Shell scripts are particularly suitable for quickly executing system-level batch processing tasks. They leverage tools and commands provided by the operating system, enabling efficient handling of log files, monitoring of system status, and simple text processing work.
+                Shell: When the task primarily focuses on operating system-level automation, such as quick operations on the file system (creating, moving, deleting files), batch renaming files, system configuration, and monitoring and managing the operating system or system resources, Shell scripts are particularly suitable for quickly executing system-level batch processing tasks. On Unix/Linux/Mac systems, use bash/sh commands. On Windows systems, use PowerShell or cmd commands. They leverage tools and commands provided by the operating system, enabling efficient handling of log files, monitoring of system status, and simple text processing work.
                 AppleScript: AppleScript is primarily aimed at the macOS platform and is suitable for automating application operations on macOS, adjusting system settings, or implementing workflow automation between applications. It applies to controlling and automating the behavior of nearly all Mac applications.
                 API: API tasks are necessary when interaction with external services or platforms is required, such as retrieving data, sending data, integrating third-party functionalities or services. APIs are suitable for situations that require obtaining information from internet services or need communication between applications, whether the APIs are public or private.
                 QA: QA tasks are primarily about answering questions, providing information, or resolving queries, especially those that can be directly answered through knowledge retrieval or specific domain expertise. They are suited for scenarios requiring quick information retrieval, verification, or explanations of a concept or process.

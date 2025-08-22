@@ -445,7 +445,7 @@ def get_os_version():
     This function checks the operating system of the current environments and attempts
     to return a human-readable version string. For macOS, it uses the `platform.mac_ver()`
     method. For Linux, it attempts to read the version information from `/etc/os-release`.
-    If the system is not macOS or Linux, or if the Linux version cannot be determined, it
+    For Windows, it returns the Windows version. If the system cannot be determined, it
     defaults to a generic version string or "Unknown Operating System".
 
     Returns:
@@ -468,6 +468,9 @@ def get_os_version():
             pass
 
         return platform.version()
+    elif system == "Windows":
+        # Windows
+        return 'Windows ' + platform.version()
     else:
         return "Unknown Operating System"
 
@@ -477,7 +480,7 @@ def check_os_version(s):
     Checks if the operating system version string matches known supported versions.
 
     This function examines a given operating system version string to determine if it
-    contains known substrings that indicate support (e.g., "mac", "Ubuntu", "CentOS").
+    contains known substrings that indicate support (e.g., "mac", "Ubuntu", "CentOS", "Windows").
     If the version string does not match any of the known supported versions, it raises
     a ValueError.
 
@@ -488,7 +491,7 @@ def check_os_version(s):
         ValueError: If the operating system version is not recognized as a known
                     supported version.
     """
-    if "mac" in s or "Ubuntu" in s or "CentOS" in s:
+    if "mac" in s or "Ubuntu" in s or "CentOS" in s or "Windows" in s:
         print("Operating System Version:", s)
     else:
         raise ValueError("Unknown Operating System")
