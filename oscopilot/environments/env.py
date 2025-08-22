@@ -6,6 +6,7 @@ from oscopilot.environments import PythonJupyterEnv
 from oscopilot.environments import Shell
 from oscopilot.utils.schema import EnvState
 import subprocess
+import platform
 
 # Should this be renamed to OS or System?
 
@@ -24,13 +25,24 @@ class Env(BaseEnv):
         Initializes the environment.
 
         Sets up the supported languages and initializes the active languages dictionary.
+        Automatically includes Windows shell on Windows systems.
         """        
         super().__init__()
+        
+        # Base languages supported on all platforms
         self.languages = [
             PythonJupyterEnv,
             Shell,
-            AppleScript,
         ]
+        
+        # Add platform-specific languages
+        if platform.system() == "Darwin":
+            self.languages.append(AppleScript)
+        elif platform.system() == "Windows":
+            # Import WindowsShell only on Windows
+            from oscopilot.environments.windows_env import WindowsShell
+            self.languages.append(WindowsShell)
+        
         self._active_languages = {}
 
     def get_language(self, language):
@@ -87,7 +99,19 @@ class Env(BaseEnv):
         #         else:
         #             state.result += content
         state.pwd = self.working_dir
-        state.ls = subprocess.run(['ls'], cwd=self.working_dir, capture_output=True, text=True).stdout
+        
+        # Use platform-appropriate directory listing command
+        if platform.system() == "Windows":
+            list_cmd = ['dir']
+        else:
+            list_cmd = ['ls']
+        
+        try:
+            state.ls = subprocess.run(list_cmd, cwd=self.working_dir, 
+                                    capture_output=True, text=True, shell=True).stdout
+        except Exception as e:
+            state.ls = f"Error listing directory: {e}"
+        
         return state
         
         # if (

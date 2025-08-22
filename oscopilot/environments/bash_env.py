@@ -33,7 +33,13 @@ class Shell(SubprocessEnv):
 
         # Determine the start command based on the platform
         if platform.system() == "Windows":
-            self.start_cmd = ["cmd.exe"]
+            # On Windows, prefer PowerShell if available, otherwise cmd.exe
+            try:
+                subprocess.run(["powershell", "-Command", "echo test"], 
+                             capture_output=True, timeout=2, check=True)
+                self.start_cmd = ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass"]
+            except (subprocess.SubprocessError, FileNotFoundError):
+                self.start_cmd = ["cmd.exe"]
         else:
             self.start_cmd = [os.environ.get("SHELL", "bash")]
 
